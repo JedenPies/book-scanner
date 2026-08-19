@@ -20,6 +20,8 @@ spring:
     password: ${RABBITMQ_PASSWORD}
     listener:
       simple:
+        concurrency: 5
+        max-concurrency: 10
         prefetch: 1
         default-requeue-rejected: false
         retry:
@@ -38,3 +40,7 @@ api:
   google-books:
     url: "https://www.googleapis.com/books/v1"
     api-key: ${GOOGLE_BOOKS_API_KEY}
+  open-library:
+    url: "https://openlibrary.org"
+  bn:
+    url: "https://data.bn.org.pl"

@@ -11,6 +11,6 @@ import org.hibernate.validator.constraints.ISBN;
 public class CreateScanRequestDto {
 
     @NotBlank(message = "ISBN cannot be empty")
-    @ISBN(message = "Invalid ISBN format")
+    @ISBN(message = "Invalid ISBN format", type = ISBN.Type.ANY)
     private final String isbn;
 }

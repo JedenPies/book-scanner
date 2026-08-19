@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Named
 @RequiredArgsConstructor
-@Order(2)
+@Order(20)
 public class GoogleBookDetailsFetchProvider implements BookDetailsFetchProvider {
 
     private final GoogleBooksFeignClient client;
@@ -24,6 +24,11 @@ public class GoogleBookDetailsFetchProvider implements BookDetailsFetchProvider 
 
     @Value("${api.google-books.api-key}")
     private String apiKey;
+
+    @Override
+    public String getKey() {
+        return "google";
+    }
 
     @Override
     public Optional<BookDetails> fetchBookDetails(ISBN isbn) {

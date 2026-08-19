@@ -11,11 +11,16 @@ import org.springframework.core.annotation.Order;
 import java.util.Optional;
 
 @Named
-@Order(1)
+@Order(10)
 @RequiredArgsConstructor
 public class LocalDatabaseBookDetailsFetchProvider implements BookDetailsFetchProvider {
 
     private final BookService bookService;
+
+    @Override
+    public String getKey() {
+        return "local";
+    }
 
     @Override
     public Optional<BookDetails> fetchBookDetails(ISBN isbn) {

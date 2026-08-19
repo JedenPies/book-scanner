@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface BookDetailsFetchProvider {
 
+    String getKey();
     Optional<BookDetails> fetchBookDetails(ISBN isbn);
 }

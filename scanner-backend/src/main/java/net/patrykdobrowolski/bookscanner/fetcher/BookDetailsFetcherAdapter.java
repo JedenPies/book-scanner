@@ -40,7 +40,7 @@ public class BookDetailsFetcherAdapter implements BookDetailsFetcherPort {
         for (BookDetailsFetchProvider provider : providers) {
             Optional<BookDetails> fetchedDetails = provider.fetchBookDetails(isbn);
             if (fetchedDetails.isPresent()) {
-                return fetchedDetails.get();
+                return fetchedDetails.get().withSource(provider.getKey());
             }
         }
         return null;

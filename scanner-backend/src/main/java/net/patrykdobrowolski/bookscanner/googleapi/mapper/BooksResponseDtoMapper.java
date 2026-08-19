@@ -7,11 +7,8 @@ import net.patrykdobrowolski.bookscanner.googleapi.dto.VolumeInfoDto;
 @Named
 public class BooksResponseDtoMapper {
 
-    public static final String SOURCE = "google";
-
     public BookDetails fromDto(VolumeInfoDto dto) {
         return BookDetails.builder()
-                .source(SOURCE)
                 .title(dto.getTitle())
                 .subtitle(dto.getSubtitle())
                 .authors(dto.getAuthors())
