@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: book-scanner-backend
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_BOOK_SCANNER_HOST:localhost}:${POSTGRES_BOOK_SCANNER_PORT:5432}/${POSTGRES_BOOK_SCANNER_DATABASE:book_scanner}
+    username: ${POSTGRES_BOOK_SCANNER_USERNAME:book_scanner}
+    password: ${POSTGRES_BOOK_SCANNER_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    enabled: true
+    default-schema: public
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    listener:
+      simple:
+        prefetch: 1
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          max-retries: 3
+          initial-interval: 2s
+          multiplier: 2
+          max-interval: 10s
+server:
+  port: 8080
+logging:
+  level:
+    net.patrykdobrowolski: DEBUG
+
+api:
+  google-books:
+    url: "https://www.googleapis.com/books/v1"
+    api-key: ${GOOGLE_BOOKS_API_KEY}

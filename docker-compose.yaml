@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  book-scanner-pg:
+    image: postgres:17-alpine
+    container_name: book-scanner-pg
+    environment:
+      POSTGRES_USER: ${POSTGRES_BOOK_SCANNER_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_BOOK_SCANNER_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_BOOK_SCANNER_DATABASE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - book-scanner-pg-data:/var/lib/postgresql/data
+    networks:
+      - book-scanner-network
+
+  book-scanner-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: book-scanner-rabbitmq
+    hostname: rabbitmq-node
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - book-scanner-network
+
+volumes:
+  book-scanner-pg-data:
+  rabbitmq-data:
+
+networks:
+  book-scanner-network:

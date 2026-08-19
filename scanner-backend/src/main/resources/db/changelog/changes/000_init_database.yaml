@@ -1,0 +1,170 @@
+databaseChangeLog:
+  - changeSet:
+      id: 000.01-create-sessions
+      author: patryk
+      changes:
+        - createTable:
+            tableName: sessions
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_use
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 000.02-create-books-details
+      author: patryk
+      changes:
+        - createTable:
+            tableName: books_details
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: source
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(500) # Dałem 500, bo niektóre tytuły bywają ekstremalnie długie
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subtitle
+                  type: VARCHAR(500)
+              - column:
+                  name: authors
+                  type: text[]
+
+  - changeSet:
+      id: 000.04-create-books
+      author: patryk
+      changes:
+        - createTable:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: isbn
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 000.05-create-book-book-details
+      author: patryk
+      changes:
+        - createTable:
+            tableName: book_book_details
+            columns:
+              - column:
+                  name: book_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_bbd_books
+                    references: books(id)
+              - column:
+                  name: book_details_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true # Ponieważ to relacja 1:N, detal należy tylko do jednej książki
+                    foreignKeyName: fk_bbd_books_details
+                    references: books_details(id)
+
+  - changeSet:
+      id: 000.06-create-scans
+      author: patryk
+      changes:
+        - createTable:
+            tableName: scans
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: session_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_scans_sessions
+                    references: sessions(id)
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isbn
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_details_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_scans_books_details
+                    references: books_details(id)
+              - column:
+                  name: error_message
+                  type: VARCHAR(500)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified_by
+                  type: VARCHAR(50)
