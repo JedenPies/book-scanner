@@ -1,1 +1,6 @@
-/.env
+.env
+.editorconfig
+.gitattributes
+.idea
+.prettierrc
+.vscode
