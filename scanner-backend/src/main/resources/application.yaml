@@ -30,11 +30,35 @@ spring:
           initial-interval: 2s
           multiplier: 2
           max-interval: 10s
-server:
-  port: 8080
-logging:
-  level:
-    net.patrykdobrowolski: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      main:
+        slidingWindowSize: 10 # Analizuje 10 ostatnich zapytań
+        failureRateThreshold: 50 # Jeśli 50% z nich to błędy, otwórz obwód
+        waitDurationInOpenState: 60s # Po otwarciu odczekaj minutę zanim spróbujesz ponownie
+        recordExceptions:
+          - feign.RetryableException
+          - feign.FeignException.InternalServerError
+          - feign.FeignException.BadGateway
+          - feign.FeignException.ServiceUnavailable
+          - java.lang.RuntimeException
+        ignoreExceptions:
+          - feign.FeignException.NotFound
+          - feign.FeignException.BadRequest
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
 
 api:
   google-books:
@@ -44,3 +68,6 @@ api:
     url: "https://openlibrary.org"
   bn:
     url: "https://data.bn.org.pl"
+
+server:
+  port: 8080

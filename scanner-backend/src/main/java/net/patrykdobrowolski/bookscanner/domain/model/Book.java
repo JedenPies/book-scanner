@@ -17,6 +17,7 @@ public class Book {
     @Builder.Default
     private List<BookDetails> bookDetails = new ArrayList<>();
     private Instant createdAt;
+    private Instant modifiedAt;
 
     public void addDetails(BookDetails bookDetails) {
         if (!existsBySource(bookDetails.getSource())) {
