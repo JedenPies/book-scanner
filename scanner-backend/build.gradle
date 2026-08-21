@@ -33,11 +33,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-liquibase'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
-    // 3. Redis (Cache dla 6-znakowych kodów parujących)
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'io.github.resilience4j:resilience4j-spring-boot4:2.4.0'
 
-    // 4. RabbitMQ (Asynchroniczne kolejkowanie odpytywania Google Books)
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    // 3. Redis (Cache dla 6-znakowych kodów parujących)
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
 

@@ -19,7 +19,7 @@ public class ScannerBackendApplication {
         return "Hello World!";
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(ScannerBackendApplication.class, args);
 
     }

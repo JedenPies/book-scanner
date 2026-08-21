@@ -4,11 +4,12 @@ import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.patrykdobrowolski.bookscanner.domain.event.BookScanRequestedApplicationEvent;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.model.ISBN;
 import net.patrykdobrowolski.bookscanner.domain.model.Scan;
-import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsAsyncFetcherPort;
 import net.patrykdobrowolski.bookscanner.domain.port.ScanRepositoryPort;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,12 +20,12 @@ import java.util.UUID;
 public class ScanService {
 
     private final ScanRepositoryPort scanRepository;
-    private final BookDetailsAsyncFetcherPort bookDetailsFetcher;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public Scan createScan(UUID sessionId, String isbnStr) {
         Scan saved = scanRepository.save(new Scan(sessionId, new ISBN(isbnStr)));
-        bookDetailsFetcher.fetchBookDetails(saved.getId(), saved.getIsbn());
+        applicationEventPublisher.publishEvent(BookScanRequestedApplicationEvent.of(saved.getIsbn(), saved.getId()));
         return saved;
     }
 

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +14,21 @@ public class Book {
 
     private UUID id;
     private ISBN isbn;
-    private List<BookDetails> bookDetails;
+    @Builder.Default
+    private List<BookDetails> bookDetails = new ArrayList<>();
     private Instant createdAt;
+
+    public void addDetails(BookDetails bookDetails) {
+        if (!existsBySource(bookDetails.getSource())) {
+            this.bookDetails.add(bookDetails);
+        }
+    }
+
+    private boolean existsBySource(String source) {
+        return this.bookDetails.stream().anyMatch(bd -> bd.getSource().equals(source));
+    }
+
+    public static Book from(ISBN isbn) {
+        return Book.builder().isbn(isbn).build();
+    }
 }
