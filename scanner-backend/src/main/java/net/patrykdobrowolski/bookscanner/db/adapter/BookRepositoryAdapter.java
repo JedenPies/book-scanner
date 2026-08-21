@@ -28,4 +28,9 @@ public class BookRepositoryAdapter implements BookRepositoryPort {
         BookEntity saved = bookRepository.save(bookEntityMapper.toEntity(book));
         return bookEntityMapper.fromEntity(saved);
     }
+
+    @Override
+    public Long count() {
+        return bookRepository.count();
+    }
 }

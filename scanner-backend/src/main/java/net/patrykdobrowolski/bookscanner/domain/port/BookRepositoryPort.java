@@ -9,4 +9,5 @@ public interface BookRepositoryPort {
 
     Optional<Book> findByISBN(ISBN isbn);
     Book save(Book book);
+    Long count();
 }
