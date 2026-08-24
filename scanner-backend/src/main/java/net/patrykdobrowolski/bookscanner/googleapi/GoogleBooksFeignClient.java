@@ -1,6 +1,5 @@
 package net.patrykdobrowolski.bookscanner.googleapi;
 
-import net.patrykdobrowolski.bookscanner.googleapi.dto.BooksResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface GoogleBooksFeignClient {
 
     @GetMapping("/volumes")
-    BooksResponseDto searchBooks(
+    String searchBooks(
             @RequestParam("q") String query,
             @RequestParam("key") String apiKey);
 }

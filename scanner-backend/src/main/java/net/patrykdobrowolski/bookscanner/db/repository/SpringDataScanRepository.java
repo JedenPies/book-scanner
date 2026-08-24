@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface SpringDataScanRepository extends JpaRepository<ScanEntity, UUID> {
 
-    List<ScanEntity> findBySessionId(UUID sessionId);
+    List<ScanEntity> findBySessionIdOrderByCreatedAt(UUID sessionId);
 }

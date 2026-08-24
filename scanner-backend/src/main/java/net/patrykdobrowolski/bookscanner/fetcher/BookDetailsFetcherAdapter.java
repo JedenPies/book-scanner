@@ -2,51 +2,67 @@ package net.patrykdobrowolski.bookscanner.fetcher;
 
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
+import net.patrykdobrowolski.bookscanner.domain.exception.CannotFetchBookException;
 import net.patrykdobrowolski.bookscanner.domain.model.Book;
-import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
+import net.patrykdobrowolski.bookscanner.domain.model.BookRaw;
 import net.patrykdobrowolski.bookscanner.domain.model.ISBN;
-import net.patrykdobrowolski.bookscanner.domain.model.Scan;
 import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsFetcherPort;
 import net.patrykdobrowolski.bookscanner.domain.port.BookRepositoryPort;
-import net.patrykdobrowolski.bookscanner.service.ScanService;
 import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Named
-@RequiredArgsConstructor
 public class BookDetailsFetcherAdapter implements BookDetailsFetcherPort {
 
-    private final List<BookDetailsFetchProvider> providers;
+    private final List<BookFetchProvider> providers;
     private final BookRepositoryPort bookRepository;
-    private final ScanService scanService;
+    private final Executor apiFetchExecutor;
+
+    public BookDetailsFetcherAdapter(
+            List<BookFetchProvider> providers, BookRepositoryPort bookRepository, @Qualifier("apiFetchExecutor") Executor apiFetchExecutor) {
+        this.providers = providers;
+        this.bookRepository = bookRepository;
+        this.apiFetchExecutor = apiFetchExecutor;
+    }
 
     @Override
     @Transactional
-    public BookDetails fetchBookDetails(UUID scanId, ISBN isbn) throws ScanNotFoundException {
-        Scan scan = scanService.findScan(scanId);
-        scan.markFetching();
-        scanService.save(scan);
-        BookDetails bookDetails = bookDetailsFromAdapters(isbn);
-        if (bookDetails != null && !bookDetails.isLocal()) {
-            Book book = bookRepository.findByISBN(isbn).orElseGet(() -> Book.from(isbn));
-            book.addDetails(bookDetails);
-            bookRepository.save(book);
-        }
-        return bookDetails;
+    public Book fetchBookDetails(ISBN isbn) throws CannotFetchBookException {
+        Book book = bookRepository.findByISBN(isbn).orElseGet(() -> fetchAndCreate(isbn));
+        if (book == null) throw new CannotFetchBookException();
+        return book;
     }
 
-    private @Nullable BookDetails bookDetailsFromAdapters(ISBN isbn) {
-        for (BookDetailsFetchProvider provider : providers) {
-            Optional<BookDetails> fetchedDetails = provider.fetchBookDetails(isbn);
-            if (fetchedDetails.isPresent()) {
-                return fetchedDetails.get().withSource(provider.getKey());
-            }
+    private @Nullable Book fetchAndCreate(ISBN isbn) {
+        List<BookRaw> bookRawsFromAdapters = bookDetailsFromAdapters(isbn);
+        if (!bookRawsFromAdapters.isEmpty()) {
+            Book book = Book.from(isbn);
+            book.addRaws(bookRawsFromAdapters);
+            return bookRepository.save(book);
         }
         return null;
+    }
+
+    private List<BookRaw> bookDetailsFromAdapters(ISBN isbn) {
+        List<CompletableFuture<Optional<BookRaw>>> futures = providers.stream()
+                .map(provider -> fetchWithProvider(provider, isbn))
+                .toList();
+        return futures.stream()
+                .map(CompletableFuture::join)
+                .flatMap(Optional::stream)
+                .toList();
+    }
+
+    private CompletableFuture<Optional<BookRaw>> fetchWithProvider(BookFetchProvider provider, ISBN isbn) {
+        return CompletableFuture.supplyAsync(() -> fetch(provider, isbn), apiFetchExecutor);
+    }
+
+    private Optional<BookRaw> fetch(BookFetchProvider provider, ISBN isbn) {
+        return provider.fetchBookRaw(isbn).map(bookRaw -> bookRaw.withSource(provider.getKey()));
     }
 }

@@ -11,5 +11,8 @@ import java.util.UUID;
 public class FetchBookDetailsCommandDto {
 
     private UUID scanId;
-    private String isbn;
+
+    public static FetchBookDetailsCommandDto forScan(UUID scanId) {
+        return new FetchBookDetailsCommandDto(scanId);
+    }
 }

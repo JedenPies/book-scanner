@@ -33,6 +33,6 @@ public class ScanRepositoryAdapter implements ScanRepositoryPort {
 
     @Override
     public List<Scan> findBySessionId(UUID sessionId) {
-        return scanRepository.findBySessionId(sessionId).stream().map(scanEntityMapper::fromEntity).toList();
+        return scanRepository.findBySessionIdOrderByCreatedAt(sessionId).stream().map(scanEntityMapper::fromEntity).toList();
     }
 }

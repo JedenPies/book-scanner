@@ -4,7 +4,8 @@ import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.patrykdobrowolski.bookscanner.domain.event.BookScanRequestedApplicationEvent;
+import net.patrykdobrowolski.bookscanner.domain.event.ScanCreatedEvent;
+import net.patrykdobrowolski.bookscanner.domain.event.ScanUpdatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.model.ISBN;
 import net.patrykdobrowolski.bookscanner.domain.model.Scan;
@@ -20,18 +21,20 @@ import java.util.UUID;
 public class ScanService {
 
     private final ScanRepositoryPort scanRepository;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Scan createScan(UUID sessionId, String isbnStr) {
         Scan saved = scanRepository.save(new Scan(sessionId, new ISBN(isbnStr)));
-        applicationEventPublisher.publishEvent(BookScanRequestedApplicationEvent.of(saved.getIsbn(), saved.getId()));
+        eventPublisher.publishEvent(ScanCreatedEvent.of(sessionId, saved.getId()));
         return saved;
     }
 
     @Transactional
     public Scan save(Scan scan) {
-        return scanRepository.save(scan);
+        Scan saved = scanRepository.save(scan);
+        eventPublisher.publishEvent(ScanUpdatedEvent.builder().scan(saved).build());
+        return saved;
     }
 
     @Transactional

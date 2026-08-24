@@ -1,16 +1,14 @@
-package net.patrykdobrowolski.bookscanner.domain.model;
+package net.patrykdobrowolski.bookscanner.sse.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.With;
 
 import java.util.List;
 
-@Builder
 @Getter
-public class BookDetails {
+@Builder
+public class BookDetailsDto {
 
-    @With
     private String source;
     private String title;
     private String subtitle;

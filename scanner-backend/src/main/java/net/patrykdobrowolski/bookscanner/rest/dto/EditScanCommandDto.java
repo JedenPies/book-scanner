@@ -4,7 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.List;
+
 @Jacksonized
 @Builder @Getter
-public class ModifyScanDto {
+public class EditScanCommandDto {
+
+    private final String title;
+    private final String subtitle;
+    private final List<String> authors;
 }

@@ -53,7 +53,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: title
-                  type: VARCHAR(500) # Dałem 500, bo niektóre tytuły bywają ekstremalnie długie
+                  type: VARCHAR(500)
                   constraints:
                     nullable: false
               - column:
@@ -64,7 +64,7 @@ databaseChangeLog:
                   type: text[]
 
   - changeSet:
-      id: 000.04-create-books
+      id: 000.03-create-books
       author: patryk
       changes:
         - createTable:
@@ -82,42 +82,41 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: true
-              - column:
-                  name: created_at
-                  type: TIMESTAMP
-                  constraints:
-                    nullable: false
-              - column:
-                  name: modified_at
-                  type: TIMESTAMP
-                  constraints:
-                    nullable: false
 
   - changeSet:
-      id: 000.05-create-book-book-details
+      id: 000.04-create-books-raw
       author: patryk
       changes:
         - createTable:
-            tableName: book_book_details
+            tableName: books_raw
             columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: source
+                  type: VARCHAR(255)
+              - column:
+                  name: value
+                  type: jsonb
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+              - column:
+                  name: modified_at
+                  type: TIMESTAMP
               - column:
                   name: book_id
                   type: UUID
                   constraints:
-                    nullable: false
-                    foreignKeyName: fk_bbd_books
+                    foreignKeyName: fk_books_raw_books
                     references: books(id)
-              - column:
-                  name: book_details_id
-                  type: UUID
-                  constraints:
-                    nullable: false
-                    unique: true # Ponieważ to relacja 1:N, detal należy tylko do jednej książki
-                    foreignKeyName: fk_bbd_books_details
-                    references: books_details(id)
 
   - changeSet:
-      id: 000.06-create-scans
+      id: 000.05-create-scans
       author: patryk
       changes:
         - createTable:

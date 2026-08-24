@@ -38,8 +38,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
-    // 3. Redis (Cache dla 6-znakowych kodów parujących)
-//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
 
@@ -51,12 +50,10 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
     runtimeOnly 'org.postgresql:postgresql'
-//    runtimeOnly 'com.h2database:h2'
 
     // 6. Testy
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
-    // Jeśli planujesz testy z bazą w pamięci, można dorzucić H2
     // testRuntimeOnly 'com.h2database:h2'
 }
 
