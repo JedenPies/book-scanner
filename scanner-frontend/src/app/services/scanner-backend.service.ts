@@ -28,4 +28,8 @@ export class ScannerBackendService {
   retrieveAllScans(sessionId: string) {
     return this.http.get<ScanDto[]>(`${this.apiScannerUrl}/${sessionId}/scans`);
   }
+
+  retryScan(sessionId: string, scanId: string) {
+    return this.http.post<void>(`${this.apiScannerUrl}/${sessionId}/scans/${scanId}/retry`, {});
+  }
 }

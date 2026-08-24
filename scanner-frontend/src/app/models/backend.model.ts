@@ -1,4 +1,5 @@
-export type ScanStatus = 'PENDING' | 'FETCHING' | 'COMPLETED' | 'FAILED' | 'MODIFIED' | 'DUPLICATE';
+export type ScanStatus =
+  'PENDING' | 'FETCHING' | 'FOUND' | 'NOT_FOUND' | 'FAILED' | 'MODIFIED' | 'DUPLICATE';
 
 
 export interface SessionDto {
@@ -21,7 +22,7 @@ export interface ScanDto {
   isbn: string;
   status: ScanStatus;
   bookDetails: BookDetailsDto | null;
-  // private final Instant createdAt;
+  createdAt: string;
 }
 
 export interface ShareCodeDto {
@@ -29,11 +30,10 @@ export interface ShareCodeDto {
   code: string;
 }
 
-export interface BookScanRequestedEvent {
-  scanId: string;
-  isbn: string;
+export interface ScanCreatedSseEvent {
+  scan: ScanDto;
 }
 
-export interface ScanUpdatedEventDto {
+export interface ScanUpdatedSseEvent {
   scan: ScanDto;
 }

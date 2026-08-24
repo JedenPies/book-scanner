@@ -1,0 +1,185 @@
+.table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 70vh;
+
+  /* DODANE: Sztywna blokada maksymalnej szerokości */
+  max-width: 1600px;
+  /* ZMIENIONE: 'auto' na lewo i prawo wyśrodkuje tabelę na dużych monitorach */
+  margin: 1.5rem auto;
+
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.scan-table {
+  width: 100%;
+  min-width: 1590px; /* Minimalna szerokość całej tabeli (wymusza suwak poziomy na małych oknach) */
+  table-layout: fixed; /* Wymusza sztywne szerokości kolumn */
+  border-collapse: collapse;
+  text-align: left;
+  font-family: system-ui, -apple-system, sans-serif;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+
+    padding: 16px;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    /* Definicja szerokości dla konkretnych kolumn */
+    &:nth-child(1) { width: 125px; } /* ISBN */
+    &:nth-child(2) { width: 50px; } /* Status */
+    &:nth-child(3) { width: auto; }  /* Tytuł - elastyczny, zajmie resztę miejsca */
+    &:nth-child(4) { width: 260px; } /* Podtytuł */
+    &:nth-child(5) { width: 240px; } /* Autor(zy) */
+    &:nth-child(6) { width: 150px; } /* Źródło */
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #e2e8f0;
+      transition: background-color 0.2s ease-in-out;
+
+      &:hover {
+        background-color: #f1f5f9;
+      }
+    }
+
+    td {
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      vertical-align: middle;
+      color: #334155;
+
+      /* Eleganckie ucinanie zbyt długiego tekstu w komórkach (trzykropek) */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+/* Typografia w tabeli */
+.primary-text {
+  font-weight: 500;
+  color: #0f172a;
+  white-space: normal;
+}
+
+.secondary-text {
+  color: #64748b;
+}
+
+/* Wyróżnienie numeru ISBN */
+.isbn-badge {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: #0f172a;
+  font-size: 0.9rem;
+  border: 1px solid #e2e8f0;
+}
+
+/* Źródło (np. GOOGLE, OPEN_LIBRARY) */
+.source-badge {
+  background: #e2e8f0;
+  color: #475569;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* Statusy z dynamicznymi kolorami */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  //border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+
+  ///* Kolory w zależności od statusu (generowane przez status-{{ status | lowercase }} w HTML) */
+  //&.status-pending, &.status-fetching {
+  //  background-color: #dbeafe;
+  //  color: #1e40af;
+  //}
+  //&.status-found {
+  //  background-color: #dcfce3;
+  //  color: #166534;
+  //}
+  //&.status-not_found, &.status-failed {
+  //  background-color: #fee2e2;
+  //  color: #991b1b;
+  //}
+  //&.status-duplicate {
+  //  background-color: #fef3c7;
+  //  color: #92400e;
+  //}
+  //&.status-modified {
+  //  background-color: #f3e8ff;
+  //  color: #6b21a8;
+  //}
+}
+
+/* Animacja spinnera */
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(30, 64, 175, 0.2); /* Lekko przezroczysty niebieski */
+  border-top-color: #1e40af; /* Ciemnoniebieski dla akcentu */
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Stan pusty tabeli */
+.empty-state {
+  text-align: center;
+  padding: 48px 16px !important;
+  color: #64748b;
+  font-style: italic;
+
+  .empty-icon {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 12px;
+    font-style: normal;
+  }
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  margin-left: 4px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: background-color 0.2s ease-in-out, transform 0.1s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05); /* Lekkie przyciemnienie tła */
+    transform: scale(1.1); /* Delikatne powiększenie */
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

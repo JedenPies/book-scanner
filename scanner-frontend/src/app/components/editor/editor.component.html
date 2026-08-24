@@ -1,5 +1,58 @@
-<ul>
-@for (scan of scans(); track scan.id) {
-  <li>{{ scan.isbn }} | {{ scan.status }} | {{ scan.bookDetails?.title }} | {{ scan.bookDetails?.subtitle }} | {{ scan.bookDetails?.authors }} | {{ scan.bookDetails?.source }}</li>
-}
-</ul>
+<div class="table-container">
+  <table class="scan-table">
+    <thead>
+    <tr>
+      <th>ISBN</th>
+      <th></th>
+      <th>Tytuł</th>
+      <th>Podtytuł</th>
+      <th>Autor(zy)</th>
+      <th>Źródło</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (scan of scans(); track scan.id) {
+        <tr>
+          <td><span class="isbn-badge">{{ scan.isbn }}</span></td>
+          <td>
+            <div class="status-badge status-{{ scan.status | lowercase }}">
+              @if (scan.status === 'PENDING' || scan.status === 'FETCHING') {
+                <span class="spinner" title="Ładowanie..."></span>
+              }
+              @else if (scan.status === 'FOUND') {
+                <span title="Znaleziono">✅</span>
+              } @else if (scan.status === 'NOT_FOUND') {
+              <span title="Nie znaleziono">❓</span>
+            } @else if (scan.status === 'FAILED') {
+                <span title="Błąd pobierania">❌</span>
+                <button class="action-btn" (click)="retryScan(scan.id)" title="Ponów próbę pobierania">🔁</button>
+            } @else if (scan.status === 'DUPLICATE') {
+              <span title="Duplikat">🔄</span>
+            } @else if (scan.status === 'MODIFIED') {
+              <span title="Zmodyfikowano">✏️</span>
+            }
+            </div>
+          </td>
+          <td class="primary-text">{{ scan.bookDetails?.title || '-' }}</td>
+          <td class="secondary-text">{{ scan.bookDetails?.subtitle || '-' }}</td>
+          <td>{{ scan.bookDetails?.authors || '-' }}</td>
+          <td>
+            @if (scan.bookDetails?.source) {
+              <span class="source-badge">{{ scan.bookDetails?.source }}</span>
+            } @else {
+              <span class="secondary-text">-</span>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6" class="empty-state">
+            <span class="empty-icon">📭</span>
+            Brak zeskanowanych książek. Użyj telefonu, aby zeskanować pierwszy kod!
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
