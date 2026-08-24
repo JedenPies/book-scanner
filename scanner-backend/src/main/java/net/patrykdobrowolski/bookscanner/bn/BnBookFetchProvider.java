@@ -10,8 +10,6 @@ import net.patrykdobrowolski.bookscanner.domain.model.ISBN;
 import net.patrykdobrowolski.bookscanner.fetcher.BookFetchProvider;
 import tools.jackson.databind.ObjectMapper;
 
-import java.util.Optional;
-
 @Named
 @RequiredArgsConstructor
 @Slf4j
@@ -30,16 +28,16 @@ public class BnBookFetchProvider implements BookFetchProvider {
 
     @Override
     @CircuitBreaker(name = "biblioteka-narodowa-api", fallbackMethod = "fallbackFetchBookRaw")
-    public Optional<BookRaw> fetchBookRaw(ISBN isbn) {
+    public BookRaw fetchBookRaw(ISBN isbn) {
         String rawResponse = client.searchBooks(isbn.value());
         BnResponseDto response = objectMapper.readValue(rawResponse, BnResponseDto.class);
-        if (response.getBibs() == null || response.getBibs().isEmpty()) return Optional.empty();
-        return Optional.of(BookRaw.from(rawResponse));
+        if (response.getBibs() == null || response.getBibs().isEmpty()) return BookRaw.notFound();
+        return BookRaw.from(rawResponse);
     }
 
     @SuppressWarnings("unused")
-    private Optional<BookRaw> fallbackFetchBookRaw(ISBN isbn, Throwable throwable) {
+    private BookRaw fallbackFetchBookRaw(ISBN isbn, Throwable throwable) {
         log.error("Failed to call biblioteka narodowa books api for isbn: {} with error: {}", isbn, throwable.getMessage());
-        return Optional.empty();
+        return BookRaw.failure();
     }
 }

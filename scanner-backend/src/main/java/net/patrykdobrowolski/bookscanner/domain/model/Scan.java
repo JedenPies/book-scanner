@@ -34,9 +34,13 @@ public class Scan {
         this.status = ScanStatus.FAILED;
     }
 
+    public void markNotFound() {
+        this.status = ScanStatus.NOT_FOUND;
+    }
+
     public void setBookDetails(BookDetails details, Modifier modifier) {
         this.bookDetails = details;
         this.modifiedBy = modifier;
-        this.status = ScanStatus.COMPLETED;
+        this.status = ScanStatus.FOUND;
     }
 }

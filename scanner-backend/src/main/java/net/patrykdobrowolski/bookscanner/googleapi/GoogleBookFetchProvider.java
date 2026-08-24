@@ -12,8 +12,6 @@ import net.patrykdobrowolski.bookscanner.googleapi.mapper.BooksResponseDtoMapper
 import org.springframework.beans.factory.annotation.Value;
 import tools.jackson.databind.ObjectMapper;
 
-import java.util.Optional;
-
 @Named
 @RequiredArgsConstructor
 @Slf4j
@@ -35,16 +33,16 @@ public class GoogleBookFetchProvider implements BookFetchProvider {
 
     @Override
     @CircuitBreaker(name = "google-books-api", fallbackMethod = "fallbackFetchBookRaw")
-    public Optional<BookRaw> fetchBookRaw(ISBN isbn) {
+    public BookRaw fetchBookRaw(ISBN isbn) {
         String rawResponse = client.searchBooks("isbn:" + isbn.value(), apiKey);
         BooksResponseDto response = objectMapper.readValue(rawResponse, BooksResponseDto.class);
-        if (response.getItems() == null || response.getItems().isEmpty()) return Optional.empty();
-        return Optional.of(BookRaw.from(rawResponse));
+        if (response.getItems() == null || response.getItems().isEmpty()) return BookRaw.notFound();
+        return BookRaw.from(rawResponse);
     }
 
     @SuppressWarnings("unused")
-    private Optional<BookRaw> fallbackFetchBookRaw(ISBN isbn, Throwable throwable) {
+    private BookRaw fallbackFetchBookRaw(ISBN isbn, Throwable throwable) {
         log.error("Failed to call google books api for isbn: {} with error: {}", isbn, throwable.getMessage());
-        return Optional.empty();
+        return BookRaw.failure();
     }
 }

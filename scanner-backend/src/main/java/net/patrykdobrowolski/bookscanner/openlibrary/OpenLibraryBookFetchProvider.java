@@ -10,7 +10,6 @@ import net.patrykdobrowolski.bookscanner.fetcher.BookFetchProvider;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Named
 @RequiredArgsConstructor
@@ -29,18 +28,18 @@ public class OpenLibraryBookFetchProvider implements BookFetchProvider {
 
     @Override
     @CircuitBreaker(name = "open-library-api", fallbackMethod = "fallbackFetchBookRaw")
-    public Optional<BookRaw> fetchBookRaw(ISBN isbn) {
+    public BookRaw fetchBookRaw(ISBN isbn) {
         Map<String, Object> rawResult = client.searchBooks("ISBN:" + isbn.value());
         Object resultGet = rawResult.get("ISBN:" + isbn.value());
-        if (resultGet == null) return Optional.empty();
+        if (resultGet == null) return BookRaw.notFound();
         String rawBook = objectMapper.writeValueAsString(resultGet);
-        if (rawBook == null || rawBook.isBlank()) return Optional.empty();
-        return Optional.of(BookRaw.from(rawBook));
+        if (rawBook == null || rawBook.isBlank()) return BookRaw.notFound();
+        return BookRaw.from(rawBook);
     }
 
     @SuppressWarnings("unused")
-    private Optional<BookRaw> fallbackFetchBookRaw(ISBN isbn, Throwable throwable) {
+    private BookRaw fallbackFetchBookRaw(ISBN isbn, Throwable throwable) {
         log.error("Failed to call open library books api for ISBN: {} with error: {}", isbn, throwable.getMessage());
-        return Optional.empty();
+        return BookRaw.failure();
     }
 }

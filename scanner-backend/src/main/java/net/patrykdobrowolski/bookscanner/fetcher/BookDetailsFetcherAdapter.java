@@ -12,7 +12,6 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -49,20 +48,19 @@ public class BookDetailsFetcherAdapter implements BookDetailsFetcherPort {
     }
 
     private List<BookRaw> bookDetailsFromAdapters(ISBN isbn) {
-        List<CompletableFuture<Optional<BookRaw>>> futures = providers.stream()
+        List<CompletableFuture<BookRaw>> futures = providers.stream()
                 .map(provider -> fetchWithProvider(provider, isbn))
                 .toList();
         return futures.stream()
                 .map(CompletableFuture::join)
-                .flatMap(Optional::stream)
                 .toList();
     }
 
-    private CompletableFuture<Optional<BookRaw>> fetchWithProvider(BookFetchProvider provider, ISBN isbn) {
-        return CompletableFuture.supplyAsync(() -> fetch(provider, isbn), apiFetchExecutor);
+    private CompletableFuture<BookRaw> fetchWithProvider(BookFetchProvider provider, ISBN isbn) {
+        return CompletableFuture.supplyAsync(() -> fetch(provider, isbn).withSource(provider.getKey()), apiFetchExecutor);
     }
 
-    private Optional<BookRaw> fetch(BookFetchProvider provider, ISBN isbn) {
-        return provider.fetchBookRaw(isbn).map(bookRaw -> bookRaw.withSource(provider.getKey()));
+    private BookRaw fetch(BookFetchProvider provider, ISBN isbn) {
+        return provider.fetchBookRaw(isbn); //.map(bookRaw -> bookRaw.withSource(provider.getKey()));
     }
 }

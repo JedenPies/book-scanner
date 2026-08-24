@@ -29,8 +29,19 @@ public class FetchBookForScanService {
     private void tryFetchBook(Scan scan) {
         try {
             Book book = bookDetailsFetcher.fetchBookDetails(scan.getIsbn());
-            BookDetails details = mapper.map(book.getPreferededBookRaw());
-            scan.setBookDetails(details, Modifier.SYSTEM);
+            FetchResult fetchResult = book.getFetchResult();
+            switch (fetchResult) {
+                case SUCCESS:
+                    scan.setBookDetails(mapper.map(book.getPreferededBookRaw()), Modifier.SYSTEM);
+                    break;
+                case NOT_FOUND:
+                    scan.markNotFound();
+                    break;
+                case FAILURE:
+                    scan.markFailed();
+                    break;
+
+            }
         } catch (CannotFetchBookException e) {
             scan.markFailed();
         }

@@ -114,6 +114,9 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_books_raw_books
                     references: books(id)
+              - column:
+                  name: fetch_result
+                  type: VARCHAR(50)
 
   - changeSet:
       id: 000.05-create-scans

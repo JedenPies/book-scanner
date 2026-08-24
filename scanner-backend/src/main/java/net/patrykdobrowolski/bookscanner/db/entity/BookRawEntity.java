@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.patrykdobrowolski.bookscanner.domain.model.FetchResult;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,6 +26,9 @@ public class BookRawEntity {
     private UUID id;
 
     private String source;
+
+    @Enumerated(EnumType.STRING)
+    private FetchResult fetchResult;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private String value;
