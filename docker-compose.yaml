@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+
+  book-scanner-api-gateway:
+    build:
+      context: scanner-api-gateway
+      dockerfile: Dockerfile
+    container_name: scanner-api-gateway
+    volumes:
+      - ./.config/scanner-api-gateway/nginx:/etc/nginx/conf.d:ro
+      - ./.config/scanner-api-gateway/letsencrypt:/etc/letsencrypt:ro # <-- Podmontowanie certyfikatów
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - book-scanner-network
+
   book-scanner-pg:
     image: postgres:17-alpine
     container_name: book-scanner-pg
@@ -12,6 +27,15 @@ services:
       - "5432:5432"
     volumes:
       - book-scanner-pg-data:/var/lib/postgresql/data
+    networks:
+      - book-scanner-network
+
+  book-scanner-redis:
+    image: redis:alpine
+    container_name: book-scanner-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
     networks:
       - book-scanner-network
 
@@ -36,6 +60,36 @@ services:
       start_period: 15s
     networks:
       - book-scanner-network
+
+  book-scanner-backend:
+    build:
+      context: scanner-backend
+      dockerfile: Dockerfile
+    image: book-scanner-backend
+    container_name: book-scanner-backend
+    environment:
+      - JAVA_TOOL_OPTIONS=-Xmx128m -Xms128m
+      - POSTGRES_BOOK_SCANNER_HOST=book-scanner-pg
+      - POSTGRES_BOOK_SCANNER_PORT=5432
+      - POSTGRES_BOOK_SCANNER_DATABASE=${POSTGRES_BOOK_SCANNER_DATABASE}
+      - POSTGRES_BOOK_SCANNER_USERNAME=${POSTGRES_BOOK_SCANNER_USER}
+      - POSTGRES_BOOK_SCANNER_PASSWORD=${POSTGRES_BOOK_SCANNER_PASSWORD}
+      - RABBITMQ_HOST=book-scanner-rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_DEFAULT_PASS}
+      - GOOGLE_BOOKS_API_KEY=${GOOGLE_BOOKS_API_KEY}
+    networks:
+      - book-scanner-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    depends_on:
+      book-scanner-pg:
+        condition: service_started
 
 volumes:
   book-scanner-pg-data:
