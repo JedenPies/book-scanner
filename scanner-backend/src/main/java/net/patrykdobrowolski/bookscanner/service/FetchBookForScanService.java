@@ -2,11 +2,14 @@ package net.patrykdobrowolski.bookscanner.service;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
+import net.patrykdobrowolski.bookscanner.domain.event.ScanUpdatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.exception.CannotFetchBookException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
+import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.model.*;
 import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsFetcherPort;
 import net.patrykdobrowolski.bookscanner.fetcher.BookRawResultMapperAdapter;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.UUID;
 
@@ -14,16 +17,20 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FetchBookForScanService {
 
-    private final ScanService scanService;
+    private final SessionService sessionService;
     private final BookDetailsFetcherPort bookDetailsFetcher;
     private final BookRawResultMapperAdapter mapper;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public void fetchBookForScan(UUID scanId) throws ScanNotFoundException {
-        Scan scan = scanService.findScan(scanId);
+    public void fetchBookForScan(UUID sessionId, UUID scanId) throws ScanNotFoundException, SessionNotFoundException {
+        Session session = sessionService.findById(sessionId);
+        Scan scan = session.findScanById(scanId);
         scan.markFetching();
-        scanService.save(scan);
+        sessionService.save(session);
+        eventPublisher.publishEvent(ScanUpdatedEvent.builder().scan(scan).session(session).build());
         tryFetchBook(scan);
-        scanService.save(scan);
+        sessionService.save(session);
+        eventPublisher.publishEvent(ScanUpdatedEvent.builder().scan(scan).session(session).build());
     }
 
     private void tryFetchBook(Scan scan) {

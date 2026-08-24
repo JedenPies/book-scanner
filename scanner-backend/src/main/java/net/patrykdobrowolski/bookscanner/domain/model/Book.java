@@ -37,8 +37,14 @@ public class Book {
                 .orElse(FetchResult.NOT_FOUND);
     }
 
-    public void addRaws(Collection<? extends BookRaw> bookRaws) {
-        this.bookRaws.addAll(bookRaws);
+    public void addEmptyRaw(String adapterKey) {
+        BookRaw bookRaw = BookRaw.builder().source(adapterKey).fetchResult(FetchResult.INIT).build();
+        this.bookRaws.add(bookRaw);
+    }
+
+    public List<BookRaw> getNewOrFailedRaws() {
+        return bookRaws.stream().filter(
+                br -> br.getFetchResult() == FetchResult.INIT || br.getFetchResult() == FetchResult.FAILURE).toList();
     }
 
     public static Book from(ISBN isbn) {

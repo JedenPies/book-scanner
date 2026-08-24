@@ -4,6 +4,7 @@ import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
+import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
 import net.patrykdobrowolski.bookscanner.rabbitmq.dto.FetchBookDetailsCommandDto;
 import net.patrykdobrowolski.bookscanner.service.FetchBookForScanService;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
@@ -21,9 +22,12 @@ public class FetchBookDetailsCommandListener {
     @RabbitHandler
     public void handleFetchBookDetailsCommand(FetchBookDetailsCommandDto command) {
         try {
-            fetchBookForScanService.fetchBookForScan(command.getScanId());
+            fetchBookForScanService.fetchBookForScan(command.getSessionId(), command.getScanId());
         } catch (ScanNotFoundException e) {
             log.error("Scan not found", e);
+            throw new AmqpRejectAndDontRequeueException(e.getMessage());
+        } catch (SessionNotFoundException e) {
+            log.error("Session not found", e);
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
         }
     }

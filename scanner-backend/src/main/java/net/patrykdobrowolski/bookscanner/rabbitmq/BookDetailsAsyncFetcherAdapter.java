@@ -3,11 +3,11 @@ package net.patrykdobrowolski.bookscanner.rabbitmq;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.patrykdobrowolski.bookscanner.domain.model.Scan;
+import net.patrykdobrowolski.bookscanner.domain.model.Session;
 import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsAsyncFetcherPort;
 import net.patrykdobrowolski.bookscanner.rabbitmq.dto.FetchBookDetailsCommandDto;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-
-import java.util.UUID;
 
 @Named
 @RequiredArgsConstructor
@@ -17,13 +17,13 @@ public class BookDetailsAsyncFetcherAdapter implements BookDetailsAsyncFetcherPo
     private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public void fetchBookDetails(UUID scanId) {
+    public void fetchBookDetails(Session session, Scan scan) {
 
-        FetchBookDetailsCommandDto command = FetchBookDetailsCommandDto.forScan(scanId);
+        FetchBookDetailsCommandDto command = FetchBookDetailsCommandDto.forScan(session.getId(), scan.getId());
         rabbitTemplate.convertAndSend(
                 RabbitMqConfig.EXCHANGE_NAME,
                 RabbitMqConfig.ROUTING_KEY,
                 command);
-        log.info("Sent command to fetch book details for ScanId {}", scanId);
+        log.info("Sent command to fetch book details for ScanId {}", scan.getId());
     }
 }

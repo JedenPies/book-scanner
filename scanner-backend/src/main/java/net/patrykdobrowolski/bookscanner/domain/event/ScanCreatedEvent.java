@@ -2,17 +2,17 @@ package net.patrykdobrowolski.bookscanner.domain.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.UUID;
+import net.patrykdobrowolski.bookscanner.domain.model.Scan;
+import net.patrykdobrowolski.bookscanner.domain.model.Session;
 
 @RequiredArgsConstructor
 @Getter
 public class ScanCreatedEvent extends BusinessEvent {
 
-    private final UUID sessionId;
-    private final UUID scanId;
+    private final Session session;
+    private final Scan scan;
 
-    public static ScanCreatedEvent of(UUID sessionId, UUID scanId) {
-        return new ScanCreatedEvent(sessionId, scanId);
+    public static ScanCreatedEvent of(Session session, Scan scan) {
+        return new ScanCreatedEvent(session, scan);
     }
 }

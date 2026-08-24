@@ -10,9 +10,10 @@ import java.util.UUID;
 @Builder @Getter
 public class FetchBookDetailsCommandDto {
 
+    private UUID sessionId;
     private UUID scanId;
 
-    public static FetchBookDetailsCommandDto forScan(UUID scanId) {
-        return new FetchBookDetailsCommandDto(scanId);
+    public static FetchBookDetailsCommandDto forScan(UUID sessionId, UUID scanId) {
+        return new FetchBookDetailsCommandDto(sessionId, scanId);
     }
 }

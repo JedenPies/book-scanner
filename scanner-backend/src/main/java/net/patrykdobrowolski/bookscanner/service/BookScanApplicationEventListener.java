@@ -14,6 +14,6 @@ public class BookScanApplicationEventListener {
 
     @TransactionalEventListener
     public void onScanCreated(ScanCreatedEvent event) {
-        bookDetailsFetcher.fetchBookDetails(event.getScanId());
+        bookDetailsFetcher.fetchBookDetails(event.getSession(), event.getScan());
     }
 }

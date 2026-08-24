@@ -22,7 +22,7 @@ public class BookEntity {
     @Column(nullable = false)
     private String isbn;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id")
     private List<BookRawEntity> bookRaws;
 }

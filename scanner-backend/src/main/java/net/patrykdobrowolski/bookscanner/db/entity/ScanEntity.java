@@ -21,10 +21,9 @@ import java.util.UUID;
 public class ScanEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "session_id", nullable = false)
     private UUID sessionId;
 
     @Enumerated(EnumType.STRING)

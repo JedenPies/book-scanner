@@ -23,15 +23,13 @@ public class BookRaw {
         this.fetchResult = fetchResult;
     }
 
+    public void update(BookFetchResult result) {
+        this.value = result.getValue();
+        this.fetchResult = result.getFetchResult();
+        this.modifiedAt = Instant.now();
+    }
+
     public static BookRaw from(String rawResult) {
         return new BookRaw(rawResult, FetchResult.SUCCESS);
-    }
-
-    public static BookRaw failure() {
-        return new BookRaw(null, FetchResult.FAILURE);
-    }
-
-    public static BookRaw notFound() {
-        return new BookRaw(null, FetchResult.NOT_FOUND);
     }
 }

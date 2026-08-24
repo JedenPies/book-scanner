@@ -1,8 +1,6 @@
 package net.patrykdobrowolski.bookscanner.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -18,12 +16,16 @@ public class Scan {
 
     private BookDetails bookDetails;
     private Instant modifiedAt;
+    private Instant createdAt;
     private Modifier modifiedBy;
 
-    public Scan(UUID sessionId, ISBN isbn) {
-        this.sessionId = sessionId;
-        this.status = ScanStatus.PENDING;
-        this.isbn = isbn;
+    static Scan createNew(ISBN isbn, UUID sessionId) {
+        return Scan.builder()
+                .id(UUID.randomUUID())
+                .sessionId(sessionId)
+                .createdAt(Instant.now())
+                .status(ScanStatus.PENDING)
+                .isbn(isbn).build();
     }
 
     public void markFetching() {

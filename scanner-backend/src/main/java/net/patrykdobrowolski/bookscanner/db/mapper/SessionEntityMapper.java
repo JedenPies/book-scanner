@@ -4,7 +4,7 @@ import net.patrykdobrowolski.bookscanner.db.entity.SessionEntity;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { ISBNMapper.class })
 public interface SessionEntityMapper {
 
     SessionEntity toEntity(Session entity);

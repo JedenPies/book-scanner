@@ -1,8 +1,9 @@
 package net.patrykdobrowolski.bookscanner.domain.port;
 
-import java.util.UUID;
+import net.patrykdobrowolski.bookscanner.domain.model.Scan;
+import net.patrykdobrowolski.bookscanner.domain.model.Session;
 
 public interface BookDetailsAsyncFetcherPort {
 
-    void fetchBookDetails(UUID scanId);
+    void fetchBookDetails(Session session, Scan scan);
 }

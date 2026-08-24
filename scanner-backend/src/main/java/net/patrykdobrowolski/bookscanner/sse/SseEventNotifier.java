@@ -18,14 +18,14 @@ public class SseEventNotifier {
 
     @EventListener
     public void handleScanRequestedEvent(ScanCreatedEvent event) {
-        log.debug("Sending SCAN_REQUESTED event to all connected clients");
-        sseSessionService.broadcastToSession(event.getSessionId(), "SCAN_REQUESTED", eventsMapper.toDto(event));
+        log.debug("Sending SCAN_CREATED event to all connected clients");
+        sseSessionService.broadcastToSession(event.getSession().getId(), "SCAN_CREATED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener
     public void handleScanUpdatedEvent(ScanUpdatedEvent event) {
         log.debug("Sending SCAN_UPDATED event");
-        sseSessionService.broadcastToSession(event.getScan().getSessionId(), "SCAN_UPDATED", eventsMapper.toDto(event));
+        sseSessionService.broadcastToSession(event.getSession().getId(), "SCAN_UPDATED", eventsMapper.toSseEvent(event));
 
     }
 }

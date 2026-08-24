@@ -1,14 +1,12 @@
 package net.patrykdobrowolski.bookscanner.fetcher;
 
 import jakarta.inject.Named;
-import jakarta.transaction.Transactional;
-import net.patrykdobrowolski.bookscanner.domain.exception.CannotFetchBookException;
 import net.patrykdobrowolski.bookscanner.domain.model.Book;
+import net.patrykdobrowolski.bookscanner.domain.model.BookFetchResult;
 import net.patrykdobrowolski.bookscanner.domain.model.BookRaw;
 import net.patrykdobrowolski.bookscanner.domain.model.ISBN;
 import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsFetcherPort;
 import net.patrykdobrowolski.bookscanner.domain.port.BookRepositoryPort;
-import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
@@ -30,37 +28,28 @@ public class BookDetailsFetcherAdapter implements BookDetailsFetcherPort {
     }
 
     @Override
-    @Transactional
-    public Book fetchBookDetails(ISBN isbn) throws CannotFetchBookException {
-        Book book = bookRepository.findByISBN(isbn).orElseGet(() -> fetchAndCreate(isbn));
-        if (book == null) throw new CannotFetchBookException();
+    public Book fetchBookDetails(ISBN isbn) {
+        Book book = bookRepository.findByISBN(isbn).orElseGet(() -> createEmpty(isbn));
+        List<CompletableFuture<Void>> futures = book.getNewOrFailedRaws().stream()
+                .map(bookRaw -> CompletableFuture.runAsync(() -> fetch(bookRaw, isbn), apiFetchExecutor))
+                .toList();
+        CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
+        bookRepository.save(book);
         return book;
     }
 
-    private @Nullable Book fetchAndCreate(ISBN isbn) {
-        List<BookRaw> bookRawsFromAdapters = bookDetailsFromAdapters(isbn);
-        if (!bookRawsFromAdapters.isEmpty()) {
-            Book book = Book.from(isbn);
-            book.addRaws(bookRawsFromAdapters);
-            return bookRepository.save(book);
+    private Book createEmpty(ISBN isbn) {
+        Book book = Book.from(isbn);
+        for (BookFetchProvider provider : providers) {
+            String key = provider.getKey();
+            book.addEmptyRaw(key);
         }
-        return null;
+        return book;
     }
 
-    private List<BookRaw> bookDetailsFromAdapters(ISBN isbn) {
-        List<CompletableFuture<BookRaw>> futures = providers.stream()
-                .map(provider -> fetchWithProvider(provider, isbn))
-                .toList();
-        return futures.stream()
-                .map(CompletableFuture::join)
-                .toList();
-    }
-
-    private CompletableFuture<BookRaw> fetchWithProvider(BookFetchProvider provider, ISBN isbn) {
-        return CompletableFuture.supplyAsync(() -> fetch(provider, isbn).withSource(provider.getKey()), apiFetchExecutor);
-    }
-
-    private BookRaw fetch(BookFetchProvider provider, ISBN isbn) {
-        return provider.fetchBookRaw(isbn); //.map(bookRaw -> bookRaw.withSource(provider.getKey()));
+    private void fetch(BookRaw bookRaw, ISBN isbn) {
+        BookFetchProvider pro = providers.stream().filter(p -> p.getKey().equals(bookRaw.getSource())).findFirst().orElseThrow();
+        BookFetchResult bookFetchResult = pro.fetchBookRaw(isbn);
+        bookRaw.update(bookFetchResult);
     }
 }
