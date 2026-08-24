@@ -58,6 +58,9 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+            "allowedHosts": [ "bs.lan", "bs.patrykdobrowolski.net" ]
+          },
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
