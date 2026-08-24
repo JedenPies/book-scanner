@@ -1,0 +1,5 @@
+<ul>
+@for (scan of scans(); track scan.id) {
+  <li>{{ scan.isbn }} | {{ scan.status }} | {{ scan.bookDetails?.title }} | {{ scan.bookDetails?.subtitle }} | {{ scan.bookDetails?.authors }} | {{ scan.bookDetails?.source }}</li>
+}
+</ul>

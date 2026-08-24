@@ -1,0 +1,28 @@
+<!--@if (showScanView()) {-->
+  <!-- Widok Mobilny -->
+  <div class="mobile-view">
+    <div class="start-screen">
+      <h1>Skaner Książek</h1>
+      <button class="btn-scan" (click)="startSession()">Skanuj</button>
+    </div>
+  </div>
+<!--} @else {-->
+  <!-- Widok Desktopowy -->
+  <div class="desktop-view">
+    <h1>Panel Sesji Skanowania</h1>
+    <div class="code-form">
+      <label for="shareCodeInput">Wprowadź 6-cyfrowy kod sesji:</label>
+      <input
+        id="shareCodeInput"
+        type="text"
+        maxlength="6"
+        [(ngModel)]="shareCode"
+        placeholder="np. 123456"
+      />
+      <button (click)="joinByShareCode()" [disabled]="shareCode().length !== 6">
+<!--      <button [disabled]="shareCode().length !== 6">-->
+        Dołącz do sesji
+      </button>
+    </div>
+  </div>
+<!--}-->

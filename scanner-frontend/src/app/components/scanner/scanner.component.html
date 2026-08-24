@@ -1,0 +1,44 @@
+<div class="scanner-container">
+  <h2>Skaner ISBN 📚</h2>
+
+  @if (hasDevices) {
+    <select class="camera-select" (change)="onDeviceSelectChange($event)">
+      <option value="" [selected]="!currentDevice">Domyślna kamera</option>
+      @for (device of availableDevices; track device.deviceId) {
+        <option [value]="device.deviceId"
+                [selected]="currentDevice && device.deviceId === currentDevice.deviceId">
+          {{ device.label || 'Kamera bez nazwy' }}
+        </option>
+      }
+    </select>
+  }
+
+  @if (!hasDevices && hasPermission === false) {
+    <div style="color: red; margin: 15px;">
+      Brak uprawnień do kamery lub brak dostępnych urządzeń.
+    </div>
+  }
+
+  <zxing-scanner
+    [formats]="allowedFormats"
+    [device]="currentDevice"
+    (camerasFound)="onCamerasFound($event)"
+    (permissionResponse)="onHasPermission($event)"
+    (scanSuccess)="onCodeResult($event)">
+  </zxing-scanner>
+
+  @if (scannedCodes.length > 0) {
+    <div class="results">
+      <h3>Zeskanowane:</h3>
+      @for (code of scannedCodes; track $index) {
+        <span class="isbn-badge">
+          {{ code }}
+        </span>
+      }
+    </div>
+  }
+
+  <p>Kod sesji: {{currentShareCode()}} </p>
+  <button (click)="onGenerateShareCodeClicked()">Generuj kod</button>
+
+</div>
