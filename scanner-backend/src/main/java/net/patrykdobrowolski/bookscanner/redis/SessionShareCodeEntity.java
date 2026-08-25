@@ -12,7 +12,7 @@ import org.springframework.data.redis.core.index.Indexed;
 
 import java.util.UUID;
 
-@RedisHash(value = "session-share-code", timeToLive = 600)
+@RedisHash(value = "session-share-code", timeToLive = 300)
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Builder
 public class SessionShareCodeEntity {

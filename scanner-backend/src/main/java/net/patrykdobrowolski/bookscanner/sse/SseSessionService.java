@@ -24,7 +24,7 @@ public class SseSessionService {
     public SseEmitter createConnection(UUID sessionId) throws SessionNotFoundException {
         log.debug("Creating SSE connection for session: {}", sessionId);
         sessionService.ensureSessionExists(sessionId);
-        SseEmitter emitter = new SseEmitter(300_000L);
+        SseEmitter emitter = new SseEmitter(-1L);
         this.emitters.computeIfAbsent(sessionId, k -> Collections.synchronizedList(new ArrayList<>())).add(emitter);
 
         emitter.onCompletion(() -> removeEmitter(sessionId, emitter));

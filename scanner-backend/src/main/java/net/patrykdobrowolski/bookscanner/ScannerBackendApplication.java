@@ -8,16 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableJpaAuditing
 @EnableFeignClients
+@EnableScheduling
 public class ScannerBackendApplication {
-
-    public String getGreeting() {
-        return "Hello World!";
-    }
 
     static void main(String[] args) {
         SpringApplication.run(ScannerBackendApplication.class, args);
