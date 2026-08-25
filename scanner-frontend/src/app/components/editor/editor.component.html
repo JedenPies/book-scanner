@@ -1,5 +1,7 @@
-<div class="table-container">
-  <table class="scan-table">
+<div class="table-wrapper">
+
+  <div class="table-container" #scrollContainer (scroll)="onScroll()">
+    <table class="scan-table">
     <thead>
     <tr>
       <th>ISBN</th>
@@ -52,7 +54,15 @@
           </td>
         </tr>
       }
-    </tbody>
-  </table>
-</div>
+    </table>
+  </div>
 
+  @if (showScrollUp()) {
+    <div class="scroll-indicator indicator-up" (click)="scrollToTop()" title="Przewiń na samą górę"></div>
+  }
+
+  @if (showScrollDown()) {
+    <div class="scroll-indicator indicator-down" (click)="scrollToBottom()" title="Przewiń w dół"></div>
+  }
+
+</div>

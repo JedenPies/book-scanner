@@ -1,12 +1,4 @@
-import {
-  Component,
-  computed,
-  ElementRef,
-  inject,
-  QueryList,
-  signal,
-  ViewChildren,
-} from '@angular/core';
+import { Component, ElementRef, inject, QueryList, signal, ViewChildren } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ScannerBackendService } from '../../services/scanner-backend.service';
 import { Router } from '@angular/router';
@@ -27,9 +19,6 @@ export class EntryComponent {
   toasts = inject(ToastService);
 
   shareCodeDigits = signal<string[]>(['', '', '', '', '', '']);
-  shareCode = signal<string>('');
-
-  isCodeComplete = computed(() => this.shareCodeDigits().join('').length === 6);
 
   onInput(event: Event, index: number) {
     const input = event.target as HTMLInputElement;
@@ -76,7 +65,11 @@ export class EntryComponent {
         return [...digits];
       });
       const nextIndex = Math.min(pasteData.length, 5);
-      this.focusInput(nextIndex);
+      if (nextIndex < 5) {
+        this.focusInput(nextIndex);
+      } else {
+        this.joinByShareCode();
+      }
     }
   }
 
@@ -99,7 +92,6 @@ export class EntryComponent {
   }
 
   joinByShareCode() {
-
     const shareCode = this.shareCodeDigits().join('');
     if (shareCode) {
       this.scannerService.retrieveSessionIdByShareCode(shareCode).subscribe({

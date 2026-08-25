@@ -1,6 +1,4 @@
 <div class="scanner-wrapper">
-
-  <!-- Wybór kamery (opcjonalny, zostawiamy jeśli potrzebujesz przełączać przód/tył) -->
   @if (hasDevices) {
     <div class="camera-controls">
       <select class="camera-select" (change)="onDeviceSelectChange($event)">
@@ -21,7 +19,6 @@
     </div>
   }
 
-  <!-- Sztywny kontener, który NIGDY nie zmieni rozmiaru -->
   <div class="viewport-container">
     <zxing-scanner
       [formats]="allowedFormats"
@@ -31,25 +28,16 @@
       (scanSuccess)="onCodeResult($event)">
     </zxing-scanner>
 
-    <!-- Opcjonalny celownik (wizualny dodatek) -->
     <div class="scan-overlay">
       <div class="scan-frame"></div>
     </div>
   </div>
 
-  <!-- Sekcja Share Code -->
   <div class="share-section">
-    @if (!currentShareCode()) {
-      <button class="btn-generate" (click)="generateShareCode()"> <!-- Podmień na swoją metodę z TS -->
-        <span>🔗</span> Wygeneruj kod sesji
-      </button>
-    } @else {
-      <div class="share-code-card">
-        <span class="label">Kod podglądu na desktopie:</span>
-        <span class="code">{{ currentShareCode() }}</span>
-        <span class="timer">Ważny 10 minut</span>
-      </div>
-    }
+    <div class="share-code-card">
+      <span class="label">Kod podglądu na desktopie:</span>
+      <span class="code">{{ currentShareCode() }}</span>
+    </div>
   </div>
 
 </div>

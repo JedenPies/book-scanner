@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, ElementRef, inject, input, signal, ViewChild } from '@angular/core';
 import {
   ScanCreatedSseEvent,
   ScanDto, ScanUpdatedSseEvent,
@@ -13,8 +13,12 @@ import { LowerCasePipe } from '@angular/common';
   styleUrl: './editor.component.scss',
 })
 export class EditorComponent {
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
+
   sessionId = input.required<string>();
   scans = signal<ScanDto[]>([]);
+  showScrollDown = signal<boolean>(false);
+  showScrollUp = signal<boolean>(false);
 
   backendService = inject(ScannerBackendService);
 
@@ -74,5 +78,34 @@ export class EditorComponent {
     this.eventSource.onerror = (error) => {
       console.error('EventSource failed:', error);
     };
+  }
+
+  onScroll() {
+    this.checkScroll();
+  }
+
+  checkScroll() {
+    if (!this.scrollContainer) return;
+    const { scrollTop, scrollHeight, clientHeight } = this.scrollContainer.nativeElement;
+    const hasMoreToScroll =
+      scrollHeight > clientHeight && scrollHeight - scrollTop - clientHeight > 10;
+    this.showScrollDown.set(hasMoreToScroll);
+    this.showScrollUp.set(scrollTop > 20);
+  }
+
+  scrollToBottom() {
+    if (!this.scrollContainer) return;
+    this.scrollContainer.nativeElement.scrollTo({
+      top: this.scrollContainer.nativeElement.scrollHeight,
+      behavior: 'smooth',
+    });
+  }
+
+  scrollToTop() {
+    if (!this.scrollContainer) return;
+    this.scrollContainer.nativeElement.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+    });
   }
 }

@@ -18,8 +18,7 @@ export class ScannerComponent {
   ];
 
   sessionId = input.required<string>();
-
-  currentShareCode = signal<string|null>(null);
+  currentShareCode = signal<string | null>(null);
 
   backendService = inject(ScannerBackendService);
 
@@ -31,12 +30,17 @@ export class ScannerComponent {
   scannedCodes: string[] = [];
   lastScannedCode: string = '';
 
+  ngOnInit() {
+    this.generateShareCode();
+  }
+
   generateShareCode() {
     this.backendService.generateShareCode(this.sessionId()).subscribe({
       next: (result) => {
         this.currentShareCode.set(result.code);
-      }
-    })
+        setTimeout(() => this.generateShareCode(), 300000);
+      },
+    });
   }
 
   // Wywoływane, gdy Zxing po starcie wykryje dostępne obiektywy
@@ -75,8 +79,8 @@ export class ScannerComponent {
 
       this.backendService.notifyScanResult(this.sessionId(), resultString).subscribe({
         next: (result) => {
-          console.log(result.status)
-        }
+          console.log(result.status);
+        },
       });
 
       setTimeout(() => {
