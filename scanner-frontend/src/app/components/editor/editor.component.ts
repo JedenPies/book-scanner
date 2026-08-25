@@ -60,7 +60,6 @@ export class EditorComponent {
     if (!sessionId) return;
     this.eventSource = new EventSource(`/api/sessions/${sessionId}/events-stream`);
     this.eventSource.addEventListener('SCAN_CREATED', (event: MessageEvent) => {
-      console.log('scan created:');
       const eventDto: ScanCreatedSseEvent = JSON.parse(event.data);
       const newScan = eventDto.scan;
       this.scans.update((currentScans) => [newScan, ...currentScans]);
@@ -68,7 +67,6 @@ export class EditorComponent {
     this.eventSource.addEventListener('SCAN_UPDATED', (event: MessageEvent) => {
       const eventDto: ScanUpdatedSseEvent = JSON.parse(event.data);
       const updatedScan = eventDto.scan;
-      console.log('scan updated:', updatedScan);
       this.scans.update((currentScans) =>
         currentScans.map((scan) => (scan.id === updatedScan.id ? updatedScan : scan)),
       );

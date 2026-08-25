@@ -31,7 +31,7 @@ export class ScannerComponent {
   scannedCodes: string[] = [];
   lastScannedCode: string = '';
 
-  onGenerateShareCodeClicked() {
+  generateShareCode() {
     this.backendService.generateShareCode(this.sessionId()).subscribe({
       next: (result) => {
         this.currentShareCode.set(result.code);

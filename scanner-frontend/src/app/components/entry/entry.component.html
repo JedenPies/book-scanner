@@ -1,28 +1,43 @@
-<!--@if (showScanView()) {-->
-  <!-- Widok Mobilny -->
-  <div class="mobile-view">
-    <div class="start-screen">
-      <h1>Skaner Książek</h1>
-      <button class="btn-scan" (click)="startSession()">Skanuj</button>
-    </div>
-  </div>
-<!--} @else {-->
-  <!-- Widok Desktopowy -->
-  <div class="desktop-view">
-    <h1>Panel Sesji Skanowania</h1>
-    <div class="code-form">
-      <label for="shareCodeInput">Wprowadź 6-cyfrowy kod sesji:</label>
-      <input
-        id="shareCodeInput"
-        type="text"
-        maxlength="6"
-        [(ngModel)]="shareCode"
-        placeholder="np. 123456"
-      />
-      <button (click)="joinByShareCode()" [disabled]="shareCode().length !== 6">
-<!--      <button [disabled]="shareCode().length !== 6">-->
-        Dołącz do sesji
+<div class="entry-container">
+  <div class="cards-wrapper">
+
+    <div class="action-card scan-card">
+      <div class="card-icon">📱</div>
+      <h2>Rozpocznij skanowanie</h2>
+      <p>Utwórz nową sesję, aby zacząć skanować kody ISBN za pomocą aparatu telefonu.</p>
+
+      <button class="btn-scan" (click)="startSession()">
+        Skanuj książki
       </button>
     </div>
+
+    <div class="divider">
+      <span>LUB</span>
+    </div>
+
+    <div class="action-card code-card">
+      <div class="card-icon">💻</div>
+      <h2>Podłącz pulpit</h2>
+      <p>Wprowadź 6-znakowy kod z aplikacji na telefonie, aby podglądać sesję.</p>
+
+      <div class="inputs-container">
+        @for (digit of shareCodeDigits(); track $index) {
+          <input
+            #codeInput
+            type="text"
+            inputmode="text"
+            maxlength="1"
+            [value]="digit"
+            (input)="onInput($event, $index)"
+            (keydown)="onKeyDown($event, $index)"
+            (paste)="onPaste($event)"
+            class="code-input"
+            placeholder="-"
+          />
+        }
+      </div>
+
+    </div>
+
   </div>
-<!--}-->
+</div>

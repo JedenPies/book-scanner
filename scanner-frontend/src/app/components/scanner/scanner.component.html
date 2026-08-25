@@ -1,44 +1,55 @@
-<div class="scanner-container">
-  <h2>Skaner ISBN 📚</h2>
+<div class="scanner-wrapper">
 
+  <!-- Wybór kamery (opcjonalny, zostawiamy jeśli potrzebujesz przełączać przód/tył) -->
   @if (hasDevices) {
-    <select class="camera-select" (change)="onDeviceSelectChange($event)">
-      <option value="" [selected]="!currentDevice">Domyślna kamera</option>
-      @for (device of availableDevices; track device.deviceId) {
-        <option [value]="device.deviceId"
-                [selected]="currentDevice && device.deviceId === currentDevice.deviceId">
-          {{ device.label || 'Kamera bez nazwy' }}
-        </option>
-      }
-    </select>
+    <div class="camera-controls">
+      <select class="camera-select" (change)="onDeviceSelectChange($event)">
+        <option value="" [selected]="!currentDevice">Domyślna kamera</option>
+        @for (device of availableDevices; track device.deviceId) {
+          <option [value]="device.deviceId"
+                  [selected]="currentDevice && device.deviceId === currentDevice.deviceId">
+            {{ device.label || 'Kamera bez nazwy' }}
+          </option>
+        }
+      </select>
+    </div>
   }
 
   @if (!hasDevices && hasPermission === false) {
-    <div style="color: red; margin: 15px;">
+    <div class="error-msg">
       Brak uprawnień do kamery lub brak dostępnych urządzeń.
     </div>
   }
 
-  <zxing-scanner
-    [formats]="allowedFormats"
-    [device]="currentDevice"
-    (camerasFound)="onCamerasFound($event)"
-    (permissionResponse)="onHasPermission($event)"
-    (scanSuccess)="onCodeResult($event)">
-  </zxing-scanner>
+  <!-- Sztywny kontener, który NIGDY nie zmieni rozmiaru -->
+  <div class="viewport-container">
+    <zxing-scanner
+      [formats]="allowedFormats"
+      [device]="currentDevice"
+      (camerasFound)="onCamerasFound($event)"
+      (permissionResponse)="onHasPermission($event)"
+      (scanSuccess)="onCodeResult($event)">
+    </zxing-scanner>
 
-  @if (scannedCodes.length > 0) {
-    <div class="results">
-      <h3>Zeskanowane:</h3>
-      @for (code of scannedCodes; track $index) {
-        <span class="isbn-badge">
-          {{ code }}
-        </span>
-      }
+    <!-- Opcjonalny celownik (wizualny dodatek) -->
+    <div class="scan-overlay">
+      <div class="scan-frame"></div>
     </div>
-  }
+  </div>
 
-  <p>Kod sesji: {{currentShareCode()}} </p>
-  <button (click)="onGenerateShareCodeClicked()">Generuj kod</button>
+  <!-- Sekcja Share Code -->
+  <div class="share-section">
+    @if (!currentShareCode()) {
+      <button class="btn-generate" (click)="generateShareCode()"> <!-- Podmień na swoją metodę z TS -->
+        <span>🔗</span> Wygeneruj kod sesji
+      </button>
+    } @else {
+      <div class="share-code-card">
+        <span class="label">Kod podglądu na desktopie:</span>
+        <span class="code">{{ currentShareCode() }}</span>
+        <span class="timer">Ważny 10 minut</span>
+      </div>
+    }
+  </div>
 
 </div>
