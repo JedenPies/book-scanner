@@ -1,6 +1,12 @@
 import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ScanDto, SessionDto, ShareCodeDto } from '../models/backend.model';
+import {
+  ExportDto,
+  ExportFormat,
+  ScanDto,
+  SessionDto,
+  ShareCodeDto,
+} from '../models/backend.model';
 
 @Service()
 export class ScannerBackendService {
@@ -35,5 +41,13 @@ export class ScannerBackendService {
 
   deleteScan(sessionId: string, scanId: string) {
     return this.http.delete<void>(`${this.apiScannerUrl}/${sessionId}/scans/${scanId}`);
+  }
+
+  loadExport(sessionId: string) {
+    return this.http.get<ExportDto>(`${this.apiScannerUrl}/${sessionId}/export`);
+  }
+
+  requestExport(sessionId: string, format: ExportFormat) {
+    return this.http.put<ExportDto>(`${this.apiScannerUrl}/${sessionId}/export-request`, { format });
   }
 }

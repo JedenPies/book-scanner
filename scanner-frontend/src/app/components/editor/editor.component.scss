@@ -1,3 +1,168 @@
+.session-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .session-badge {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    background: #e2e8f0;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .btn-copy {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: #e2e8f0;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+.export-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 6px; // Kanciasty, sprawdzony u nas design
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid rgba(0,0,0,0.05);
+
+  /* Kolory przejmą klasy z Twojego status-badge (status-pending, status-found, etc.) */
+
+  &.clickable {
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      /* Przyciemnienie koloru osiągniesz dodając filter lub konkretną logikę hover do kolorów */
+      filter: brightness(0.95);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .icon {
+    font-size: 1.1rem;
+  }
+}
+
+.editor-header {
+  max-width: 1900px;
+  margin: 1.5rem auto 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* Odstęp między odznaką statusu a przyciskiem "Eksportuj" */
+  }
+
+  .btn-export {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, transform 0.1s;
+
+    &:hover:not(:disabled) {
+      background-color: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    /* NOWE: Styl dla wyszarzonego, zablokowanego przycisku */
+    &:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  }
+
+  .header-titles {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    h2 {
+      margin: 0;
+      color: #0f172a;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .session-badge {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      background: #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: #475569;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+  }
+
+  .btn-export {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, transform 0.1s;
+
+    &:hover {
+      background-color: #2563eb;
+      transform: translateY(-1px);
+    }
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
 .table-wrapper {
   position: relative;
   max-width: 1900px;
@@ -394,3 +559,117 @@ td.actions {
   text-align: center;
 }
 
+/* --- MODAL EKSPORTU --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  max-width: 450px;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.2s ease-out;
+
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.3rem;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 0 0 24px 0;
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  .export-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: scale(1.02);
+    }
+
+    .icon {
+      font-size: 2rem;
+    }
+
+    .details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      strong {
+        color: #0f172a;
+        font-size: 1.05rem;
+      }
+      span {
+        color: #64748b;
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  .btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #e2e8f0;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

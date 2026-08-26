@@ -1,5 +1,8 @@
-import { Component, ElementRef, inject, input, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, signal, ViewChild } from '@angular/core';
 import {
+  ExportCompleteSseEvent,
+  ExportDto,
+  ExportFormat,
   ScanCreatedSseEvent,
   ScanDeletedSseEvent,
   ScanDto,
@@ -8,6 +11,7 @@ import {
 import { ScannerBackendService } from '../../services/scanner-backend.service';
 import { LowerCasePipe } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
+import { ClipboardService } from '../../services/clipboard.service';
 
 export interface ScanToDelete {
   scanId: string;
@@ -24,24 +28,104 @@ export class EditorComponent {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
 
   sessionId = input.required<string>();
+
+  currentExport = signal<ExportDto | null>(null);
   scans = signal<ScanDto[]>([]);
   scansToDelete = signal<ScanToDelete[]>([]);
   showScrollDown = signal<boolean>(false);
   showScrollUp = signal<boolean>(false);
+  isExportModalOpen = signal<boolean>(false);
+
+  exportState = computed(() => { return this.computedExportState() });
+  isExportProcessing = computed(() => {
+    const status = this.currentExport()?.status;
+    return status === 'REQUESTED' || status === 'PROCESSING';
+  });
 
   backendService = inject(ScannerBackendService);
   toastService = inject(ToastService);
+  clipboardService = inject(ClipboardService);
 
   private eventSource?: EventSource;
 
   ngOnInit() {
-    this.loadScans();
+    this.loadScansAndExport();
     this.initSseStream();
   }
 
   ngOnDestroy() {
     if (this.eventSource) {
       this.eventSource.close();
+    }
+  }
+
+  copyUrlToClipboard() {
+    const currentUrl = window.location.href;
+    this.clipboardService.copyToClipboard(currentUrl);
+  }
+
+  private computedExportState() {
+    const exp = this.currentExport();
+
+    // Brak eksportu
+    if (!exp) return null;
+
+    // W zależności od statusu zwracamy odpowiedni widok
+    switch (exp.status) {
+      case 'REQUESTED':
+      case 'PROCESSING':
+        return {
+          icon: '', // Spinner załatwimy klasą CSS (jak w tabeli)
+          text: `Przygotowuję plik ${exp.format}...`,
+          cssClass: 'status-pending', // Klasy wzięte z Twoich odznak
+          showSpinner: true,
+          isClickable: false
+        };
+      case 'SUCCEED':
+        return {
+          icon: '📥',
+          text: `Pobierz gotowy plik ${exp.format}`,
+          cssClass: 'status-found', // Użyjemy zielonej klasy dla sukcesu
+          showSpinner: false,
+          isClickable: true
+        };
+      case 'FAILED':
+        return {
+          icon: '❌',
+          text: `Błąd eksportu ${exp.format}. Spróbuj ponownie.`,
+          cssClass: 'status-failed', // Czerwona klasa
+          showSpinner: false,
+          isClickable: false
+        };
+      default:
+        return null;
+    }
+  }
+
+  openExportModal() {
+    this.isExportModalOpen.set(true);
+  }
+
+  closeExportModal() {
+    this.isExportModalOpen.set(false);
+  }
+
+  requestExport(exportFormat: string) {
+    const format = exportFormat as ExportFormat;
+    this.currentExport.set(null);
+    this.backendService.requestExport(this.sessionId(), format).subscribe({
+      next: (result) => {
+        this.currentExport.set(result);
+      },
+    });
+    this.closeExportModal();
+    this.toastService.show(`Export request sent. Please wait.`)
+  }
+
+  downloadExport() {
+    const exp = this.currentExport();
+    if (exp && exp.status === 'SUCCEED') {
+      window.open(`/api/sessions/${this.sessionId()}/export/data`);
     }
   }
 
@@ -53,7 +137,7 @@ export class EditorComponent {
   }
 
   isIntendedToDelete(scanId: string) {
-    return this.scansToDelete().some(scanToDelete => scanToDelete.scanId === scanId);
+    return this.scansToDelete().some((scanToDelete) => scanToDelete.scanId === scanId);
   }
 
   cancelDelete(scanId: string) {
@@ -65,22 +149,23 @@ export class EditorComponent {
     this.clearTimeoutAndRemoveFromDeleteList(scanId);
     this.backendService.deleteScan(this.sessionId(), scanId).subscribe({
       error: (err) => {
-        this.toastService.show("Cannot delete scan.", "error", 10000);
-        console.error("Cannot delete scan. ", err);
-      }
+        this.toastService.show('Cannot delete scan.', 'error', 10000);
+        console.error('Cannot delete scan. ', err);
+      },
     });
   }
 
   private clearTimeoutAndRemoveFromDeleteList(scanId: string) {
-    const foundScanToDelete = this.scansToDelete().find(element => element.scanId === scanId);
+    const foundScanToDelete = this.scansToDelete().find((element) => element.scanId === scanId);
     if (foundScanToDelete && foundScanToDelete.timeoutHandler) {
       clearTimeout(foundScanToDelete.timeoutHandler);
     }
-    this.scansToDelete.update(
-      (current) => current.filter((scanToDelete) => scanToDelete.scanId !== scanId));
+    this.scansToDelete.update((current) =>
+      current.filter((scanToDelete) => scanToDelete.scanId !== scanId),
+    );
   }
 
-  private loadScans() {
+  private loadScansAndExport() {
     const sessionId = this.sessionId();
     if (sessionId) {
       this.backendService.retrieveAllScans(sessionId).subscribe({
@@ -91,6 +176,11 @@ export class EditorComponent {
           this.scans.set(sortedScans);
         },
       });
+      this.backendService.loadExport(sessionId).subscribe(({
+        next: (result) => {
+          this.currentExport.set(result);
+        }
+      }))
     }
   }
 
@@ -123,11 +213,19 @@ export class EditorComponent {
     this.eventSource.addEventListener('SCAN_DELETED', (event: MessageEvent) => {
       const eventDto: ScanDeletedSseEvent = JSON.parse(event.data);
       const updatedScan = eventDto.scan;
-      this.scans.update((currentScans) => currentScans.filter((scan) => scan.id !== updatedScan.id));
+      this.scans.update((currentScans) =>
+        currentScans.filter((scan) => scan.id !== updatedScan.id),
+      );
       this.toastService.show(
         `Deleted ${updatedScan.bookDetails?.title || 'ISBN: ' + updatedScan.isbn}`,
         'info',
       );
+    });
+    this.eventSource.addEventListener('EXPORT_COMPLETE', (event: MessageEvent) => {
+      const eventDto: ExportCompleteSseEvent = JSON.parse(event.data);
+      this.currentExport.set(eventDto.export);
+      this.toastService.show('Export ready!', 'success');
+
     });
     this.eventSource.onerror = (error) => {
       console.error('EventSource failed:', error);
@@ -158,8 +256,8 @@ export class EditorComponent {
   scrollToTop() {
     if (!this.scrollContainer) return;
     this.scrollContainer.nativeElement.scrollTo({
-        top: 0,
-        behavior: 'smooth',
+      top: 0,
+      behavior: 'smooth',
     });
   }
 }

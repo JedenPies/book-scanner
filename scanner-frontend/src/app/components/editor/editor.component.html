@@ -1,3 +1,45 @@
+<div class="editor-header">
+  <div class="header-titles">
+    <h2>Sesja Skanowania</h2>
+
+    <div class="session-badge-container">
+      <span class="session-badge">{{ sessionId() }}</span>
+      <button class="btn-copy" (click)="copyUrlToClipboard()" title="Kopiuj Adres Strony">
+        📋
+      </button>
+    </div>
+  </div>
+
+  <div class="header-actions">
+
+    <!-- Odznaka statusu (pokazuje się obok, jeśli mamy jakikolwiek eksport) -->
+    @if (exportState()) {
+      <div
+        class="export-status-badge {{ exportState()!.cssClass }}"
+        [class.clickable]="exportState()!.isClickable"
+        (click)="exportState()!.isClickable ? downloadExport() : null"
+      >
+        @if (exportState()!.showSpinner) {
+          <span class="spinner"></span>
+        } @else {
+          <span class="icon">{{ exportState()!.icon }}</span>
+        }
+        <span class="text">{{ exportState()!.text }}</span>
+      </div>
+    }
+
+    <!-- Zawsze widoczny przycisk Eksportu (wyszarzony podczas pracy) -->
+    <button
+      class="btn-export"
+      [disabled]="isExportProcessing()"
+      (click)="openExportModal()"
+    >
+      <span>📥</span> Eksportuj
+    </button>
+
+  </div>
+</div>
+
 <div class="table-wrapper">
 
   <div class="table-container" #scrollContainer (scroll)="onScroll()">
@@ -72,3 +114,34 @@
   }
 
 </div>
+
+@if (isExportModalOpen()) {
+  <div class="modal-backdrop" (click)="closeExportModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Wybierz format eksportu</h3>
+      <p>W jakim formacie chcesz pobrać listę zeskanowanych książek?</p>
+
+      <div class="export-options">
+        <button class="export-option-btn" (click)="requestExport('CSV')">
+          <span class="icon">📄</span>
+          <div class="details">
+            <strong>Plik CSV</strong>
+            <span>Zwykły tekst, idealny do systemów zewnętrznych</span>
+          </div>
+        </button>
+
+        <button class="export-option-btn" (click)="requestExport('XLSX')">
+          <span class="icon">📊</span>
+          <div class="details">
+            <strong>Microsoft Excel</strong>
+            <span>Sformatowana tabela gotowa do druku</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="closeExportModal()">Anuluj</button>
+      </div>
+    </div>
+  </div>
+}
