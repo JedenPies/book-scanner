@@ -2,20 +2,24 @@ spring:
   application:
     name: book-scanner-backend
   datasource:
-    url: jdbc:postgresql://${POSTGRES_BOOK_SCANNER_HOST:localhost}:${POSTGRES_BOOK_SCANNER_PORT:5432}/${POSTGRES_BOOK_SCANNER_DATABASE:book_scanner}
-    username: ${POSTGRES_BOOK_SCANNER_USERNAME:book_scanner}
+    url: jdbc:postgresql://${POSTGRES_BOOK_SCANNER_HOST}:${POSTGRES_BOOK_SCANNER_PORT}/${POSTGRES_BOOK_SCANNER_DATABASE}
+    username: ${POSTGRES_BOOK_SCANNER_USERNAME}
     password: ${POSTGRES_BOOK_SCANNER_PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     hibernate:
       ddl-auto: validate
+    open-in-view: false
   liquibase:
     enabled: true
     default-schema: public
+  data.redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
   rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
     listener:
@@ -34,10 +38,10 @@ spring:
 resilience4j:
   circuitbreaker:
     instances:
-      main:
-        slidingWindowSize: 10 # Analizuje 10 ostatnich zapytań
-        failureRateThreshold: 50 # Jeśli 50% z nich to błędy, otwórz obwód
-        waitDurationInOpenState: 60s # Po otwarciu odczekaj minutę zanim spróbujesz ponownie
+      google-books-api:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 60s
         recordExceptions:
           - feign.RetryableException
           - feign.FeignException.InternalServerError
@@ -47,6 +51,58 @@ resilience4j:
         ignoreExceptions:
           - feign.FeignException.NotFound
           - feign.FeignException.BadRequest
+      biblioteka-narodowa-api:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 60s
+        recordExceptions:
+          - feign.RetryableException
+          - feign.FeignException.InternalServerError
+          - feign.FeignException.BadGateway
+          - feign.FeignException.ServiceUnavailable
+          - java.lang.RuntimeException
+        ignoreExceptions:
+          - feign.FeignException.NotFound
+          - feign.FeignException.BadRequest
+      open-library-api:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 60s
+        recordExceptions:
+          - feign.RetryableException
+          - feign.FeignException.InternalServerError
+          - feign.FeignException.BadGateway
+          - feign.FeignException.ServiceUnavailable
+          - java.lang.RuntimeException
+        ignoreExceptions:
+          - feign.FeignException.NotFound
+          - feign.FeignException.BadRequest
+  ratelimiter:
+    instances:
+      google-books-api:
+        limitForPeriod: 2
+        limitRefreshPeriod: 1s
+        timeoutDuration: 2s
+  retry:
+    instances:
+      google-books-api:
+        maxAttempts: 3
+        waitDuration: 500
+        retryExceptions:
+          - feign.FeignException.ServiceUnavailable
+rabbitmq:
+  command-exchange: command-exchange
+  fetch-book-command-queue: fetch-book-command-queue
+  fetch-book-command-retry-queue: fetch-book-command-retry-queue
+  export-session-command-queue: export-session-command-queue
+api:
+  google-books:
+    url: "https://www.googleapis.com/books/v1"
+    api-key: ${GOOGLE_BOOKS_API_KEY:AIzaSyD2l4UXLWcj5PtwZxqWZW4zre9udIabs6Q}
+  open-library:
+    url: "https://openlibrary.org"
+  bn:
+    url: "https://data.bn.org.pl"
 
 management:
   endpoints:
@@ -55,19 +111,11 @@ management:
         include: "*"
   endpoint:
     health:
-      show-details: always
+      show-details: always # DEV ONLY
   health:
     circuitbreakers:
       enabled: true
 
-api:
-  google-books:
-    url: "https://www.googleapis.com/books/v1"
-    api-key: ${GOOGLE_BOOKS_API_KEY}
-  open-library:
-    url: "https://openlibrary.org"
-  bn:
-    url: "https://data.bn.org.pl"
 
 server:
   port: 8080

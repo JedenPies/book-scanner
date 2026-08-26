@@ -103,6 +103,7 @@ public class SessionService {
         return sessionRepository.save(session);
     }
 
+    @Transactional
     public Export findExport(UUID sessionId) throws SessionNotFoundException, ExportNotRequestedException {
         Session session = sessionRepository.findById(sessionId);
         Export export = session.getExport();
