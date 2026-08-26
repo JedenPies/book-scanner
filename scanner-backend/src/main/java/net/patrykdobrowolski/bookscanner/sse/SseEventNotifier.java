@@ -3,6 +3,7 @@ package net.patrykdobrowolski.bookscanner.sse;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.patrykdobrowolski.bookscanner.domain.event.ExportCompleteEvent;
 import net.patrykdobrowolski.bookscanner.domain.event.ScanCreatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.event.ScanDeletedEvent;
 import net.patrykdobrowolski.bookscanner.domain.event.ScanUpdatedEvent;
@@ -33,5 +34,11 @@ public class SseEventNotifier {
     public void handleScanDeletedEvent(ScanDeletedEvent event) {
         log.debug("Sending SCAN_DELETED event");
         sseSessionService.broadcastToSession(event.getSession().getId(), "SCAN_DELETED", eventsMapper.toSseEvent(event));
+    }
+
+    @EventListener
+    public void handleExportCompleteEvent(ExportCompleteEvent event) {
+        log.debug("Sending EXPORT_COMPLETE event");
+        sseSessionService.broadcastToSession(event.getSession().getId(), "EXPORT_COMPLETE", eventsMapper.toSseEvent(event));
     }
 }

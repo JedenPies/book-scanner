@@ -61,7 +61,7 @@ public class Session {
         this.export.begin();
     }
 
-    public void exportCompleted(byte[] data) throws ExportNotRequestedException {
+    public void exportSucceed(byte[] data) throws ExportNotRequestedException {
         ensureExportExists();
         this.export.exported(data);
     }

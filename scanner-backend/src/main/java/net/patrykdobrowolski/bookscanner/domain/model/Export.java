@@ -28,17 +28,17 @@ public class Export {
     }
 
     boolean isComplete() {
-        return ExportStatus.COMPLETED.equals(status) || ExportStatus.FAILED.equals(status);
+        return ExportStatus.SUCCEED.equals(status) || ExportStatus.FAILED.equals(status);
     }
 
     void begin() {
-        this.status = ExportStatus.PENDING;
+        this.status = ExportStatus.PROCESSING;
         this.modifiedAt = Instant.now();
     }
 
     void exported(byte[] data) {
         this.data = data;
-        this.status = ExportStatus.COMPLETED;
+        this.status = ExportStatus.SUCCEED;
         this.modifiedAt = Instant.now();
     }
 
