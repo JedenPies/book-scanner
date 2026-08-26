@@ -9,11 +9,12 @@
       <th>Tytuł</th>
       <th>Autor(zy)</th>
       <th>Źródło</th>
+      <th></th>
     </tr>
     </thead>
     <tbody>
       @for (scan of scans(); track scan.id) {
-        <tr>
+        <tr [class.is-deleting]="isIntendedToDelete(scan.id)">
           <td><span class="isbn-badge">{{ scan.isbn }}</span></td>
           <td>
             <div class="status-badge status-{{ scan.status | lowercase }}">
@@ -41,6 +42,13 @@
               <span class="source-badge">{{ scan.bookDetails?.source }}</span>
             } @else {
               <span class="secondary-text">-</span>
+            }
+          </td>
+          <td class="actions">
+            @if(isIntendedToDelete(scan.id)) {
+              <button (click)="cancelDelete(scan.id)" class="action-btn cancel-btn">Undo Delete</button>
+            } @else {
+              <button (click)="deleteScan(scan.id)" class="action-btn delete-btn">Delete</button>
             }
           </td>
         </tr>

@@ -1,10 +1,18 @@
 import { Component, ElementRef, inject, input, signal, ViewChild } from '@angular/core';
 import {
   ScanCreatedSseEvent,
-  ScanDto, ScanUpdatedSseEvent,
+  ScanDeletedSseEvent,
+  ScanDto,
+  ScanUpdatedSseEvent,
 } from '../../models/backend.model';
 import { ScannerBackendService } from '../../services/scanner-backend.service';
 import { LowerCasePipe } from '@angular/common';
+import { ToastService } from '../../services/toast.service';
+
+export interface ScanToDelete {
+  scanId: string;
+  timeoutHandler: number;
+}
 
 @Component({
   selector: 'app-scanner',
@@ -17,10 +25,12 @@ export class EditorComponent {
 
   sessionId = input.required<string>();
   scans = signal<ScanDto[]>([]);
+  scansToDelete = signal<ScanToDelete[]>([]);
   showScrollDown = signal<boolean>(false);
   showScrollUp = signal<boolean>(false);
 
   backendService = inject(ScannerBackendService);
+  toastService = inject(ToastService);
 
   private eventSource?: EventSource;
 
@@ -33,6 +43,41 @@ export class EditorComponent {
     if (this.eventSource) {
       this.eventSource.close();
     }
+  }
+
+  deleteScan(scanId: string) {
+    if (this.isIntendedToDelete(scanId)) return;
+    let timeoutHandler = setTimeout(() => this.confirmDelete(scanId), 10000);
+    let scanToDelete: ScanToDelete = { scanId, timeoutHandler };
+    this.scansToDelete.update((current) => [...current, scanToDelete]);
+  }
+
+  isIntendedToDelete(scanId: string) {
+    return this.scansToDelete().some(scanToDelete => scanToDelete.scanId === scanId);
+  }
+
+  cancelDelete(scanId: string) {
+    if (!this.isIntendedToDelete(scanId)) return;
+    this.clearTimeoutAndRemoveFromDeleteList(scanId);
+  }
+
+  private confirmDelete(scanId: string) {
+    this.clearTimeoutAndRemoveFromDeleteList(scanId);
+    this.backendService.deleteScan(this.sessionId(), scanId).subscribe({
+      error: (err) => {
+        this.toastService.show("Cannot delete scan.", "error", 10000);
+        console.error("Cannot delete scan. ", err);
+      }
+    });
+  }
+
+  private clearTimeoutAndRemoveFromDeleteList(scanId: string) {
+    const foundScanToDelete = this.scansToDelete().find(element => element.scanId === scanId);
+    if (foundScanToDelete && foundScanToDelete.timeoutHandler) {
+      clearTimeout(foundScanToDelete.timeoutHandler);
+    }
+    this.scansToDelete.update(
+      (current) => current.filter((scanToDelete) => scanToDelete.scanId !== scanId));
   }
 
   private loadScans() {
@@ -73,6 +118,15 @@ export class EditorComponent {
       const updatedScan = eventDto.scan;
       this.scans.update((currentScans) =>
         currentScans.map((scan) => (scan.id === updatedScan.id ? updatedScan : scan)),
+      );
+    });
+    this.eventSource.addEventListener('SCAN_DELETED', (event: MessageEvent) => {
+      const eventDto: ScanDeletedSseEvent = JSON.parse(event.data);
+      const updatedScan = eventDto.scan;
+      this.scans.update((currentScans) => currentScans.filter((scan) => scan.id !== updatedScan.id));
+      this.toastService.show(
+        `Deleted ${updatedScan.bookDetails?.title || 'ISBN: ' + updatedScan.isbn}`,
+        'info',
       );
     });
     this.eventSource.onerror = (error) => {

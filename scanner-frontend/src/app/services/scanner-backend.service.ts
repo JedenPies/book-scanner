@@ -32,4 +32,8 @@ export class ScannerBackendService {
   retryScan(sessionId: string, scanId: string) {
     return this.http.post<void>(`${this.apiScannerUrl}/${sessionId}/scans/${scanId}/retry`, {});
   }
+
+  deleteScan(sessionId: string, scanId: string) {
+    return this.http.delete<void>(`${this.apiScannerUrl}/${sessionId}/scans/${scanId}`);
+  }
 }

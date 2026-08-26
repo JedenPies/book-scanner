@@ -36,3 +36,7 @@ export interface ScanCreatedSseEvent {
 export interface ScanUpdatedSseEvent {
   scan: ScanDto;
 }
+
+export interface ScanDeletedSseEvent {
+  scan: ScanDto;
+}
