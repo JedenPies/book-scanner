@@ -11,6 +11,5 @@ import java.util.List;
 public class EditScanCommandDto {
 
     private final String title;
-    private final String subtitle;
     private final List<String> authors;
 }

@@ -57,9 +57,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: subtitle
-                  type: VARCHAR(500)
-              - column:
                   name: authors
                   type: text[]
 

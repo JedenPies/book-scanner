@@ -13,6 +13,5 @@ public class BookDetails {
     @With
     private String source;
     private String title;
-    private String subtitle;
     private List<String> authors;
 }

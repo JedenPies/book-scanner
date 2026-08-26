@@ -38,7 +38,5 @@ public class BookDetailsEntity {
     @Column(nullable = false)
     private String title;
 
-    private String subtitle;
-
     private List<String> authors;
 }
