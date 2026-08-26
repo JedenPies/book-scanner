@@ -38,8 +38,15 @@ public class ScansResource {
     }
 
     @PostMapping("{scanId}/retry")
+    @ResponseStatus(HttpStatus.CREATED)
     public void fetchRetry(@PathVariable UUID sessionId, @PathVariable UUID scanId) throws ScanNotFoundException, SessionNotFoundException {
         sessionService.retryScan(sessionId, scanId);
+    }
+
+    @DeleteMapping("{scanId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteScan(@PathVariable UUID sessionId, @PathVariable UUID scanId) throws ScanNotFoundException, SessionNotFoundException {
+        sessionService.deleteScan(sessionId, scanId);
     }
 
     @PatchMapping("{scanId}")

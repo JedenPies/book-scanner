@@ -26,10 +26,10 @@ public class FetchBookForScanService {
         Scan scan = session.findScanById(scanId);
         scan.markFetching();
         sessionService.save(session);
-        eventPublisher.publishEvent(ScanUpdatedEvent.builder().scan(scan).session(session).build());
+        eventPublisher.publishEvent(ScanUpdatedEvent.of(session, scan));
         tryFetchBook(scan, lastTry);
         sessionService.save(session);
-        eventPublisher.publishEvent(ScanUpdatedEvent.builder().scan(scan).session(session).build());
+        eventPublisher.publishEvent(ScanUpdatedEvent.of(session, scan));
         return scan.getStatus();
     }
 

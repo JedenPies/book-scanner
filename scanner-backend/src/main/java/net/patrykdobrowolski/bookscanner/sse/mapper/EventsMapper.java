@@ -1,9 +1,11 @@
 package net.patrykdobrowolski.bookscanner.sse.mapper;
 
 import net.patrykdobrowolski.bookscanner.domain.event.ScanCreatedEvent;
+import net.patrykdobrowolski.bookscanner.domain.event.ScanDeletedEvent;
 import net.patrykdobrowolski.bookscanner.domain.event.ScanUpdatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.ISBN;
 import net.patrykdobrowolski.bookscanner.sse.dto.ScanCreatedSseEvent;
+import net.patrykdobrowolski.bookscanner.sse.dto.ScanDeletedSseEvent;
 import net.patrykdobrowolski.bookscanner.sse.dto.ScanUpdatedSseEvent;
 import org.mapstruct.Mapper;
 
@@ -14,6 +16,7 @@ public interface EventsMapper {
 
     ScanUpdatedSseEvent toSseEvent(ScanUpdatedEvent event);
     ScanCreatedSseEvent toSseEvent(ScanCreatedEvent event);
+    ScanDeletedSseEvent toSseEvent(ScanDeletedEvent event);
 
     default String map(UUID uuid) {
         return uuid.toString();

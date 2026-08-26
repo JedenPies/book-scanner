@@ -4,6 +4,7 @@ import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookscanner.domain.event.ScanCreatedEvent;
+import net.patrykdobrowolski.bookscanner.domain.event.ScanDeletedEvent;
 import net.patrykdobrowolski.bookscanner.domain.event.ScanUpdatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
@@ -52,7 +53,7 @@ public class SessionService {
         Scan scan = session.findScanById(scanId);
         scan.markFetching();
         sessionRepository.save(session);
-        eventPublisher.publishEvent(ScanUpdatedEvent.builder().session(session).scan(scan));
+        eventPublisher.publishEvent(ScanUpdatedEvent.of(session, scan));
         bookDetailsFetcher.fetchBookDetails(session, scan);
     }
 
@@ -71,6 +72,15 @@ public class SessionService {
 
         eventPublisher.publishEvent(ScanCreatedEvent.of(saved, newScan));
         return newScan;
+
+    }
+
+    @Transactional
+    public void deleteScan(UUID sessionId, UUID scanId) throws SessionNotFoundException, ScanNotFoundException {
+        Session session = sessionRepository.findById(sessionId);
+        Scan removedScan = session.removeScan(scanId);
+        sessionRepository.save(session);
+        eventPublisher.publishEvent(ScanDeletedEvent.of(session, removedScan));
 
     }
 }

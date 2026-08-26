@@ -37,4 +37,10 @@ public class Session {
         scans.add(newScan);
         return newScan;
     }
+
+    public Scan removeScan(UUID scanId) throws ScanNotFoundException {
+        Scan found = findScanById(scanId);
+        scans.remove(found);
+        return found;
+    }
 }

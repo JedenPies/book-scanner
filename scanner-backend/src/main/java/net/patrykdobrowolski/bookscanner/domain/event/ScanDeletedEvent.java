@@ -6,12 +6,12 @@ import net.patrykdobrowolski.bookscanner.domain.model.Scan;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
 
 @RequiredArgsConstructor @Getter
-public class ScanUpdatedEvent extends BusinessEvent {
+public class ScanDeletedEvent extends BusinessEvent {
 
     private final Session session;
     private final Scan scan;
 
-    public static ScanUpdatedEvent of(Session session, Scan scan) {
-        return new ScanUpdatedEvent(session, scan);
+    public static ScanDeletedEvent of(Session session, Scan scan) {
+        return new ScanDeletedEvent(session, scan);
     }
 }
