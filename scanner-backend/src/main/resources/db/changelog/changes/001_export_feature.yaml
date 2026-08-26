@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001.01-create-exports-table
+      author: patryk
+      changes:
+        - createTable:
+            tableName: exports
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: format
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data
+                  type: bytea
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified_at
+                  type: TIMESTAMP
+
+  - changeSet:
+      id: 001.02-add-export-id-to-sessions
+      author: patryk
+      changes:
+        - addColumn:
+            tableName: sessions
+            columns:
+              - column:
+                  name: export_id
+                  type: UUID
+        - addForeignKeyConstraint:
+            baseTableName: sessions
+            baseColumnNames: export_id
+            referencedTableName: exports
+            referencedColumnNames: id
+            constraintName: fk_sessions_exports
+            onDelete: SET NULL

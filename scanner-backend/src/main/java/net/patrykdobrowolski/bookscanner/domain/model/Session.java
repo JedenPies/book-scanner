@@ -3,6 +3,9 @@ package net.patrykdobrowolski.bookscanner.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import net.patrykdobrowolski.bookscanner.domain.command.ExportSessionCommand;
+import net.patrykdobrowolski.bookscanner.domain.exception.ExportAlreadyRequestedException;
+import net.patrykdobrowolski.bookscanner.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
 
 import java.time.Instant;
@@ -19,6 +22,7 @@ public class Session {
     private Instant createdAt;
     private Instant lastUse;
     private List<Scan> scans;
+    private Export export;
 
     public static Session createNew() {
         return Session.builder()
@@ -43,4 +47,32 @@ public class Session {
         scans.remove(found);
         return found;
     }
+
+    public Export requestExport(ExportSessionCommand command) throws ExportAlreadyRequestedException {
+        if (export != null && !export.isComplete()) {
+            throw new ExportAlreadyRequestedException();
+        }
+        this.export = Export.createNew(command.getFormat());
+        return this.export;
+    }
+
+    public void beginExport() throws ExportNotRequestedException {
+        ensureExportExists();
+        this.export.begin();
+    }
+
+    public void exportCompleted(byte[] data) throws ExportNotRequestedException {
+        ensureExportExists();
+        this.export.exported(data);
+    }
+
+    public void exportFailed() throws ExportNotRequestedException {
+        ensureExportExists();
+        this.export.failed();
+    }
+
+    private void ensureExportExists() throws ExportNotRequestedException {
+        if (export == null) throw new ExportNotRequestedException();
+    }
+
 }

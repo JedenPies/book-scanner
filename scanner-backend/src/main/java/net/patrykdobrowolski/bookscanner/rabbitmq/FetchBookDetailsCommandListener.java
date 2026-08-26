@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 @RequiredArgsConstructor
 public class FetchBookDetailsCommandListener {
 
-    @Value("${rabbitmq.fetch-book-command-exchange}")
+    @Value("${rabbitmq.command-exchange}")
     private String fetchBookCommandExchangeName;
 
     @Value("${rabbitmq.fetch-book-command-retry-queue}")

@@ -3,11 +3,16 @@ package net.patrykdobrowolski.bookscanner.service;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import net.patrykdobrowolski.bookscanner.domain.command.ExportSessionCommand;
+import net.patrykdobrowolski.bookscanner.domain.event.ExportRequestedEvent;
 import net.patrykdobrowolski.bookscanner.domain.event.ScanCreatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.event.ScanDeletedEvent;
 import net.patrykdobrowolski.bookscanner.domain.event.ScanUpdatedEvent;
+import net.patrykdobrowolski.bookscanner.domain.exception.ExportAlreadyRequestedException;
+import net.patrykdobrowolski.bookscanner.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
+import net.patrykdobrowolski.bookscanner.domain.model.Export;
 import net.patrykdobrowolski.bookscanner.domain.model.ISBN;
 import net.patrykdobrowolski.bookscanner.domain.model.Scan;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
@@ -69,7 +74,6 @@ public class SessionService {
         Session session = sessionRepository.findById(sessionId);
         Scan newScan = session.createNewScan(new ISBN(isbn));
         Session saved = sessionRepository.save(session);
-
         eventPublisher.publishEvent(ScanCreatedEvent.of(saved, newScan));
         return newScan;
 
@@ -81,6 +85,28 @@ public class SessionService {
         Scan removedScan = session.removeScan(scanId);
         sessionRepository.save(session);
         eventPublisher.publishEvent(ScanDeletedEvent.of(session, removedScan));
+    }
 
+    @Transactional
+    public Export requestExport(UUID sessionId, ExportSessionCommand command) throws SessionNotFoundException, ExportAlreadyRequestedException {
+        Session session = sessionRepository.findById(sessionId);
+        Export export = session.requestExport(command);
+        sessionRepository.save(session);
+        eventPublisher.publishEvent(ExportRequestedEvent.of(session));
+        return export;
+    }
+
+    @Transactional
+    public Session beginExport(UUID sessionId) throws SessionNotFoundException, ExportNotRequestedException {
+        Session session = sessionRepository.findById(sessionId);
+        session.beginExport();
+        return sessionRepository.save(session);
+    }
+
+    public Export findExport(UUID sessionId) throws SessionNotFoundException, ExportNotRequestedException {
+        Session session = sessionRepository.findById(sessionId);
+        Export export = session.getExport();
+        if (export == null) throw new ExportNotRequestedException();
+        return export;
     }
 }

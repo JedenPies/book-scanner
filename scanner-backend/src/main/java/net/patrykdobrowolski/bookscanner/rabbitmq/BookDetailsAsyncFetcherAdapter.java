@@ -15,11 +15,11 @@ import org.springframework.beans.factory.annotation.Value;
 @Slf4j
 public class BookDetailsAsyncFetcherAdapter implements BookDetailsAsyncFetcherPort {
 
-    @Value("${rabbitmq.fetch-book-command-exchange}")
-    private String fetchBookCommandExchangeName;
+    @Value("${rabbitmq.command-exchange}")
+    private String commandExchangeName;
 
     @Value("${rabbitmq.fetch-book-command-queue}")
-    private String fetchBookCommandRetryQueueName;
+    private String fetchBookCommandQueueName;
 
     private final RabbitTemplate rabbitTemplate;
 
@@ -28,8 +28,8 @@ public class BookDetailsAsyncFetcherAdapter implements BookDetailsAsyncFetcherPo
 
         FetchBookDetailsCommandDto command = FetchBookDetailsCommandDto.forScan(session.getId(), scan.getId());
         rabbitTemplate.convertAndSend(
-                fetchBookCommandExchangeName,
-                fetchBookCommandRetryQueueName,
+                commandExchangeName,
+                fetchBookCommandQueueName,
                 command);
         log.info("Sent command to fetch book details for ScanId {}", scan.getId());
     }

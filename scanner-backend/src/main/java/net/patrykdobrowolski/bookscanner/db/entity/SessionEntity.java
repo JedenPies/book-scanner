@@ -29,7 +29,11 @@ public class SessionEntity {
     @LastModifiedDate
     private Instant lastUse;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "session_id", insertable = false, updatable = false)
     private List<ScanEntity> scans;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "export_id")
+    private ExportEntity export;
 }

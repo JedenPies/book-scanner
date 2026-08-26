@@ -1,8 +1,6 @@
 package net.patrykdobrowolski.bookscanner.rest;
 
-import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
-import net.patrykdobrowolski.bookscanner.domain.exception.ShareCodeGenerationException;
-import net.patrykdobrowolski.bookscanner.domain.exception.ShareCodeNotFoundException;
+import net.patrykdobrowolski.bookscanner.domain.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,5 +20,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ShareCodeNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public void handleShareCodeNotFoundException() {}
+
+    @ExceptionHandler(ExportAlreadyRequestedException.class)
+    @ResponseStatus(code = HttpStatus.CONFLICT)
+    public void handleExportAlreadyRequestedException() {}
+
+    @ExceptionHandler(ExportNotRequestedException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public void exportNotRequestedException() {}
 
 }

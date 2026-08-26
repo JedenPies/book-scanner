@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 
     @Bean
-    public DirectExchange fetchBookCommandExchange(@Value("${rabbitmq.fetch-book-command-exchange}") String fetchBookCommandExchangeName) {
-        return new DirectExchange(fetchBookCommandExchangeName);
+    public TopicExchange commandExchange(@Value("${rabbitmq.command-exchange}") String commandExchangeName) {
+        return new TopicExchange(commandExchangeName);
     }
 
     @Bean
@@ -22,29 +22,41 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue retryfetchBookCommandQueue(
-            @Value("${rabbitmq.fetch-book-command-exchange}") String fetchBookCommandExchangeName,
+            @Value("${rabbitmq.command-exchange}") String commandExchangeName,
             @Value("${rabbitmq.fetch-book-command-retry-queue}") String fetchBookCommandRetryQueueName,
             @Value("${rabbitmq.fetch-book-command-queue}") String fetchBookCommandQueueName) {
 
         return QueueBuilder.durable(fetchBookCommandRetryQueueName)
                 .withArgument("x-message-ttl", 30000)
-                .withArgument("x-dead-letter-exchange", fetchBookCommandExchangeName)
+                .withArgument("x-dead-letter-exchange", commandExchangeName)
                 .withArgument("x-dead-letter-routing-key", fetchBookCommandQueueName)
                 .build();
     }
 
     @Bean
     public Binding fetchBookCommandQueueBinding(
-            Queue fetchBookCommandQueue, DirectExchange fetchBookCommandExchange,
+            Queue fetchBookCommandQueue, TopicExchange commandExchange,
             @Value("${rabbitmq.fetch-book-command-queue}") String fetchBookCommandQueueName) {
-        return BindingBuilder.bind(fetchBookCommandQueue).to(fetchBookCommandExchange).with(fetchBookCommandQueueName);
+        return BindingBuilder.bind(fetchBookCommandQueue).to(commandExchange).with(fetchBookCommandQueueName);
     }
 
     @Bean
-    public Binding retryQueueBinding(
-            Queue retryfetchBookCommandQueue, DirectExchange fetchBookCommandExchange,
+    public Binding fetchBookRetryQueueBinding(
+            Queue retryfetchBookCommandQueue, TopicExchange commandExchange,
             @Value("${rabbitmq.fetch-book-command-retry-queue}") String fetchBookCommandRetryQueueName) {
-        return BindingBuilder.bind(retryfetchBookCommandQueue).to(fetchBookCommandExchange).with(fetchBookCommandRetryQueueName);
+        return BindingBuilder.bind(retryfetchBookCommandQueue).to(commandExchange).with(fetchBookCommandRetryQueueName);
+    }
+
+    @Bean
+    public Queue exportSessionCommandQueue(@Value("${rabbitmq.export-session-command-queue}") String exportSessionCommandQueue) {
+        return QueueBuilder.durable(exportSessionCommandQueue).build();
+    }
+
+    @Bean
+    public Binding exportSessionCommandQueueBinding(
+            Queue exportSessionCommandQueue, TopicExchange commandExchange,
+            @Value("${rabbitmq.export-session-command-queue}") String exportSessionCommandQueueName) {
+        return BindingBuilder.bind(exportSessionCommandQueue).to(commandExchange).with(exportSessionCommandQueueName);
     }
 
     @Bean
