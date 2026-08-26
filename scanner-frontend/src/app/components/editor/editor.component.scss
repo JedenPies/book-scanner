@@ -1,6 +1,6 @@
 .table-wrapper {
   position: relative;
-  max-width: 1600px;
+  max-width: 1900px;
   /* 1.5rem na górze, wyśrodkowanie po bokach, 0 na dole - dotyka krawędzi */
   margin: 1.5rem auto 0 auto;
   /* Obliczamy wysokość na pełen ekran minus górny margines */
@@ -137,9 +137,8 @@
     &:nth-child(1) { width: 125px; } /* ISBN */
     &:nth-child(2) { width: 50px; } /* Status */
     &:nth-child(3) { width: auto; }  /* Tytuł - elastyczny, zajmie resztę miejsca */
-    &:nth-child(4) { width: 260px; } /* Podtytuł */
-    &:nth-child(5) { width: 240px; } /* Autor(zy) */
-    &:nth-child(6) { width: 150px; } /* Źródło */
+    &:nth-child(4) { width: 400px; } /* Autor(zy) */
+    &:nth-child(5) { width: 150px; } /* Źródło */
   }
 
   tbody {

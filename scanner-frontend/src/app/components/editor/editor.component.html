@@ -7,7 +7,6 @@
       <th>ISBN</th>
       <th></th>
       <th>Tytuł</th>
-      <th>Podtytuł</th>
       <th>Autor(zy)</th>
       <th>Źródło</th>
     </tr>
@@ -35,9 +34,8 @@
             }
             </div>
           </td>
-          <td class="primary-text">{{ scan.bookDetails?.title || '-' }}</td>
-          <td class="secondary-text">{{ scan.bookDetails?.subtitle || '-' }}</td>
-          <td>{{ scan.bookDetails?.authors || '-' }}</td>
+          <td class="primary-text" title="{{ scan.bookDetails?.title }}">{{ scan.bookDetails?.title || '-' }}</td>
+          <td title="{{scan.bookDetails?.authors}}">{{ scan.bookDetails?.authors || '-' }}</td>
           <td>
             @if (scan.bookDetails?.source) {
               <span class="source-badge">{{ scan.bookDetails?.source }}</span>
@@ -48,7 +46,7 @@
         </tr>
       } @empty {
         <tr>
-          <td colspan="6" class="empty-state">
+          <td colspan="5" class="empty-state">
             <span class="empty-icon">📭</span>
             Brak zeskanowanych książek. Użyj telefonu, aby zeskanować pierwszy kod!
           </td>

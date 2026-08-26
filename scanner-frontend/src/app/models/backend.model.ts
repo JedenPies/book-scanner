@@ -13,7 +13,6 @@ export interface CreateScanRequestDto {
 export interface BookDetailsDto {
   source: string;
   title: string;
-  subtitle: string;
   authors: string[];
 }
 
