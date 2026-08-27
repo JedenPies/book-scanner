@@ -3,8 +3,10 @@ package net.patrykdobrowolski.bookscanner.adapter.fetcher.bn.mapper;
 import jakarta.inject.Named;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.bn.dto.BookDto;
 import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
+import net.patrykdobrowolski.bookscanner.domain.model.Year;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Named
 public class BnBookDtoMapper {
@@ -16,7 +18,7 @@ public class BnBookDtoMapper {
                 .publicationPlace(dto.getPlaceOfPublication())
                 .language(dto.getLanguage())
                 .publisher(dto.getPublisher())
-                .publicationYear(dto.getPublicationYear())
+                .publicationYear(Optional.ofNullable(dto.getPublicationYear()).map(Year::parse).orElse(null))
                 .build();
     }
 

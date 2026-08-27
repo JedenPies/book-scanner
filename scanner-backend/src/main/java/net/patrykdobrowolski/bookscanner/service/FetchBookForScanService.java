@@ -29,12 +29,19 @@ public class FetchBookForScanService implements FetchBookForScanServicePort {
         Session session = sessionService.findById(sessionId);
         Scan scan = session.findScanById(scanId);
         scan.markFetching();
-        sessionService.save(session);
-        eventPublisher.publishEvent(ScanUpdatedEvent.of(session, scan));
-        tryFetchBook(scan, lastTry);
-        sessionService.save(session);
-        eventPublisher.publishEvent(ScanUpdatedEvent.of(session, scan));
+        saveAndPublish(scan, session);
+        try {
+            tryFetchBook(scan, lastTry);
+        } catch (Exception e) {
+            scan.markFailed();
+        }
+        saveAndPublish(scan, session);
         return scan.getStatus();
+    }
+
+    private void saveAndPublish(Scan scan, Session session) {
+        sessionService.save(session);
+        eventPublisher.publishEvent(ScanUpdatedEvent.of(session, scan));
     }
 
     private void tryFetchBook(Scan scan, boolean lastTry) {

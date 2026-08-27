@@ -6,6 +6,7 @@ import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.Publish
 import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.AuthorDto;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.BookDto;
+import net.patrykdobrowolski.bookscanner.domain.model.Year;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,7 @@ public class OpenLibraryBookDtoMapper {
                 .authors(fromAuthors(dto.getAuthors()))
                 .publisher(Optional.ofNullable(dto.getPublishers()).orElseGet(Collections::emptyList).stream().findFirst().map(PublisherDto::getName).orElse(null))
                 .publicationPlace(Optional.ofNullable(dto.getPublishPlaces()).orElseGet(Collections::emptyList).stream().findFirst().map(PublishPlaceDto::getName).orElse(null))
-                .publicationYear(dto.getPublishDate())
+                .publicationYear(Optional.ofNullable(dto.getPublishDate()).map(Year::parse).orElse(null))
                 .build();
     }
 

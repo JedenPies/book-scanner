@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.bookscanner.adapter.db.mapper;
+package net.patrykdobrowolski.bookscanner.util;
 
 import net.patrykdobrowolski.bookscanner.domain.model.ISBN;
 import org.mapstruct.Mapper;

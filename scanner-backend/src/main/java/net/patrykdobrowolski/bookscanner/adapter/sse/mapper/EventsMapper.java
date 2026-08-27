@@ -9,11 +9,12 @@ import net.patrykdobrowolski.bookscanner.domain.model.event.ExportCompleteEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanCreatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanDeletedEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanUpdatedEvent;
+import net.patrykdobrowolski.bookscanner.util.YearMapper;
 import org.mapstruct.Mapper;
 
 import java.util.UUID;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = YearMapper.class)
 public interface EventsMapper {
 
     ScanUpdatedSseEvent toSseEvent(ScanUpdatedEvent event);

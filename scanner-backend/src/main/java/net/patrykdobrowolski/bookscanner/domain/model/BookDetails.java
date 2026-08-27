@@ -17,7 +17,7 @@ public class BookDetails {
     private String title;
     private List<String> authors;
     private String publisher;
-    private String publicationYear;
+    private Year publicationYear;
     private String publicationPlace;
     private String language;
 

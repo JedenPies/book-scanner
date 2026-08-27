@@ -6,6 +6,7 @@ import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.model.ExportFormat;
 import net.patrykdobrowolski.bookscanner.domain.model.Scan;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
+import net.patrykdobrowolski.bookscanner.domain.model.Year;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -45,7 +46,7 @@ public class CsvSessionExporter implements SessionExporter {
                         scan.getStatus().name(),
                         Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getTitle).orElse(""),
                         String.join(", ", Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getAuthors).orElseGet(Collections::emptyList)),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublicationYear).orElse(""),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublicationYear).map(Year::value).orElse(""),
                         Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublisher).orElse(""),
                         Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublicationPlace).orElse(""),
                         Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getLanguage).orElse(""),

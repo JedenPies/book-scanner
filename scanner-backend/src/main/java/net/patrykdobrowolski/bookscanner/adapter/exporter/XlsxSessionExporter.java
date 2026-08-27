@@ -4,6 +4,7 @@ import jakarta.inject.Named;
 import net.patrykdobrowolski.bookscanner.domain.model.ExportFormat;
 import net.patrykdobrowolski.bookscanner.domain.model.Scan;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
+import net.patrykdobrowolski.bookscanner.domain.model.Year;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -49,7 +50,7 @@ public class XlsxSessionExporter implements SessionExporter {
                 row.createCell(1).setCellValue(scan.getStatus().name());
                 row.createCell(2).setCellValue(hasDetails ? scan.getBookDetails().getTitle() : "");
                 row.createCell(3).setCellValue(hasDetails ? String.join(", ", Optional.ofNullable(scan.getBookDetails().getAuthors()).orElseGet(Collections::emptyList)) : "");
-                row.createCell(4).setCellValue(hasDetails ? scan.getBookDetails().getPublicationYear() : "");
+                row.createCell(4).setCellValue(hasDetails ? Optional.ofNullable(scan.getBookDetails().getPublicationYear()).map(Year::value).orElse("") : "");
                 row.createCell(5).setCellValue(hasDetails ? scan.getBookDetails().getPublisher() : "");
                 row.createCell(6).setCellValue(hasDetails ? scan.getBookDetails().getPublicationPlace() : "");
                 row.createCell(7).setCellValue(hasDetails ? scan.getBookDetails().getLanguage() : "");
