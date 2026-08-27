@@ -35,6 +35,7 @@ export class EditorComponent {
   showScrollDown = signal<boolean>(false);
   showScrollUp = signal<boolean>(false);
   isExportModalOpen = signal<boolean>(false);
+  expandedScanId = signal<string | null>(null);
 
   exportState = computed(() => { return this.computedExportState() });
   isExportProcessing = computed(() => {
@@ -57,6 +58,10 @@ export class EditorComponent {
     if (this.eventSource) {
       this.eventSource.close();
     }
+  }
+
+  toggleExpand(scanId: string) {
+    this.expandedScanId.update(current => current === scanId ? null : scanId);
   }
 
   copyUrlToClipboard() {

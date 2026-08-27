@@ -116,7 +116,7 @@
   /* 1.5rem na górze, wyśrodkowanie po bokach, 0 na dole - dotyka krawędzi */
   margin: 1.5rem auto 0 auto;
   /* Obliczamy wysokość na pełen ekran minus górny margines */
-  height: calc(100vh - 50px);
+  height: calc(100vh - 130px);
   display: flex;
   flex-direction: column;
 }
@@ -265,8 +265,8 @@
 
 .scan-table {
   width: 100%;
-  min-width: 1590px; /* Minimalna szerokość całej tabeli (wymusza suwak poziomy na małych oknach) */
-  table-layout: fixed; /* Wymusza sztywne szerokości kolumn */
+  min-width: 900px;
+  table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
   font-family: system-ui, -apple-system, sans-serif;
@@ -284,61 +284,135 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    text-align: center;
 
-    /* ISBN */
-    &:nth-child(1) {
-      width: 125px;
-    }
-
-    /* Status */
-    &:nth-child(2) {
-      width: 50px;
-    }
-
-    /* Tytuł - elastyczny, zajmie resztę miejsca */
-    &:nth-child(3) {
-      width: auto;
-    }
-
-    /* Autor(zy) */
-    &:nth-child(4) {
-      width: 400px;
-    }
-
-    /* Źródło */
-    &:nth-child(5) {
-      width: 150px;
-    }
-
-    /* Akcje */
-    &:nth-child(6) {
-      width: 130px;
-    }
-
-    /* Delete */
+    /* 4 Kolumny z precyzyjnie przypisaną szerokością */
+    &:nth-child(1) { width: 130px; } /* ISBN */
+    &:nth-child(2) { width: 45px; } /* Status */
+    &:nth-child(3) { width: auto; }  /* Tytuł (rozciąga się i robi miejsce na kartę) */
+    &:nth-child(4) { width: 140px; } /* Akcje */
   }
 
   tbody {
-    tr {
+    tr.main-row {
       border-bottom: 1px solid #e2e8f0;
       transition: background-color 0.2s ease-in-out;
+      cursor: pointer;
 
-      &:hover {
-        background-color: #f1f5f9;
+      &:hover { background-color: #f1f5f9; }
+
+      /* Lekko inne tło dla wiersza, gdy karta jest otwarta */
+      &.is-expanded {
+        background-color: #f8fafc;
+      }
+
+      &.not-expandable {
+        cursor: default;
       }
     }
 
     td {
       padding: 14px 16px;
-      font-size: 0.95rem;
-      vertical-align: middle;
+      font-size: 1.0rem;
       color: #334155;
 
-      /* Eleganckie ucinanie zbyt długiego tekstu w komórkach (trzykropek) */
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      /* Standardowe ucinanie długiego tekstu trzykropkiem (ignorowane przez expandable-cell) */
+      &:not(.expandable-cell) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &.valign-top {
+        vertical-align: top; /* Trzyma zawartość zablokowaną przy suficie, gdy wiersz puchnie od karty w środku */
+      }
     }
+  }
+}
+
+/* --- KONTENER TYTUŁU --- */
+td.expandable-cell {
+  white-space: normal; /* Nadpisujemy blokadę łamania linii z thead/td, by karta i tytuł mogły w pełni oddychać */
+}
+
+.title-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 7px;
+}
+
+.chevron {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 3px;
+  transition: transform 0.2s ease-in-out;
+
+  &.rotated {
+    transform: rotate(180deg);
+  }
+
+  &.invisible {
+    visibility: hidden;
+  }
+}
+
+/* --- KARTA SZCZEGÓŁÓW WEWNĄTRZ KOMÓRKI TD --- */
+.book-card {
+  padding: 14px 18px 15px 18px;
+  //border-radius: 6px;
+  //box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+  cursor: default; /* Nadpisujemy kursor pointer z tr.main-row na samej karcie */
+
+  .book-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #e2e8f0;
+
+    .authors {
+      color: #64748b;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+  }
+
+  .book-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr 2fr 70px 1fr;
+    gap: 16px;
+
+    //&:nth-child(1) { width: 20px; }
+    //&:nth-child(2) { width: 25px; }
+    //&:nth-child(3) { width: auto; }
+    //&:nth-child(4) { width: 40px; }
+    //&:nth-child(4) { width: 40px; }
+  }
+
+  .info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #94a3b8;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .value {
+      color: #334155;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+  }
+
+  .sources-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 }
 
@@ -518,6 +592,7 @@ td.actions {
   margin-bottom: 24px;
 
   .export-option-btn {
+    height: auto;
     display: flex;
     align-items: center;
     gap: 16px;

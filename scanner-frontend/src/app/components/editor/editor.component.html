@@ -5,6 +5,7 @@
       <span class="session-badge">{{ sessionId() }}</span>
       <button class="btn-icon" (click)="copyUrlToClipboard()" title="Kopiuj Adres Strony">📋</button>
     </div>
+    <span class="filler"></span>
     <!-- Odznaka statusu (pokazuje się obok, jeśli mamy jakikolwiek eksport) -->
     @if (exportState()) {
       <button
@@ -29,7 +30,6 @@
     >
       <span>📥</span> Eksportuj
     </button>
-  <span class="filler"></span>
 
 </div>
 
@@ -37,65 +37,190 @@
 
   <div class="table-container" #scrollContainer (scroll)="onScroll()">
     <table class="scan-table">
-    <thead>
-    <tr>
-      <th>ISBN</th>
-      <th></th>
-      <th>Tytuł</th>
-      <th>Autor(zy)</th>
-      <th>Źródło</th>
-      <th></th>
-    </tr>
-    </thead>
-    <tbody>
-      @for (scan of scans(); track scan.id) {
-        <tr [class.is-deleting]="isIntendedToDelete(scan.id)">
-          <td><span class="isbn-badge">{{ scan.isbn }}</span></td>
-          <td>
-            <div class="status-badge status-{{ scan.status | lowercase }}">
-              @if (scan.status === 'PENDING' || scan.status === 'FETCHING') {
-                <span class="spinner" title="Ładowanie..."></span>
+      <thead>
+      <tr>
+        <th>ISBN</th>
+        <th></th>
+        <th>Tytuł</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (scan of scans(); track scan.id) {
+
+          <!-- GŁÓWNY WIERSZ -->
+          <tr
+            class="main-row"
+            [class.is-deleting]="isIntendedToDelete(scan.id)"
+            [class.is-expanded]="expandedScanId() === scan.id"
+            [class.not-expandable]="scan.status !== 'FOUND'"
+            (click)="scan.status == 'FOUND' ? toggleExpand(scan.id) : null"
+          >
+            <!-- ISBN -->
+            <td class="valign-top" style="padding-top: 19px;"><span class="isbn-badge">{{ scan.isbn }}</span></td>
+
+            <!-- STATUS -->
+            <td class="valign-top">
+              <div class="status-badge status-{{ scan.status | lowercase }}">
+                @if (scan.status === 'PENDING' || scan.status === 'FETCHING') {
+                  <span class="spinner" title="Ładowanie..."></span>
+                } @else if (scan.status === 'FOUND') {
+                  <span title="Znaleziono">✅</span>
+                } @else if (scan.status === 'NOT_FOUND') {
+                  <span title="Nie znaleziono">❓</span>
+                } @else if (scan.status === 'FAILED') {
+                  <span title="Błąd pobierania">❌</span>
+                } @else if (scan.status === 'DUPLICATE') {
+                  <span title="Duplikat">🔄</span>
+                } @else if (scan.status === 'MODIFIED') {
+                  <span title="Zmodyfikowano">✏️</span>
+                }
+              </div>
+            </td>
+
+            <!-- TYTUŁ (TEN TD SIĘ ROZWIJA) -->
+            <td class="expandable-cell valign-top">
+
+              <div class="title-wrapper">
+                <span
+                  class="chevron"
+                  [class.rotated]="expandedScanId() === scan.id"
+                  [class.invisible]="scan.status !== 'FOUND' || isIntendedToDelete(scan.id)">▼</span>
+                <span class="primary-text">{{ scan.bookDetails?.title || '-' }}</span>
+              </div>
+
+              <!-- KARTA KSIĄŻKI (Część tej samej komórki) -->
+              @if (expandedScanId() === scan.id && !isIntendedToDelete(scan.id) && scan.status === 'FOUND') {
+                <div class="book-card" (click)="$event.stopPropagation()">
+
+                  <div class="book-header">
+                    <span class="authors">{{ scan.bookDetails?.authors?.join(', ') || 'Brak informacji o autorze' }}</span>
+                  </div>
+
+                  <div class="book-grid">
+                    <div class="info-group">
+                      <span class="label">Rok wydania</span>
+                      <span class="value">{{ scan.bookDetails?.publicationYear || '-' }}</span>
+                    </div>
+                    <div class="info-group">
+                      <span class="label">Miejsce wydania</span>
+                      <span class="value">{{ scan.bookDetails?.publicationPlace || '-' }}</span>
+                    </div>
+                    <div class="info-group">
+                      <span class="label">Wydawnictwo</span>
+                      <span class="value">{{ scan.bookDetails?.publisher || '-' }}</span>
+                    </div>
+                    <div class="info-group">
+                      <span class="label">Język</span>
+                      <span class="value">{{ scan.bookDetails?.language || '-' }}</span>
+                    </div>
+                    <div class="info-group">
+                      <span class="label">Źródła</span>
+                      <div class="sources-list">
+                        @for (source of scan.bookDetails?.sources; track source) {
+                          <span class="source-badge">{{ source }}</span>
+                        } @empty {
+                          <span class="value">-</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
               }
-              @else if (scan.status === 'FOUND') {
-                <span title="Znaleziono">✅</span>
-              } @else if (scan.status === 'NOT_FOUND') {
-              <span title="Nie znaleziono">❓</span>
-            } @else if (scan.status === 'FAILED') {
-                <span title="Błąd pobierania">❌</span>
-                <button class="action-btn" (click)="retryScan(scan.id)" title="Ponów próbę pobierania">🔁</button>
-            } @else if (scan.status === 'DUPLICATE') {
-              <span title="Duplikat">🔄</span>
-            } @else if (scan.status === 'MODIFIED') {
-              <span title="Zmodyfikowano">✏️</span>
-            }
-            </div>
-          </td>
-          <td class="primary-text" title="{{ scan.bookDetails?.title }}">{{ scan.bookDetails?.title || '-' }}</td>
-          <td title="{{scan.bookDetails?.authors}}">{{ scan.bookDetails?.authors || '-' }}</td>
-          <td>
-            @if (scan.bookDetails?.source) {
-              <span class="source-badge">{{ scan.bookDetails?.source }}</span>
-            } @else {
-              <span class="secondary-text">-</span>
-            }
-          </td>
-          <td class="actions">
-            @if(isIntendedToDelete(scan.id)) {
-              <button (click)="cancelDelete(scan.id)" class="btn-cancel small">Undelete</button>
-            } @else {
-              <button (click)="deleteScan(scan.id)" class="btn-delete small">Delete</button>
-            }
-          </td>
-        </tr>
-      } @empty {
-        <tr>
-          <td colspan="5" class="empty-state">
-            <span class="empty-icon">📭</span>
-            Brak zeskanowanych książek. Użyj telefonu, aby zeskanować pierwszy kod!
-          </td>
-        </tr>
-      }
+            </td>
+
+            <!-- AKCJE -->
+            <td class="actions valign-top" (click)="$event.stopPropagation()">
+              @if (scan.status === 'FAILED') {
+                <button class="action-btn" (click)="retryScan(scan.id)" title="Ponów próbę">🔁</button>
+              }
+              @if(isIntendedToDelete(scan.id)) {
+                <button (click)="cancelDelete(scan.id)" class="btn-cancel small">Undelete</button>
+              } @else {
+                <button (click)="deleteScan(scan.id)" class="btn-delete small">Delete</button>
+              }
+            </td>
+          </tr>
+
+        } @empty {
+          <tr>
+            <td colspan="4" class="empty-state">
+              <span class="empty-icon">📭</span>
+              Brak zeskanowanych książek. Użyj telefonu, aby zeskanować pierwszy kod!
+            </td>
+          </tr>
+        }
+      </tbody>
     </table>
+<!--    <table class="scan-table">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--      <th>ISBN</th>-->
+<!--      <th></th>-->
+<!--      <th>Tytuł</th>-->
+<!--      <th>Autor(zy)</th>-->
+<!--      <th>Rok</th>-->
+<!--      <th>Wydawnictwo</th>-->
+<!--      <th>Miejsce wydania</th>-->
+<!--      <th>Język</th>-->
+<!--      <th>Źródło</th>-->
+<!--      <th></th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--      @for (scan of scans(); track scan.id) {-->
+<!--        <tr [class.is-deleting]="isIntendedToDelete(scan.id)">-->
+<!--          <td><span class="isbn-badge">{{ scan.isbn }}</span></td>-->
+<!--          <td>-->
+<!--            <div class="status-badge status-{{ scan.status | lowercase }}">-->
+<!--              @if (scan.status === 'PENDING' || scan.status === 'FETCHING') {-->
+<!--                <span class="spinner" title="Ładowanie..."></span>-->
+<!--              }-->
+<!--              @else if (scan.status === 'FOUND') {-->
+<!--                <span title="Znaleziono">✅</span>-->
+<!--              } @else if (scan.status === 'NOT_FOUND') {-->
+<!--              <span title="Nie znaleziono">❓</span>-->
+<!--            } @else if (scan.status === 'FAILED') {-->
+<!--                <span title="Błąd pobierania">❌</span>-->
+<!--                <button class="action-btn" (click)="retryScan(scan.id)" title="Ponów próbę pobierania">🔁</button>-->
+<!--            } @else if (scan.status === 'DUPLICATE') {-->
+<!--              <span title="Duplikat">🔄</span>-->
+<!--            } @else if (scan.status === 'MODIFIED') {-->
+<!--              <span title="Zmodyfikowano">✏️</span>-->
+<!--            }-->
+<!--            </div>-->
+<!--          </td>-->
+<!--          <td class="primary-text" title="{{ scan.bookDetails?.title }}">{{ scan.bookDetails?.title || '-' }}</td>-->
+<!--          <td title="{{scan.bookDetails?.authors}}">{{ scan.bookDetails?.authors || '-' }}</td>-->
+<!--          <td title="{{scan.bookDetails?.publicationYear}}">{{ scan.bookDetails?.publicationYear || '-' }}</td>-->
+<!--          <td title="{{scan.bookDetails?.publisher}}">{{ scan.bookDetails?.publisher || '-' }}</td>-->
+<!--          <td title="{{scan.bookDetails?.publicationPlace}}">{{ scan.bookDetails?.publicationPlace || '-' }}</td>-->
+<!--          <td title="{{scan.bookDetails?.language}}">{{ scan.bookDetails?.language || '-' }}</td>-->
+<!--          <td>-->
+<!--            @for (source of scan.bookDetails?.sources; track source) {-->
+<!--              <span class="source-badge">{{ source }}</span>-->
+<!--            } @empty {-->
+<!--              <span class="secondary-text">-</span>-->
+<!--            }-->
+<!--          </td>-->
+<!--          <td class="actions">-->
+<!--            @if(isIntendedToDelete(scan.id)) {-->
+<!--              <button (click)="cancelDelete(scan.id)" class="btn-cancel small">Undelete</button>-->
+<!--            } @else {-->
+<!--              <button (click)="deleteScan(scan.id)" class="btn-delete small">Delete</button>-->
+<!--            }-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      } @empty {-->
+<!--        <tr>-->
+<!--          <td colspan="10" class="empty-state">-->
+<!--            <span class="empty-icon">📭</span>-->
+<!--            Brak zeskanowanych książek. Użyj telefonu, aby zeskanować pierwszy kod!-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      }-->
+<!--    </table>-->
   </div>
 
   @if (showScrollUp()) {

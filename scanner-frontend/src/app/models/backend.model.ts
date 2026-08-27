@@ -14,9 +14,13 @@ export interface CreateScanRequestDto {
 }
 
 export interface BookDetailsDto {
-  source: string;
+  sources: string[];
   title: string;
   authors: string[];
+  publisher: string;
+  publicationYear: string;
+  publicationPlace: string;
+  language: string;
 }
 
 export interface ScanDto {
