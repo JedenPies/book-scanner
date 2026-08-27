@@ -32,7 +32,7 @@ public class XlsxSessionExporter implements SessionExporter {
             headerStyle.setFont(headerFont);
 
             Row headerRow = sheet.createRow(0);
-            String[] columns = {"ISBN", "Status", "Tytuł", "Autorzy", "Data Zeskanowania"};
+            String[] columns = {"ISBN", "Status", "Tytuł", "Autorzy", "Rok wydania", "Wydawca", "Miejsce wydania", "Język", "Data Zeskanowania"};
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
@@ -49,7 +49,11 @@ public class XlsxSessionExporter implements SessionExporter {
                 row.createCell(1).setCellValue(scan.getStatus().name());
                 row.createCell(2).setCellValue(hasDetails ? scan.getBookDetails().getTitle() : "");
                 row.createCell(3).setCellValue(hasDetails ? String.join(", ", Optional.ofNullable(scan.getBookDetails().getAuthors()).orElseGet(Collections::emptyList)) : "");
-                row.createCell(4).setCellValue(scan.getCreatedAt().toString());
+                row.createCell(4).setCellValue(hasDetails ? scan.getBookDetails().getPublicationYear() : "");
+                row.createCell(5).setCellValue(hasDetails ? scan.getBookDetails().getPublisher() : "");
+                row.createCell(6).setCellValue(hasDetails ? scan.getBookDetails().getPublicationPlace() : "");
+                row.createCell(7).setCellValue(hasDetails ? scan.getBookDetails().getLanguage() : "");
+                row.createCell(8).setCellValue(scan.getCreatedAt().toString());
             }
 
             // 4. Estetyka: Automatyczne dopasowanie szerokości kolumn do tekstu

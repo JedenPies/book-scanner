@@ -37,10 +37,8 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: source
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
+                  name: sources
+                  type: text[]
               - column:
                   name: created_at
                   type: TIMESTAMP

@@ -12,6 +12,8 @@ public class BooksResponseDtoMapper {
         return BookDetails.builder()
                 .title(makeTitle(dto))
                 .authors(dto.getAuthors())
+                .publicationYear(dto.getPublishedDate())
+                .language(dto.getLanguage())
                 .build();
     }
 

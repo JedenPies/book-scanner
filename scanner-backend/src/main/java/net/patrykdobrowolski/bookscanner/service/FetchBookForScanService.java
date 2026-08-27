@@ -2,6 +2,7 @@ package net.patrykdobrowolski.bookscanner.service;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
+import net.patrykdobrowolski.bookscanner.adapter.fetcher.BookDetailsComposer;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanUpdatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
@@ -41,7 +42,8 @@ public class FetchBookForScanService implements FetchBookForScanServicePort {
         FetchResult fetchResult = book.getFetchResult();
         switch (fetchResult) {
             case SUCCESS:
-                scan.setBookDetails(mapper.map(book.getPreferededBookRaw()), Modifier.SYSTEM);
+                BookDetails details = new BookDetailsComposer(book.getBookRaws().stream().filter(br -> br.getFetchResult() == FetchResult.SUCCESS).map(mapper::map).toList()).compose();
+                scan.setBookDetails(details, Modifier.SYSTEM);
                 break;
             case NOT_FOUND:
                 scan.markNotFound();

@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-new-book-details-fields
+      author: patryk
+      changes:
+        - addColumn:
+            tableName: books_details
+            columns:
+              - column:
+                  name: publisher
+                  type: varchar(200)
+              - column:
+                  name: publication_year
+                  type: varchar(4)
+              - column:
+                  name: publication_place
+                  type: varchar(200)
+              - column:
+                  name: language
+                  type: varchar(50)

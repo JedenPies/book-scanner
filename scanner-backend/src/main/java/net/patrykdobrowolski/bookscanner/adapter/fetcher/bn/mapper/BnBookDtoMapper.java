@@ -11,8 +11,17 @@ public class BnBookDtoMapper {
 
     public BookDetails fromDto(BookDto dto) {
         return BookDetails.builder()
-                .title(dto.getTitle())
+                .title(cleanTitle(dto.getTitle()))
                 .authors(Collections.singletonList(dto.getAuthor()))
+                .publicationPlace(dto.getPlaceOfPublication())
+                .language(dto.getLanguage())
+                .publisher(dto.getPublisher())
+                .publicationYear(dto.getPublicationYear())
                 .build();
+    }
+
+    private String cleanTitle(String title) {
+        if (title == null) return null;
+        return title.replaceAll("\\s*/\\s*$", "").trim();
     }
 }

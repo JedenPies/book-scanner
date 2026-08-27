@@ -1,6 +1,12 @@
 package net.patrykdobrowolski.bookscanner.adapter.db.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -24,8 +31,8 @@ public class BookDetailsEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String source;
+    @Column
+    private Set<String> sources;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -39,4 +46,9 @@ public class BookDetailsEntity {
     private String title;
 
     private List<String> authors;
+
+    private String publisher;
+    private String publicationYear;
+    private String publicationPlace;
+    private String language;
 }

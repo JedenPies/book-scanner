@@ -31,7 +31,7 @@ public class CsvSessionExporter implements SessionExporter {
                 CSVPrinter printer = new CSVPrinter(
                         printWriter,
                         CSVFormat.DEFAULT.builder()
-                                .setHeader("ISBN", "Status", "Tytuł", "Autorzy", "Źródło", "Data Zeskanowania")
+                                .setHeader("ISBN", "Status", "Tytuł", "Autorzy", "Rok wydania", "Wydawca", "Miejsce wydania", "Język", "Data Zeskanowania")
                                 .get())
         ) {
             // Dodanie BOM (Byte Order Mark) dla UTF-8
@@ -45,7 +45,10 @@ public class CsvSessionExporter implements SessionExporter {
                         scan.getStatus().name(),
                         Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getTitle).orElse(""),
                         String.join(", ", Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getAuthors).orElseGet(Collections::emptyList)),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getSource).orElse(""),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublicationYear).orElse(""),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublisher).orElse(""),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublicationPlace).orElse(""),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getLanguage).orElse(""),
                         Optional.ofNullable(scan.getCreatedAt()).map(Object::toString).orElse(""));
             }
             printer.flush();

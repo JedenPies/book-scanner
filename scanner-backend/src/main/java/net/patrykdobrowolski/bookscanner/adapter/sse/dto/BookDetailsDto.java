@@ -4,12 +4,17 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
 public class BookDetailsDto {
 
-    private String source;
-    private String title;
-    private List<String> authors;
+    private final Set<String> sources;
+    private final String title;
+    private final List<String> authors;
+    private final String publisher;
+    private final String publicationYear;
+    private final String publicationPlace;
+    private final String language;
 }

@@ -10,4 +10,8 @@ public class BookDto {
 
     private final String title;
     private final String author;
+    private final String publisher;
+    private final String publicationYear;
+    private final String language;
+    private final String placeOfPublication;
 }
