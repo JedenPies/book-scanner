@@ -133,7 +133,6 @@
 
   /* Zamiast cieni - prosta, techniczna ramka. Bez dolnej, bo dotyka ekranu */
   border: 1px solid #e2e8f0;
-  border-bottom: none;
   box-shadow: none; /* Usuwamy cień pod tabelą */
 
   /* --- SEKCJA UKRYWANIA SUWAKÓW --- */
@@ -275,8 +274,7 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background-color: #f8fafc;
-    border-bottom: 2px solid #e2e8f0;
+    background-color: #e2e8f0;
 
     padding: 16px;
     color: #475569;
@@ -309,7 +307,13 @@
       &.not-expandable {
         cursor: default;
       }
+
     }
+    tr {
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
 
     td {
       padding: 14px 16px;
