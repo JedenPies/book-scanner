@@ -29,7 +29,7 @@ public class BooksResponseDtoMapper {
 
     private Year publicationYear(String publishedDate) {
         if (publishedDate != null && publishedDate.matches("^[0-9]{4}")) {
-            return Year.parse(publishedDate.substring(4));
+            return Year.parse(publishedDate.substring(0, 4));
         }
         else return null;
     }

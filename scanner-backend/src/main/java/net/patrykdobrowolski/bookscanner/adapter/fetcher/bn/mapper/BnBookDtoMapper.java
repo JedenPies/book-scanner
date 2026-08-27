@@ -15,9 +15,9 @@ public class BnBookDtoMapper {
         return BookDetails.builder()
                 .title(cleanTitle(dto.getTitle()))
                 .authors(Collections.singletonList(dto.getAuthor()))
-                .publicationPlace(dto.getPlaceOfPublication())
+                .publicationPlace(placeOfPublication(dto.getPlaceOfPublication()))
                 .language(dto.getLanguage())
-                .publisher(dto.getPublisher())
+                .publisher(publisher(dto.getPublisher()))
                 .publicationYear(Optional.ofNullable(dto.getPublicationYear()).map(Year::parse).orElse(null))
                 .build();
     }
@@ -25,5 +25,18 @@ public class BnBookDtoMapper {
     private String cleanTitle(String title) {
         if (title == null) return null;
         return title.replaceAll("\\s*/\\s*$", "").trim();
+    }
+
+    private String placeOfPublication(String place) {
+        if (place == null) return null;
+        if (place.matches(".* : .*")) return place.replace(" : ", ", ");
+        return place;
+    }
+
+    private String publisher(String publisher) {
+        if (publisher == null) return null;
+        publisher = publisher.trim();
+        if (publisher.endsWith(",")) return publisher.substring(0, publisher.length() - 1);
+        return publisher;
     }
 }

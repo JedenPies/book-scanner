@@ -21,7 +21,7 @@ public class OpenLibraryBookDtoMapper {
                 .authors(fromAuthors(dto.getAuthors()))
                 .publisher(Optional.ofNullable(dto.getPublishers()).orElseGet(Collections::emptyList).stream().findFirst().map(PublisherDto::getName).orElse(null))
                 .publicationPlace(Optional.ofNullable(dto.getPublishPlaces()).orElseGet(Collections::emptyList).stream().findFirst().map(PublishPlaceDto::getName).orElse(null))
-                .publicationYear(Optional.ofNullable(dto.getPublishDate()).map(Year::parse).orElse(null))
+                .publicationYear(publicationYear(dto.getPublishDate()))
                 .build();
     }
 
@@ -30,5 +30,12 @@ public class OpenLibraryBookDtoMapper {
                 .stream()
                 .map(AuthorDto::getName)
                 .toList();
+    }
+
+    private Year publicationYear(String strValue) {
+        if (strValue != null && strValue.matches("[0-9]{4}$")) {
+            Year.parse(strValue.substring(strValue.length() - 4));
+        }
+        return null;
     }
 }
