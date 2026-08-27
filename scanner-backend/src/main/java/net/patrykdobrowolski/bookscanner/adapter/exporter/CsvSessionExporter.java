@@ -1,6 +1,7 @@
 package net.patrykdobrowolski.bookscanner.adapter.exporter;
 
 import jakarta.inject.Named;
+import lombok.extern.slf4j.Slf4j;
 import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.model.ExportFormat;
 import net.patrykdobrowolski.bookscanner.domain.model.Scan;
@@ -13,6 +14,7 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Optional;
 
+@Slf4j
 @Named
 public class CsvSessionExporter implements SessionExporter {
 
@@ -50,7 +52,7 @@ public class CsvSessionExporter implements SessionExporter {
             return new ExportResult(outputStream.toByteArray());
 
         } catch (Exception e) {
-            throw new ExportFailedException();
+            throw new ExportFailedException(e.getMessage(), e);
         }
     }
 }

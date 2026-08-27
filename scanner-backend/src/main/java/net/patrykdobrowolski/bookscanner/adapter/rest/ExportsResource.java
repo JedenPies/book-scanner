@@ -46,7 +46,7 @@ public class ExportsResource {
         Export export = exportService.findExport(sessionId);
         ByteArrayResource resource = new ByteArrayResource(export.getData());
         return ResponseEntity.ok().header(
-                HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=export" + sessionId + "." + export.getFormat().name().toLowerCase())
+                HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=export-" + export.getId() + "." + export.getFormat().name().toLowerCase())
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(resource);
     }

@@ -8,6 +8,8 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Collections;
+import java.util.Optional;
 
 @Named
 public class XlsxSessionExporter implements SessionExporter {
@@ -46,7 +48,7 @@ public class XlsxSessionExporter implements SessionExporter {
                 row.createCell(0).setCellValue(scan.getIsbn().value());
                 row.createCell(1).setCellValue(scan.getStatus().name());
                 row.createCell(2).setCellValue(hasDetails ? scan.getBookDetails().getTitle() : "");
-                row.createCell(3).setCellValue(hasDetails ? String.join(", ", scan.getBookDetails().getAuthors()) : "");
+                row.createCell(3).setCellValue(hasDetails ? String.join(", ", Optional.ofNullable(scan.getBookDetails().getAuthors()).orElseGet(Collections::emptyList)) : "");
                 row.createCell(4).setCellValue(scan.getCreatedAt().toString());
             }
 
@@ -60,7 +62,7 @@ public class XlsxSessionExporter implements SessionExporter {
             return new ExportResult(out.toByteArray());
 
         } catch (Exception e) {
-            throw new ExportFailedException();
+            throw new ExportFailedException("XLSX export failed", e);
         }
     }
 }

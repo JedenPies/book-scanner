@@ -2,6 +2,7 @@ package net.patrykdobrowolski.bookscanner.service;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.patrykdobrowolski.bookscanner.adapter.exporter.ExportFailedException;
 import net.patrykdobrowolski.bookscanner.adapter.exporter.ExportFormatNotSupportedException;
 import net.patrykdobrowolski.bookscanner.adapter.exporter.ExportResult;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 @Named
 @RequiredArgsConstructor
+@Slf4j
 public class ExportSessionService implements ExportSessionServicePort {
 
     private final SessionServicePort sessionService;
@@ -34,6 +36,7 @@ public class ExportSessionService implements ExportSessionServicePort {
         try {
             tryToExport(session);
         } catch (ExportFormatNotSupportedException | ExportFailedException e) {
+            log.error("Session export failed", e);
             session.exportFailed();
         }
         Session updatedSession = sessionService.save(session);
@@ -47,6 +50,6 @@ public class ExportSessionService implements ExportSessionServicePort {
     }
 
     private SessionExporter findExporter(ExportFormat format) throws ExportFormatNotSupportedException {
-        return exporters.stream().filter(exporter -> exporter.supports(format)).findFirst().orElseThrow(ExportFormatNotSupportedException::new);
+        return exporters.stream().filter(exporter -> exporter.supports(format)).findFirst().orElseThrow(() -> new ExportFormatNotSupportedException(format));
     }
 }
