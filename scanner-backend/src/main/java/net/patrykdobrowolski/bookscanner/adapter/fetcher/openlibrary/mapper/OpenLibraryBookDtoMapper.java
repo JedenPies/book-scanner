@@ -1,6 +1,8 @@
 package net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.mapper;
 
 import jakarta.inject.Named;
+import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.PublishPlaceDto;
+import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.PublisherDto;
 import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.AuthorDto;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.BookDto;
@@ -16,6 +18,9 @@ public class OpenLibraryBookDtoMapper {
         return BookDetails.builder()
                 .title(dto.getTitle())
                 .authors(fromAuthors(dto.getAuthors()))
+                .publisher(Optional.ofNullable(dto.getPublishers()).orElseGet(Collections::emptyList).stream().findFirst().map(PublisherDto::getName).orElse(null))
+                .publicationPlace(Optional.ofNullable(dto.getPublishPlaces()).orElseGet(Collections::emptyList).stream().findFirst().map(PublishPlaceDto::getName).orElse(null))
+                .publicationYear(dto.getPublishDate())
                 .build();
     }
 
