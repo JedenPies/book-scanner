@@ -1,1 +1,94 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  font-family: Tahoma, sans-serif;
+}
+
+button {
+  height: 40px;
+  display: flex;
+  gap: 6px;
+  border: none;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  color: white;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+    background-color: #94a3b8;
+  }
+}
+
+.btn-primary {
+
+  background-color: #3b82f6;
+
+  &:hover:not(:disabled) {
+    background-color: #2563eb;
+  }
+}
+
+.btn-secondary {
+
+  background-color: #10b981;
+
+  &:hover:not(:disabled) {
+    background-color: #059669;
+  }
+}
+
+.btn-cancel {
+
+  background-color: #fef3c7; /* Ciepły, pastelowy żółty/bursztynowy */
+  color: #d97706; /* Ciemniejszy bursztyn dla tekstu */
+
+  &:hover {
+    background-color: #fde68a;
+  }
+}
+
+.btn-delete {
+
+  background-color: #fee2e2; /* Bardzo jasny, pastelowy czerwony */
+  color: #dc2626; /* Przygaszony, ciemniejszy czerwony dla tekstu */
+
+  &:hover {
+    background-color: #fecaca; /* Lekko ciemniejsze tło przy najechaniu myszką */
+  }
+}
+
+button.small {
+  height: auto;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.filler {
+  flex: 1;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(30, 64, 175, 0.2); /* Lekko przezroczysty niebieski */
+  border-top-color: #1e40af; /* Ciemnoniebieski dla akcentu */
+  border-radius: 50%;
+  animation: spin-spinner 0.8s linear infinite;
+}
+
+@keyframes spin-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}

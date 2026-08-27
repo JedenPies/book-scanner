@@ -1,21 +1,15 @@
 <div class="editor-header">
-  <div class="header-titles">
     <h2>Sesja Skanowania</h2>
 
     <div class="session-badge-container">
       <span class="session-badge">{{ sessionId() }}</span>
-      <button class="btn-copy" (click)="copyUrlToClipboard()" title="Kopiuj Adres Strony">
-        📋
-      </button>
+      <button class="btn-icon" (click)="copyUrlToClipboard()" title="Kopiuj Adres Strony">📋</button>
     </div>
-  </div>
-
-  <div class="header-actions">
-
     <!-- Odznaka statusu (pokazuje się obok, jeśli mamy jakikolwiek eksport) -->
     @if (exportState()) {
-      <div
-        class="export-status-badge {{ exportState()!.cssClass }}"
+      <button
+        class="btn-secondary {{ exportState()!.cssClass }}"
+        [disabled]="!exportState()!.isClickable"
         [class.clickable]="exportState()!.isClickable"
         (click)="exportState()!.isClickable ? downloadExport() : null"
       >
@@ -25,19 +19,18 @@
           <span class="icon">{{ exportState()!.icon }}</span>
         }
         <span class="text">{{ exportState()!.text }}</span>
-      </div>
+      </button>
     }
 
-    <!-- Zawsze widoczny przycisk Eksportu (wyszarzony podczas pracy) -->
     <button
-      class="btn-export"
+      class="btn-primary"
       [disabled]="isExportProcessing()"
       (click)="openExportModal()"
     >
       <span>📥</span> Eksportuj
     </button>
+  <span class="filler"></span>
 
-  </div>
 </div>
 
 <div class="table-wrapper">
@@ -88,9 +81,9 @@
           </td>
           <td class="actions">
             @if(isIntendedToDelete(scan.id)) {
-              <button (click)="cancelDelete(scan.id)" class="action-btn cancel-btn">Undo Delete</button>
+              <button (click)="cancelDelete(scan.id)" class="btn-cancel small">Undelete</button>
             } @else {
-              <button (click)="deleteScan(scan.id)" class="action-btn delete-btn">Delete</button>
+              <button (click)="deleteScan(scan.id)" class="btn-delete small">Delete</button>
             }
           </td>
         </tr>

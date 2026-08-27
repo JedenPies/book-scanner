@@ -4,7 +4,6 @@
   gap: 4px;
 
   .session-badge {
-    font-family: "SFMono-Regular", Consolas, monospace;
     background: #e2e8f0;
     padding: 6px 10px;
     border-radius: 6px;
@@ -38,21 +37,27 @@
 }
 
 .export-status-badge {
+
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+
+  background-color: #3b82f6;
+  color: white;
+
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 16px;
-  border-radius: 6px; // Kanciasty, sprawdzony u nas design
   font-size: 0.95rem;
   font-weight: 600;
-  border: 1px solid rgba(0,0,0,0.05);
 
   /* Kolory przejmą klasy z Twojego status-badge (status-pending, status-found, etc.) */
 
   &.clickable {
     cursor: pointer;
     transition: transform 0.1s, box-shadow 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 
     &:hover {
       transform: translateY(-2px);
@@ -75,29 +80,17 @@
   max-width: 1900px;
   margin: 1.5rem auto 0 auto;
   display: flex;
+  gap: 8px;
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem;
 
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px; /* Odstęp między odznaką statusu a przyciskiem "Eksportuj" */
-  }
-
   .btn-export {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
+
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: background-color 0.2s, transform 0.1s;
+
 
     &:hover:not(:disabled) {
       background-color: #2563eb;
@@ -113,52 +106,6 @@
       background-color: #94a3b8;
       cursor: not-allowed;
       opacity: 0.7;
-    }
-  }
-
-  .header-titles {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-
-    h2 {
-      margin: 0;
-      color: #0f172a;
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .session-badge {
-      font-family: "SFMono-Regular", Consolas, monospace;
-      background: #e2e8f0;
-      padding: 4px 10px;
-      border-radius: 6px;
-      color: #475569;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-  }
-
-  .btn-export {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.2s, transform 0.1s;
-
-    &:hover {
-      background-color: #2563eb;
-      transform: translateY(-1px);
-    }
-    &:active {
-      transform: translateY(0);
     }
   }
 }
@@ -338,34 +285,34 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
 
-    /* Definicja szerokości dla konkretnych kolumn */
+    /* ISBN */
     &:nth-child(1) {
       width: 125px;
     }
 
-    /* ISBN */
+    /* Status */
     &:nth-child(2) {
       width: 50px;
     }
 
-    /* Status */
+    /* Tytuł - elastyczny, zajmie resztę miejsca */
     &:nth-child(3) {
       width: auto;
     }
 
-    /* Tytuł - elastyczny, zajmie resztę miejsca */
+    /* Autor(zy) */
     &:nth-child(4) {
       width: 400px;
     }
 
-    /* Autor(zy) */
+    /* Źródło */
     &:nth-child(5) {
       width: 150px;
     }
 
-    /* Źródło */
+    /* Akcje */
     &:nth-child(6) {
-      width: 100px;
+      width: 130px;
     }
 
     /* Delete */
@@ -439,44 +386,10 @@
   font-weight: 700;
   letter-spacing: 0.05em;
 
-  ///* Kolory w zależności od statusu (generowane przez status-{{ status | lowercase }} w HTML) */
-  //&.status-pending, &.status-fetching {
-  //  background-color: #dbeafe;
-  //  color: #1e40af;
-  //}
-  //&.status-found {
-  //  background-color: #dcfce3;
-  //  color: #166534;
-  //}
-  //&.status-not_found, &.status-failed {
-  //  background-color: #fee2e2;
-  //  color: #991b1b;
-  //}
-  //&.status-duplicate {
-  //  background-color: #fef3c7;
-  //  color: #92400e;
-  //}
-  //&.status-modified {
-  //  background-color: #f3e8ff;
-  //  color: #6b21a8;
-  //}
 }
 
 /* Animacja spinnera */
-.spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(30, 64, 175, 0.2); /* Lekko przezroczysty niebieski */
-  border-top-color: #1e40af; /* Ciemnoniebieski dla akcentu */
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 /* Stan pusty tabeli */
 .empty-state {
