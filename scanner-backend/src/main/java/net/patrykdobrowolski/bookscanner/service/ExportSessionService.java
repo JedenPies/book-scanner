@@ -6,11 +6,14 @@ import net.patrykdobrowolski.bookscanner.adapter.exporter.ExportFailedException;
 import net.patrykdobrowolski.bookscanner.adapter.exporter.ExportFormatNotSupportedException;
 import net.patrykdobrowolski.bookscanner.adapter.exporter.ExportResult;
 import net.patrykdobrowolski.bookscanner.adapter.exporter.SessionExporter;
-import net.patrykdobrowolski.bookscanner.domain.event.ExportCompleteEvent;
+import net.patrykdobrowolski.bookscanner.domain.model.event.ExportCompleteEvent;
 import net.patrykdobrowolski.bookscanner.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.model.ExportFormat;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
+import net.patrykdobrowolski.bookscanner.domain.port.ExportServicePort;
+import net.patrykdobrowolski.bookscanner.domain.port.ExportSessionServicePort;
+import net.patrykdobrowolski.bookscanner.domain.port.SessionServicePort;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
@@ -18,14 +21,16 @@ import java.util.UUID;
 
 @Named
 @RequiredArgsConstructor
-public class ExportSessionService {
+public class ExportSessionService implements ExportSessionServicePort {
 
-    private final SessionService sessionService;
+    private final SessionServicePort sessionService;
+    private final ExportServicePort exportService;
     private final ApplicationEventPublisher eventPublisher;
     private final List<SessionExporter> exporters;
 
+    @Override
     public void exportSession(UUID sessionId) throws SessionNotFoundException, ExportNotRequestedException {
-        Session session = sessionService.beginExport(sessionId);
+        Session session = exportService.beginExport(sessionId);
         try {
             tryToExport(session);
         } catch (ExportFormatNotSupportedException | ExportFailedException e) {

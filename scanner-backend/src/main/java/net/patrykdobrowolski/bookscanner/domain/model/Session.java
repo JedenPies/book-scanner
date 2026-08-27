@@ -3,7 +3,7 @@ package net.patrykdobrowolski.bookscanner.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import net.patrykdobrowolski.bookscanner.domain.command.ExportSessionCommand;
+import net.patrykdobrowolski.bookscanner.domain.model.command.ExportSessionCommand;
 import net.patrykdobrowolski.bookscanner.domain.exception.ExportAlreadyRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;

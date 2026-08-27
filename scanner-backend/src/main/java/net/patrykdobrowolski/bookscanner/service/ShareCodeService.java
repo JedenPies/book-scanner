@@ -4,8 +4,8 @@ import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookscanner.domain.exception.ShareCodeGenerationException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ShareCodeNotFoundException;
-import net.patrykdobrowolski.bookscanner.redis.SessionShareCodeEntity;
-import net.patrykdobrowolski.bookscanner.redis.SessionShareCodeRepository;
+import net.patrykdobrowolski.bookscanner.adapter.redis.SessionShareCodeEntity;
+import net.patrykdobrowolski.bookscanner.adapter.redis.SessionShareCodeRepository;
 
 import java.security.SecureRandom;
 import java.util.Optional;

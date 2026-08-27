@@ -2,8 +2,8 @@ package net.patrykdobrowolski.bookscanner.service;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookscanner.domain.event.ExportRequestedEvent;
-import net.patrykdobrowolski.bookscanner.domain.event.ScanCreatedEvent;
+import net.patrykdobrowolski.bookscanner.domain.model.event.ExportRequestedEvent;
+import net.patrykdobrowolski.bookscanner.domain.model.event.ScanCreatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsAsyncFetcherPort;
 import net.patrykdobrowolski.bookscanner.domain.port.ExportCreatorAsyncPort;
 import org.springframework.transaction.event.TransactionalEventListener;
