@@ -1,41 +1,10 @@
-<div class="editor-header">
-  <h2>Scanning Session</h2>
-
-  <div class="session-badge-container">
-    <span class="badge clickable" (click)="copyUrlToClipboard()">{{ sessionId() }}</span>
-  </div>
-
-  <span class="filler"></span>
-  @if (exportState()) {
-    <button
-      class="btn-secondary {{ exportState()!.cssClass }}"
-      [disabled]="!exportState()!.isClickable"
-      [class.clickable]="exportState()!.isClickable"
-      (click)="exportState()!.isClickable ? downloadExport() : null"
-    >
-      @if (exportState()!.showSpinner) {
-        <span class="spinner"></span>
-      } @else {
-        <span class="icon">{{ exportState()!.icon }}</span>
-      }
-      <span class="text">{{ exportState()!.text }}</span>
-    </button>
-  }
-
-  <button
-    class="btn-primary"
-    [disabled]="isExportProcessing()"
-    (click)="openExportModal()"
-  >
-    <span>📥</span> Export
-  </button>
-  <button
-    class="btn-primary"
-    (click)="openManualIsbnModal()">
-    <span>➕</span> Enter ISBN manually
-  </button>
-
-</div>
+<app-editor-header
+  [sessionId]="sessionId()"
+  [exportState]="exportState()"
+  [isExportProcessing]="isExportProcessing()"
+  (openExport)="openExportModal()"
+  (openManualIsbn)="openManualIsbnModal()"
+  (downloadExport)="downloadExport()" />
 
 <div class="table-wrapper">
 

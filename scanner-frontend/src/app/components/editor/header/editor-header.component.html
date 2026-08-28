@@ -1,0 +1,39 @@
+<div class="editor-header">
+  <h2>Scanning Session</h2>
+
+  <div class="session-badge-container">
+    <span class="badge clickable" (click)="copyUrlToClipboard()">
+      {{ sessionId() }}
+    </span>
+  </div>
+
+  <span class="filler"></span>
+
+  @if (exportState()) {
+    <button
+      class="btn-secondary {{ exportState()!.cssClass }}"
+      [disabled]="!exportState()!.isClickable"
+      [class.clickable]="exportState()!.isClickable"
+      (click)="exportState()!.isClickable ? downloadExport.emit() : null"
+    >
+      @if (exportState()!.showSpinner) {
+        <span class="spinner"></span>
+      } @else {
+        <span class="icon">{{ exportState()!.icon }}</span>
+      }
+      <span class="text">{{ exportState()!.text }}</span>
+    </button>
+  }
+
+  <button
+    class="btn-primary"
+    [disabled]="isExportProcessing()"
+    (click)="openExport.emit()"
+  >
+    <span>📥</span> Export
+  </button>
+
+  <button class="btn-primary" (click)="openManualIsbn.emit()">
+    <span>➕</span> Enter ISBN manually
+  </button>
+</div>

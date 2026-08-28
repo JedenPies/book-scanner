@@ -12,6 +12,7 @@ import { ScannerBackendService } from '../../services/scanner-backend.service';
 import { LowerCasePipe } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
 import { ClipboardService } from '../../services/clipboard.service';
+import { EditorHeaderComponent } from './header/editor-header.component';
 
 export interface ScanToDelete {
   scanId: string;
@@ -20,12 +21,11 @@ export interface ScanToDelete {
 
 @Component({
   selector: 'app-scanner',
-  imports: [LowerCasePipe],
+  imports: [LowerCasePipe, EditorHeaderComponent],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.scss',
 })
 export class EditorComponent {
-
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('manualIsbnInput') manualIsbnInput!: ElementRef<HTMLInputElement>;
 
@@ -41,7 +41,9 @@ export class EditorComponent {
   manualIsbn = signal<string>('');
   isManualIsbnModalOpen = signal<boolean>(false);
 
-  exportState = computed(() => { return this.computedExportState() });
+  exportState = computed(() => {
+    return this.computedExportState();
+  });
   isExportProcessing = computed(() => {
     const status = this.currentExport()?.status;
     return status === 'REQUESTED' || status === 'PROCESSING';
@@ -49,7 +51,7 @@ export class EditorComponent {
   isValidIsbn = computed(() => {
     const isbn = this.manualIsbn();
     return this.isIsbnValid(isbn);
-  })
+  });
 
   backendService = inject(ScannerBackendService);
   toastService = inject(ToastService);
@@ -74,7 +76,7 @@ export class EditorComponent {
     this.isManualIsbnModalOpen.set(true);
     setTimeout(() => {
       this.manualIsbnInput?.nativeElement.focus();
-    })
+    });
   }
 
   closeManualIsbnModal() {
@@ -119,13 +121,13 @@ export class EditorComponent {
     if (!isbn || !this.isIsbnValid(isbn)) return;
     this.backendService.addScan(this.sessionId(), this.manualIsbn()).subscribe({
       error: (err) => {
-        this.toastService.show("błąd dodawania ISBN", 'error');
-      }});
+        this.toastService.show('błąd dodawania ISBN', 'error');
+      },
+    });
     this.manualIsbn.set('');
   }
 
   isIsbnValid(rawIsbn: string): boolean {
-
     if (!rawIsbn) return false;
 
     // Usuwamy myślniki i spacje, ujednolicamy do wielkich liter (dla znaku 'X' w ISBN-10)
@@ -186,12 +188,7 @@ export class EditorComponent {
   }
 
   toggleExpand(scanId: string) {
-    this.expandedScanId.update(current => current === scanId ? null : scanId);
-  }
-
-  copyUrlToClipboard() {
-    const currentUrl = window.location.href;
-    this.clipboardService.copyToClipboard(currentUrl, true, 'URL');
+    this.expandedScanId.update((current) => (current === scanId ? null : scanId));
   }
 
   private computedExportState() {
@@ -209,7 +206,7 @@ export class EditorComponent {
           text: `Przygotowuję plik ${exp.format}...`,
           cssClass: 'status-pending', // Klasy wzięte z Twoich odznak
           showSpinner: true,
-          isClickable: false
+          isClickable: false,
         };
       case 'SUCCEED':
         return {
@@ -217,7 +214,7 @@ export class EditorComponent {
           text: `Pobierz gotowy plik ${exp.format}`,
           cssClass: 'status-found', // Użyjemy zielonej klasy dla sukcesu
           showSpinner: false,
-          isClickable: true
+          isClickable: true,
         };
       case 'FAILED':
         return {
@@ -225,7 +222,7 @@ export class EditorComponent {
           text: `Błąd eksportu ${exp.format}. Spróbuj ponownie.`,
           cssClass: 'status-failed', // Czerwona klasa
           showSpinner: false,
-          isClickable: false
+          isClickable: false,
         };
       default:
         return null;
@@ -249,7 +246,7 @@ export class EditorComponent {
       },
     });
     this.closeExportModal();
-    this.toastService.show(`Export request sent. Please wait.`)
+    this.toastService.show(`Export request sent. Please wait.`);
   }
 
   downloadExport() {
@@ -306,11 +303,11 @@ export class EditorComponent {
           this.scans.set(sortedScans);
         },
       });
-      this.backendService.loadExport(sessionId).subscribe(({
+      this.backendService.loadExport(sessionId).subscribe({
         next: (result) => {
           this.currentExport.set(result);
-        }
-      }))
+        },
+      });
     }
   }
 
@@ -355,7 +352,6 @@ export class EditorComponent {
       const eventDto: ExportCompleteSseEvent = JSON.parse(event.data);
       this.currentExport.set(eventDto.export);
       this.toastService.show('Export ready!', 'success');
-
     });
     this.eventSource.onerror = (error) => {
       console.error('EventSource failed:', error);
