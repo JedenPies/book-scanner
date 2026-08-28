@@ -69,10 +69,33 @@ button {
   }
 }
 
+.btn-neutral {
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+
 button.small {
-  height: auto;
+  padding: 11px 15px;
+  height: 38px;
   font-size: 0.9rem;
   font-weight: 500;
+
+  &.icon {
+    padding: 8px;
+  }
+}
+
+
+
+button.tiny {
+  padding: 2px;
+  font-size: 0.9rem;
+  height: 28px;
+}
+
+button.square {
+  aspect-ratio: 1 / 1;
 }
 
 .filler {
@@ -92,4 +115,63 @@ button.small {
   to {
     transform: rotate(360deg);
   }
+}
+
+input {
+  padding: 10px 12px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: monospace;
+  font-weight: 600;
+  color: #666;
+  background-color: #fff;
+  outline: none;
+  transition: border-color 0.2s, width 0.2s;
+
+  &:focus {
+    border: 1px solid #999;
+    color: #333;
+  }
+
+  &::placeholder {
+    font-family: inherit;
+    color: #94a3b8;
+  }
+
+  &.valid {
+    //color: #166534;
+    //border-color: #86efac;
+    color: #198c3e;
+  }
+
+  &.invalid {
+    //color: #dc2626;
+    color: #981717;
+  }
+
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.25);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  animation: fadeIn 0.15s ease-out;
+}
+
+
+.badge {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: #0f172a;
+  font-size: 0.9rem;
+  border: 1px solid #e2e8f0;
+}
+
+.clickable {
+  cursor: pointer;
 }

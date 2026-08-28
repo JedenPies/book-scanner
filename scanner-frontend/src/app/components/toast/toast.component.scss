@@ -1,14 +1,13 @@
 .toast-container {
   position: fixed;
   bottom: 32px; /* Trochę wyżej od samej krawędzi ekranu */
-  left: 50%;
-  transform: translateX(-50%); /* Centruje kontener idealnie na środku */
+  right: 32px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
   gap: 16px; /* Większy odstęp między tostami */
   pointer-events: none;
-  align-items: center; /* Zapewnia, że tosty różnej szerokości będą wyśrodkowane względem siebie */
+  align-items: end;
 }
 
 .toast {

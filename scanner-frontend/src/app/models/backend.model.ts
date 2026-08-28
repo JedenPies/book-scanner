@@ -59,7 +59,3 @@ export interface ExportDto {
   status: ExportStatus;
   createdAt: string;
 }
-
-export interface ExportRequestDto {
-  format: ExportFormat;
-}

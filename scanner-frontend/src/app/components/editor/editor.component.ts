@@ -25,7 +25,9 @@ export interface ScanToDelete {
   styleUrl: './editor.component.scss',
 })
 export class EditorComponent {
+
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('manualIsbnInput') manualIsbnInput!: ElementRef<HTMLInputElement>;
 
   sessionId = input.required<string>();
 
@@ -36,18 +38,25 @@ export class EditorComponent {
   showScrollUp = signal<boolean>(false);
   isExportModalOpen = signal<boolean>(false);
   expandedScanId = signal<string | null>(null);
+  manualIsbn = signal<string>('');
+  isManualIsbnModalOpen = signal<boolean>(false);
 
   exportState = computed(() => { return this.computedExportState() });
   isExportProcessing = computed(() => {
     const status = this.currentExport()?.status;
     return status === 'REQUESTED' || status === 'PROCESSING';
   });
+  isValidIsbn = computed(() => {
+    const isbn = this.manualIsbn();
+    return this.isIsbnValid(isbn);
+  })
 
   backendService = inject(ScannerBackendService);
   toastService = inject(ToastService);
   clipboardService = inject(ClipboardService);
 
   private eventSource?: EventSource;
+  private submitTimeout?: number;
 
   ngOnInit() {
     this.loadScansAndExport();
@@ -60,13 +69,129 @@ export class EditorComponent {
     }
   }
 
+  openManualIsbnModal() {
+    this.manualIsbn.set('');
+    this.isManualIsbnModalOpen.set(true);
+    setTimeout(() => {
+      this.manualIsbnInput?.nativeElement.focus();
+    })
+  }
+
+  closeManualIsbnModal() {
+    if (this.submitTimeout) {
+      clearTimeout(this.submitTimeout);
+    }
+    this.isManualIsbnModalOpen.set(false);
+    this.manualIsbn.set('');
+  }
+
+  onManualIsbnPaste(event: ClipboardEvent) {
+    event.preventDefault();
+    const pastedText = event.clipboardData?.getData('text') || '';
+    const digitsOnly = pastedText.replace(/\D/g, '');
+    if (!digitsOnly) return;
+    this.onManualIsbnDataEntered(digitsOnly);
+  }
+
+  onManualIsbnInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const digitsOnly = input.value.replace(/\D/g, '');
+    input.value = digitsOnly;
+    this.onManualIsbnDataEntered(digitsOnly);
+  }
+
+  onManualIsbnDataEntered(digitsOnly: string) {
+    this.manualIsbn.set(digitsOnly);
+    if (this.submitTimeout) {
+      clearTimeout(this.submitTimeout);
+    }
+    const is13 = digitsOnly.length === 13;
+    const is10 =
+      digitsOnly.length === 10 && !digitsOnly.startsWith('978') && !digitsOnly.startsWith('979');
+    if ((is13 || is10) && this.isIsbnValid(digitsOnly)) {
+      this.submitTimeout = window.setTimeout(() => this.submitManualIsbn(), 500);
+    }
+  }
+
+  submitManualIsbn() {
+    if (this.submitTimeout) clearTimeout(this.submitTimeout);
+    const isbn = this.manualIsbn().trim();
+    if (!isbn || !this.isIsbnValid(isbn)) return;
+    this.backendService.addScan(this.sessionId(), this.manualIsbn()).subscribe({
+      error: (err) => {
+        this.toastService.show("błąd dodawania ISBN", 'error');
+      }});
+    this.manualIsbn.set('');
+  }
+
+  isIsbnValid(rawIsbn: string): boolean {
+
+    if (!rawIsbn) return false;
+
+    // Usuwamy myślniki i spacje, ujednolicamy do wielkich liter (dla znaku 'X' w ISBN-10)
+    const cleanIsbn = rawIsbn.replace(/[-\s]/g, '').toUpperCase();
+
+    if (cleanIsbn.length === 10) {
+      return this.isValidIsbn10(cleanIsbn);
+    }
+
+    if (cleanIsbn.length === 13) {
+      return this.isValidIsbn13(cleanIsbn);
+    }
+
+    return false;
+  }
+
+  /**
+   * Algorytm ISBN-10 (Modulo 11):
+   * Wagi malejące od 10 do 1.
+   * Suma: (d1*10 + d2*9 + ... + d10*1) % 11 === 0
+   */
+  isValidIsbn10(isbn: string): boolean {
+    // Pierwsze 9 znaków musi być cyframi, 10. znak to cyfra lub 'X'
+    if (!/^\d{9}[\dX]$/.test(isbn)) {
+      return false;
+    }
+
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      sum += Number(isbn[i]) * (10 - i);
+    }
+
+    // Obsługa cyfry kontrolnej (X = 10)
+    const checkDigit = isbn[9] === 'X' ? 10 : Number(isbn[9]);
+    sum += checkDigit;
+
+    return sum % 11 === 0;
+  }
+
+  /**
+   * Algorytm ISBN-13 (Modulo 10):
+   * Wagi naprzemienne: 1 i 3.
+   * Suma: (d1*1 + d2*3 + d3*1 + ... + d13*waga) % 10 === 0
+   */
+  isValidIsbn13(isbn: string): boolean {
+    if (!/^\d{13}$/.test(isbn)) {
+      return false;
+    }
+
+    let sum = 0;
+    for (let i = 0; i < 13; i++) {
+      const digit = Number(isbn[i]);
+      const weight = i % 2 === 0 ? 1 : 3;
+      sum += digit * weight;
+    }
+
+    return sum % 10 === 0;
+  }
+
   toggleExpand(scanId: string) {
     this.expandedScanId.update(current => current === scanId ? null : scanId);
   }
 
   copyUrlToClipboard() {
     const currentUrl = window.location.href;
-    this.clipboardService.copyToClipboard(currentUrl);
+    this.clipboardService.copyToClipboard(currentUrl, true, 'URL');
   }
 
   private computedExportState() {

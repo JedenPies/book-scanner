@@ -4,17 +4,22 @@ import { Clipboard } from '@angular/cdk/clipboard';
 
 @Service()
 export class ClipboardService {
-
   private clipboard = inject(Clipboard);
   private toastService = inject(ToastService);
 
-  copyToClipboard(textToCopy: string) {
+  copyToClipboard(textToCopy: string, displayWhat: boolean = false, what: string | null = null) {
     if (!textToCopy) return;
-    const success = this.clipboard.copy(textToCopy)
+    const success = this.clipboard.copy(textToCopy);
     if (success) {
-      this.toastService.show('Skopiowano do schowka');
+      if (displayWhat) {
+        if (!what) what = textToCopy;
+        what = what.charAt(0).toUpperCase() + what.slice(1);
+        this.toastService.show(`${what} copied to clipboard`);
+      } else {
+        this.toastService.show('Copied to clipboard');
+      }
     } else {
-      this.toastService.show('Nie udało się skopiować do schowka', 'error');
+      this.toastService.show('Couldn\'t copy to clipboard', 'error');
     }
   }
 }
