@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-genres-at-book-details
+      author: patryk
+      changes:
+        - addColumn:
+            tableName: books_details
+            columns:
+              - column:
+                  name: genres
+                  type: text[]
