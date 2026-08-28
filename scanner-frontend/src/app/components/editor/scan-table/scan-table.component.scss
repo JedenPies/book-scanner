@@ -32,14 +32,16 @@
 
   .book-grid {
     display: grid;
-    grid-template-columns: 2fr 70px 1fr 100px 1fr;
+    grid-template-columns: 2fr 1.5fr 70px 100px;
     gap: 16px;
+    margin-bottom: -22px;
   }
 
   .info-group {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    margin-bottom: 22px;
 
     .label {
       font-size: 0.75rem;

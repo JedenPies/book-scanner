@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, HostListener, inject, input, signal } from '@angular/core';
 import {
   ExportCompleteSseEvent,
   ScanCreatedSseEvent,
@@ -54,6 +54,20 @@ export class EditorComponent {
     if (this.eventSource) {
       this.eventSource.close();
     }
+  }
+
+  @HostListener('window:keydown.control.space', ['$event'])
+  handleCtrlSpace(event: Event) {
+    if (this.isManualIsbnModalOpen() || this.isExportModalOpen()) {
+      return;
+    }
+
+    event.preventDefault(); // Zapobiega domyślnemu scrollowaniu strony spacją
+    this.openManualIsbnModal();
+  }
+
+  openManualIsbnModal() {
+    this.isManualIsbnModalOpen.set(true);
   }
 
   addManualIsbn(isbn: string) {

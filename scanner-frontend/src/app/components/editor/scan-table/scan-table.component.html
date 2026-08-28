@@ -75,16 +75,26 @@
                         <span class="value">{{ scan.bookDetails?.publisher || '-' }}</span>
                       </div>
                       <div class="info-group">
-                        <span class="label">Year</span>
-                        <span class="value">{{ scan.bookDetails?.publicationYear || '-' }}</span>
-                      </div>
-                      <div class="info-group">
                         <span class="label">Publication place</span>
                         <span class="value">{{ scan.bookDetails?.publicationPlace || '-' }}</span>
                       </div>
                       <div class="info-group">
+                        <span class="label">Year</span>
+                        <span class="value">{{ scan.bookDetails?.publicationYear || '-' }}</span>
+                      </div>
+                      <div class="info-group">
                         <span class="label">Language</span>
                         <span class="value">{{ scan.bookDetails?.language || '-' }}</span>
+                      </div>
+                      <div class="info-group">
+                        <span class="label">Genres</span>
+                        <div class="sources-list">
+                          @for (genre of scan.bookDetails?.genres; track genre) {
+                            <span class="badge source-badge">{{ genre }}</span>
+                          } @empty {
+                            <span class="value">-</span>
+                          }
+                        </div>
                       </div>
                       <div class="info-group">
                         <span class="label">Sources</span>

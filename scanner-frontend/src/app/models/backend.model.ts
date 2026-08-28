@@ -21,6 +21,7 @@ export interface BookDetailsDto {
   publicationYear: string;
   publicationPlace: string;
   language: string;
+  genres: string[];
 }
 
 export interface ScanDto {

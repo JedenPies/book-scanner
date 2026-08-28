@@ -61,7 +61,7 @@ export class ManualIsbnModalComponent {
     if (!isbn || !this.isIsbnValid(isbn)) return;
 
     this.isbnSubmitted.emit(isbn);
-    this.close();
+    this.manualIsbn.set('');
   }
 
   close() {
