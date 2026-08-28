@@ -6,6 +6,7 @@ import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.model.Year;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Named
@@ -19,6 +20,7 @@ public class BnBookDtoMapper {
                 .language(dto.getLanguage())
                 .publisher(publisher(dto.getPublisher()))
                 .publicationYear(Optional.ofNullable(dto.getPublicationYear()).map(Year::parse).orElse(null))
+                .genres(genres(dto.getGenre()))
                 .build();
     }
 
@@ -38,5 +40,9 @@ public class BnBookDtoMapper {
         publisher = publisher.trim();
         if (publisher.endsWith(",")) return publisher.substring(0, publisher.length() - 1);
         return publisher;
+    }
+
+    private List<String> genres(String genre) {
+        return Optional.ofNullable(genre).map(g -> Collections.singletonList(g.trim())).orElseGet(Collections::emptyList);
     }
 }

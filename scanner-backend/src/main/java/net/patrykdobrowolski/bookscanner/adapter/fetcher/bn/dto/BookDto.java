@@ -14,4 +14,5 @@ public class BookDto {
     private final String publicationYear;
     private final String language;
     private final String placeOfPublication;
+    private final String genre;
 }

@@ -18,4 +18,5 @@ public class BookDetailsDto {
     private final String publicationYear;
     private final String publicationPlace;
     private final String language;
+    private final List<String> genres;
 }

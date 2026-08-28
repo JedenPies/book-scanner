@@ -32,17 +32,18 @@ public class BookDetailsComposer {
         }
         Set<String> contributingSources = new HashSet<>();
         return BookDetails.builder()
-                .title(extractAndRecordSource(BookDetails::getTitle, contributingSources))
-                .publisher(extractAndRecordSource(BookDetails::getPublisher, contributingSources))
-                .publicationPlace(extractAndRecordSource(BookDetails::getPublicationPlace, contributingSources))
-                .publicationYear(extractAndRecordSource(BookDetails::getPublicationYear, contributingSources))
-                .authors(extractAndRecordSource(BookDetails::getAuthors, contributingSources))
-                .language(extractAndRecordSource(BookDetails::getLanguage, contributingSources))
+                .title(extractAndRecord(BookDetails::getTitle, contributingSources))
+                .publisher(extractAndRecord(BookDetails::getPublisher, contributingSources))
+                .publicationPlace(extractAndRecord(BookDetails::getPublicationPlace, contributingSources))
+                .publicationYear(extractAndRecord(BookDetails::getPublicationYear, contributingSources))
+                .authors(extractAndRecord(BookDetails::getAuthors, contributingSources))
+                .language(extractAndRecord(BookDetails::getLanguage, contributingSources))
                 .sources(contributingSources)
+                .genres(extractAndJoin(BookDetails::getGenres))
                 .build();
     }
 
-    private <T> @Nullable T extractAndRecordSource(Function<BookDetails, T> getter, Set<String> sourcesRef) {
+    private <T> @Nullable T extractAndRecord(Function<BookDetails, T> getter, Set<String> sourcesRef) {
         return sortedDetails.stream()
                 .filter(bd -> getter.apply(bd) != null)
                 .findFirst()
@@ -53,6 +54,14 @@ public class BookDetailsComposer {
                     return getter.apply(bd);
                 })
                 .orElse(null);
+    }
+
+    private <T> List<T> extractAndJoin(Function<BookDetails, List<T>> getter) {
+        return sortedDetails.stream()
+                .map(getter)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .toList();
     }
 
     private static class BookDetailsComparator implements Comparator<BookDetails> {

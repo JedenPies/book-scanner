@@ -21,6 +21,8 @@ public class BookDetails {
     private String publicationPlace;
     private String language;
 
+    private List<String> genres;
+
     public BookDetails withSource(String source) {
         return this.withSources(Set.of(source));
     }

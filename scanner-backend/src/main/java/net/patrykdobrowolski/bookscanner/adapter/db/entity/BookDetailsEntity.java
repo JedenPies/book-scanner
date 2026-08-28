@@ -51,4 +51,6 @@ public class BookDetailsEntity {
     private String publicationYear;
     private String publicationPlace;
     private String language;
+
+    private List<String> genres;
 }
