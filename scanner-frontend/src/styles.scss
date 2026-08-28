@@ -140,13 +140,10 @@ input {
   }
 
   &.valid {
-    //color: #166534;
-    //border-color: #86efac;
     color: #198c3e;
   }
 
   &.invalid {
-    //color: #dc2626;
     color: #981717;
   }
 
@@ -154,7 +151,14 @@ input {
 
 .backdrop {
   position: fixed;
+  top: 0;
+  left: 0;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: rgba(15, 23, 42, 0.25);
   backdrop-filter: blur(2px);
   z-index: 1000;
@@ -174,4 +178,14 @@ input {
 
 .clickable {
   cursor: pointer;
+}
+
+
+.keyboard-shortcut {
+  border: 1px solid #556;
+  color: #446;
+  background-color: #ddd;
+  border-radius: 4px;
+  padding: 3px;
+  font-size: 12px;
 }

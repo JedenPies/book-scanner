@@ -1,0 +1,28 @@
+<div class="backdrop" (click)="close()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Select export format</h3>
+    <p>What format do you choose for book list?</p>
+
+    <div class="export-options">
+      <button class="export-option-btn" (click)="selectFormat('CSV')">
+        <span class="icon">📄</span>
+        <div class="details">
+          <strong>CSV File</strong>
+          <span>Plain text, perfect for external systems import</span>
+        </div>
+      </button>
+
+      <button class="export-option-btn" (click)="selectFormat('XLSX')">
+        <span class="icon">📊</span>
+        <div class="details">
+          <strong>Microsoft Excel</strong>
+          <span>Formatted table ready to print</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="close()">Cancel</button>
+    </div>
+  </div>
+</div>

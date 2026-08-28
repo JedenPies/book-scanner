@@ -138,53 +138,15 @@
 </div>
 
 @if (isExportModalOpen()) {
-  <div class="modal-backdrop" (click)="closeExportModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <h3>Select export format</h3>
-      <p>What format do you choose for book list?</p>
-
-      <div class="export-options">
-        <button class="export-option-btn" (click)="requestExport('CSV')">
-          <span class="icon">📄</span>
-          <div class="details">
-            <strong>CSV File</strong>
-            <span>Plain text, perfect for external systems import</span>
-          </div>
-        </button>
-
-        <button class="export-option-btn" (click)="requestExport('XLSX')">
-          <span class="icon">📊</span>
-          <div class="details">
-            <strong>Microsoft Excel</strong>
-            <span>Formatted table ready to print</span>
-          </div>
-        </button>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-cancel" (click)="closeExportModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
+  <app-export-modal
+    [sessionId]="sessionId()"
+    (closed)="isExportModalOpen.set(false)"
+  />
 }
 
 @if (isManualIsbnModalOpen()) {
-  <div class="backdrop" (click)="closeManualIsbnModal()">
-    <div class="floating-isbn-cloud" (click)="$event.stopPropagation()">
-      <input
-        #manualIsbnInput
-        type="text"
-        placeholder="Enter ISBN..."
-        maxlength="13"
-        [value]="manualIsbn()"
-        (input)="onManualIsbnInput($event)"
-        (paste)="onManualIsbnPaste($event)"
-        (keydown.enter)="submitManualIsbn()"
-        (keydown.escape)="closeManualIsbnModal()"
-        [class.valid]="isValidIsbn()"
-        [class.invalid]="manualIsbn().length > 0 && !isValidIsbn()"
-      />
-      <span class="hint"><span class="keyboard-shortcut">⏎</span> to confirm. <span class="keyboard-shortcut">Esc</span> to close.</span>
-    </div>
-  </div>
+  <app-manual-isbn-modal
+    (isbnSubmitted)="addManualIsbn($event)"
+    (closed)="isManualIsbnModalOpen.set(false)"
+  />
 }

@@ -1,0 +1,21 @@
+<div class="backdrop" (click)="close()">
+  <div class="floating-isbn-cloud" (click)="$event.stopPropagation()">
+    <input
+      #isbnInput
+      type="text"
+      placeholder="Enter ISBN..."
+      maxlength="13"
+      [value]="manualIsbn()"
+      (input)="onInput($event)"
+      (paste)="onPaste($event)"
+      (keydown.enter)="submit()"
+      (keydown.escape)="close()"
+      [class.valid]="isValidIsbn()"
+      [class.invalid]="manualIsbn().length > 0 && !isValidIsbn()"
+    />
+    <span class="hint">
+      <span class="keyboard-shortcut">⏎</span> to confirm.
+      <span class="keyboard-shortcut">Esc</span> to close.
+    </span>
+  </div>
+</div>
