@@ -9,25 +9,25 @@
 
   <span class="filler"></span>
 
-  @if (exportState()) {
+  @if (exportService.exportState()) {
     <button
-      class="btn-secondary {{ exportState()!.cssClass }}"
-      [disabled]="!exportState()!.isClickable"
-      [class.clickable]="exportState()!.isClickable"
-      (click)="exportState()!.isClickable ? downloadExport.emit() : null"
+      class="btn-secondary {{ exportService.exportState()!.cssClass }}"
+      [disabled]="!exportService.exportState()!.isClickable"
+      [class.clickable]="exportService.exportState()!.isClickable"
+      (click)="exportService.exportState()!.isClickable ? exportService.download(sessionId()) : null"
     >
-      @if (exportState()!.showSpinner) {
+      @if (exportService.exportState()!.showSpinner) {
         <span class="spinner"></span>
       } @else {
-        <span class="icon">{{ exportState()!.icon }}</span>
+        <span class="icon">{{ exportService.exportState()!.icon }}</span>
       }
-      <span class="text">{{ exportState()!.text }}</span>
+      <span class="text">{{ exportService.exportState()!.text }}</span>
     </button>
   }
 
   <button
     class="btn-primary"
-    [disabled]="isExportProcessing()"
+    [disabled]="exportService.isProcessing()"
     (click)="openExport.emit()"
   >
     <span>📥</span> Export

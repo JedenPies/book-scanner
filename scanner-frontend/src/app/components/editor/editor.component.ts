@@ -13,6 +13,7 @@ import { LowerCasePipe } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
 import { ClipboardService } from '../../services/clipboard.service';
 import { EditorHeaderComponent } from './header/editor-header.component';
+import { ExportService } from '../../services/export.service';
 
 export interface ScanToDelete {
   scanId: string;
@@ -26,8 +27,11 @@ export interface ScanToDelete {
   styleUrl: './editor.component.scss',
 })
 export class EditorComponent {
+
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('manualIsbnInput') manualIsbnInput!: ElementRef<HTMLInputElement>;
+
+  exportService = inject(ExportService);
 
   sessionId = input.required<string>();
 
@@ -41,13 +45,6 @@ export class EditorComponent {
   manualIsbn = signal<string>('');
   isManualIsbnModalOpen = signal<boolean>(false);
 
-  exportState = computed(() => {
-    return this.computedExportState();
-  });
-  isExportProcessing = computed(() => {
-    const status = this.currentExport()?.status;
-    return status === 'REQUESTED' || status === 'PROCESSING';
-  });
   isValidIsbn = computed(() => {
     const isbn = this.manualIsbn();
     return this.isIsbnValid(isbn);
@@ -61,7 +58,8 @@ export class EditorComponent {
   private submitTimeout?: number;
 
   ngOnInit() {
-    this.loadScansAndExport();
+    this.loadScans();
+    this.exportService.loadExport(this.sessionId());
     this.initSseStream();
   }
 
@@ -238,22 +236,8 @@ export class EditorComponent {
   }
 
   requestExport(exportFormat: string) {
-    const format = exportFormat as ExportFormat;
-    this.currentExport.set(null);
-    this.backendService.requestExport(this.sessionId(), format).subscribe({
-      next: (result) => {
-        this.currentExport.set(result);
-      },
-    });
+    this.exportService.requestExport(this.sessionId(), exportFormat as ExportFormat);
     this.closeExportModal();
-    this.toastService.show(`Export request sent. Please wait.`);
-  }
-
-  downloadExport() {
-    const exp = this.currentExport();
-    if (exp && exp.status === 'SUCCEED') {
-      window.open(`/api/sessions/${this.sessionId()}/export/data`);
-    }
   }
 
   deleteScan(scanId: string) {
@@ -292,7 +276,7 @@ export class EditorComponent {
     );
   }
 
-  private loadScansAndExport() {
+  private loadScans() {
     const sessionId = this.sessionId();
     if (sessionId) {
       this.backendService.retrieveAllScans(sessionId).subscribe({
@@ -301,11 +285,6 @@ export class EditorComponent {
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
           );
           this.scans.set(sortedScans);
-        },
-      });
-      this.backendService.loadExport(sessionId).subscribe({
-        next: (result) => {
-          this.currentExport.set(result);
         },
       });
     }
@@ -350,8 +329,9 @@ export class EditorComponent {
     });
     this.eventSource.addEventListener('EXPORT_COMPLETE', (event: MessageEvent) => {
       const eventDto: ExportCompleteSseEvent = JSON.parse(event.data);
-      this.currentExport.set(eventDto.export);
-      this.toastService.show('Export ready!', 'success');
+      this.exportService.handleSseComplete(eventDto.export);
+      // this.currentExport.set(eventDto.export);
+      // this.toastService.show('Export ready!', 'success');
     });
     this.eventSource.onerror = (error) => {
       console.error('EventSource failed:', error);

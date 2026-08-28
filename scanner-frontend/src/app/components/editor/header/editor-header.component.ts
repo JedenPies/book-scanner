@@ -1,6 +1,7 @@
 import { Component, inject, input, output } from '@angular/core';
 import { ExportState } from '../editor.model';
 import { ClipboardService } from '../../../services/clipboard.service';
+import { ExportService } from '../../../services/export.service';
 
 @Component({
   selector: 'app-editor-header',
@@ -10,15 +11,14 @@ import { ClipboardService } from '../../../services/clipboard.service';
 })
 export class EditorHeaderComponent {
 
+  exportService = inject(ExportService);
   clipboardService = inject(ClipboardService);
 
   sessionId = input.required<string>();
-  exportState = input<ExportState | null>(null);
-  isExportProcessing = input<boolean>(false);
 
   openExport = output<void>();
   openManualIsbn = output<void>();
-  downloadExport = output<void>();
+
 
   copyUrlToClipboard() {
     const currentUrl = window.location.href;
