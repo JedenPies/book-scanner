@@ -42,10 +42,10 @@ button {
 
 .btn-secondary {
 
-  background-color: #10b981;
+  background-color: #a6c6a6;
 
   &:hover:not(:disabled) {
-    background-color: #059669;
+    background-color: #9cc69c;
   }
 }
 
@@ -84,6 +84,10 @@ button.small {
 
   &.icon {
     padding: 8px;
+  }
+
+  img {
+    margin: 2px;
   }
 }
 
@@ -183,10 +187,15 @@ input {
 
 
 .keyboard-shortcut {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   border: 1px solid #556;
   color: #446;
   background-color: #ddd;
   border-radius: 4px;
+  vertical-align: middle;
   padding: 3px;
   font-size: 12px;
 }

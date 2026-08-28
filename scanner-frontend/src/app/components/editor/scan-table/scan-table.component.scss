@@ -315,4 +315,8 @@ td.expandable-cell {
 td.actions {
   opacity: 1;
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  gap: 4px;
 }

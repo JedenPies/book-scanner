@@ -1,5 +1,5 @@
 import { Component, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
-import { LowerCasePipe } from '@angular/common';
+import { LowerCasePipe, NgOptimizedImage } from '@angular/common';
 import { ClipboardService } from '../../../services/clipboard.service';
 import { ScanDto } from '../../../models/backend.model';
 import { ScanToDelete } from '../editor.component';
@@ -7,7 +7,7 @@ import { ScanToDelete } from '../editor.component';
 @Component({
   selector: 'app-scan-table',
   standalone: true,
-  imports: [LowerCasePipe],
+  imports: [LowerCasePipe, NgOptimizedImage],
   templateUrl: './scan-table.component.html',
   styleUrl: './scan-table.component.scss',
 })

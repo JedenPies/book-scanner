@@ -9,10 +9,6 @@ export interface SessionDto {
   id: string;
 }
 
-export interface CreateScanRequestDto {
-  isbn: string;
-}
-
 export interface BookDetailsDto {
   sources: string[];
   title: string;
