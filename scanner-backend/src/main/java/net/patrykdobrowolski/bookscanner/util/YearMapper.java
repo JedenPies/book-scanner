@@ -12,7 +12,9 @@ public interface YearMapper {
     default String map(Year isbn) {
         return Optional.ofNullable(isbn).map(Year::value).orElse(null);
     }
+
     default Year map(String isbn) {
-            return Year.parse(isbn);
-        }
+        if(isbn == null) return null;
+        return Year.parse(isbn);
+    }
 }
