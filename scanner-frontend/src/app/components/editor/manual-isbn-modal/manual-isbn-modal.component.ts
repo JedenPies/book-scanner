@@ -32,7 +32,7 @@ export class ManualIsbnModalComponent {
   onPaste(event: ClipboardEvent) {
     event.preventDefault();
     const pastedText = event.clipboardData?.getData('text') || '';
-    const digitsOnly = pastedText.replace(/\D/g, '');
+    const digitsOnly = pastedText.replace(/\D/g, '').substring(0, 13);
     if (!digitsOnly) return;
     this.handleDataEntered(digitsOnly);
   }

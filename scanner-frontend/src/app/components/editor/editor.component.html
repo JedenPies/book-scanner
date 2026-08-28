@@ -1,141 +1,16 @@
 <app-editor-header
   [sessionId]="sessionId()"
-  (openExport)="openExportModal()"
-  (openManualIsbn)="openManualIsbnModal()" />
+  (openExport)="isExportModalOpen.set(true)"
+  (openManualIsbn)="isManualIsbnModalOpen.set(true)"
+/>
 
-<div class="table-wrapper">
-
-  <div class="table-container" #scrollContainer (scroll)="onScroll()">
-    <table class="scan-table">
-      <thead>
-      <tr>
-        <th>ISBN</th>
-        <th></th>
-        <th>Title</th>
-        <th></th>
-      </tr>
-      </thead>
-      <tbody>
-        @for (scan of scans(); track scan.id) {
-
-          <!-- GŁÓWNY WIERSZ -->
-          <tr
-            class="main-row"
-            [class.is-deleting]="isIntendedToDelete(scan.id)"
-            [class.is-expanded]="expandedScanId() === scan.id"
-            [class.not-expandable]="scan.status !== 'FOUND'"
-            (click)="scan.status == 'FOUND' ? toggleExpand(scan.id) : null"
-          >
-            <!-- ISBN -->
-            <td class="valign-top" style="padding-top: 19px; text-align: center;">
-              <span
-                class="badge"
-                (click)="$event.stopPropagation(); clipboardService.copyToClipboard(scan.isbn, true, 'ISBN');">
-                {{ scan.isbn }}
-              </span>
-            </td>
-
-            <!-- STATUS -->
-            <td class="valign-top">
-              <div class="status-{{ scan.status | lowercase }}">
-                @if (scan.status === 'PENDING' || scan.status === 'FETCHING') {
-                  <span class="spinner" title="Fetching..."></span>
-                } @else if (scan.status === 'FOUND') {
-                  <span title="Found">✅</span>
-                } @else if (scan.status === 'NOT_FOUND') {
-                  <span title="Not found">❓</span>
-                } @else if (scan.status === 'FAILED') {
-                  <span title="Fetch error">❌</span>
-                } @else if (scan.status === 'DUPLICATE') {
-                  <span title="Duplicate">🔄</span>
-                } @else if (scan.status === 'MODIFIED') {
-                  <span title="Modified">✏️</span>
-                }
-              </div>
-            </td>
-
-            <td class="expandable-cell valign-top">
-              <div class="title-wrapper">
-                <span
-                  class="chevron"
-                  [class.rotated]="expandedScanId() === scan.id"
-                  [class.invisible]="scan.status !== 'FOUND' || isIntendedToDelete(scan.id)">▼</span>
-                <span class="primary-text">{{ scan.bookDetails?.title || '-' }}</span>
-              </div>
-              <div
-                class="book-card-collapsible"
-                [class.is-open]="expandedScanId() === scan.id && !isIntendedToDelete(scan.id) && scan.status === 'FOUND'"
-                (click)="$event.stopPropagation()">
-                <div class="book-card-inner">
-                  <div class="book-card">
-                    <div class="book-header">
-                      <span class="authors">{{ scan.bookDetails?.authors?.join(', ') || 'No info about author' }}</span>
-                    </div>
-
-                    <div class="book-grid">
-                      <div class="info-group">
-                        <span class="label">Publisher</span>
-                        <span class="value">{{ scan.bookDetails?.publisher || '-' }}</span>
-                      </div>
-                      <div class="info-group">
-                        <span class="label">Year</span>
-                        <span class="value">{{ scan.bookDetails?.publicationYear || '-' }}</span>
-                      </div>
-                      <div class="info-group">
-                        <span class="label">Publication place</span>
-                        <span class="value">{{ scan.bookDetails?.publicationPlace || '-' }}</span>
-                      </div>
-                      <div class="info-group">
-                        <span class="label">Language</span>
-                        <span class="value">{{ scan.bookDetails?.language || '-' }}</span>
-                      </div>
-                      <div class="info-group">
-                        <span class="label">Sources</span>
-                        <div class="sources-list">
-                          @for (source of scan.bookDetails?.sources; track source) {
-                            <span class="badge source-badge">{{ source }}</span>
-                          } @empty {
-                            <span class="value">-</span>
-                          }
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td class="actions valign-top" (click)="$event.stopPropagation()">
-              @if (scan.status === 'FAILED') {
-                <button class="action-btn" (click)="retryScan(scan.id)" title="Retry fetch">🔁</button>
-              }
-              @if (isIntendedToDelete(scan.id)) {
-                <button (click)="cancelDelete(scan.id)" class="btn-cancel small">Undelete</button>
-              } @else {
-                <button (click)="deleteScan(scan.id)" class="btn-delete small square icon">🪣</button>
-              }
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="4" class="empty-state">
-              <span class="empty-icon">📭</span>
-              No scanned books. Use your mobile phone to skan your first ISBN code!
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-
-  @if (showScrollUp()) {
-    <div class="scroll-indicator indicator-up" (click)="scrollToTop()" title="Przewiń na samą górę"></div>
-  }
-
-  @if (showScrollDown()) {
-    <div class="scroll-indicator indicator-down" (click)="scrollToBottom()" title="Przewiń w dół"></div>
-  }
-
-</div>
+<app-scan-table
+  [scans]="scans()"
+  [scansToDelete]="scansToDelete()"
+  (retry)="retryScan($event)"
+  (delete)="deleteScan($event)"
+  (cancelDelete)="cancelDelete($event)"
+/>
 
 @if (isExportModalOpen()) {
   <app-export-modal
