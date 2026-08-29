@@ -15,7 +15,7 @@
             class="main-row"
             [class.is-deleting]="isIntendedToDelete(scan.id)"
             [class.is-expanded]="expandedScanId() === scan.id"
-            [class.not-expandable]="scan.status !== 'FOUND'"
+            [class.not-expandable]="scan.status === 'NOT_FOUND'"
             (click)="toggleExpand(scan.id)"
           >
             <!-- ISBN -->
