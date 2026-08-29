@@ -27,7 +27,7 @@ public class Export {
                 .build();
     }
 
-    public boolean isComplete() {
+    boolean isComplete() {
         return ExportStatus.SUCCEED.equals(status) || ExportStatus.FAILED.equals(status);
     }
 

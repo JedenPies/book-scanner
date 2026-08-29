@@ -2,6 +2,7 @@ package net.patrykdobrowolski.bookscanner.service;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
+import net.patrykdobrowolski.bookscanner.domain.model.ScanStatus;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ExportRequestedEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanCreatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsAsyncFetcherPort;
@@ -17,7 +18,8 @@ public class SessionApplicationEventsListener {
 
     @TransactionalEventListener
     public void onScanCreated(ScanCreatedEvent event) {
-        bookDetailsFetcher.fetchBookDetails(event.getSession(), event.getScan());
+        if (event.getScan().getStatus() == ScanStatus.PENDING)
+            bookDetailsFetcher.fetchBookDetails(event.getSession(), event.getScan());
     }
 
     @TransactionalEventListener

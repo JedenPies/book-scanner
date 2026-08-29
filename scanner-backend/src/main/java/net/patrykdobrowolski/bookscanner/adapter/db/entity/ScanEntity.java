@@ -33,7 +33,7 @@ public class ScanEntity {
     @Column(nullable = false)
     private String isbn;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "book_details_id")
     private BookDetailsEntity bookDetails;
 

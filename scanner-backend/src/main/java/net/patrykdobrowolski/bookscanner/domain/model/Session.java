@@ -7,11 +7,14 @@ import net.patrykdobrowolski.bookscanner.domain.model.command.ExportSessionComma
 import net.patrykdobrowolski.bookscanner.domain.exception.ExportAlreadyRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
+import net.patrykdobrowolski.bookscanner.domain.model.command.UpdateScanCommand;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Builder @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
@@ -32,12 +35,20 @@ public class Session {
                 .build();
     }
 
+    private Scan findOldestScanByIsbn(ISBN isbn) {
+        return scans.stream()
+                .filter(scan -> Objects.equals(scan.getIsbn(), isbn))
+                .min(Comparator.comparing(Scan::getCreatedAt)).orElse(null);
+    }
+
     public Scan findScanById(UUID scanId) throws ScanNotFoundException {
         return scans.stream().filter(scan -> Objects.equals(scan.getId(), scanId)).findFirst().orElseThrow(ScanNotFoundException::new);
     }
 
     public Scan createNewScan(ISBN isbn) {
         Scan newScan = Scan.createNew(isbn, this.id);
+        Scan foundScan = findOldestScanByIsbn(isbn);
+        Optional.ofNullable(foundScan).ifPresent(newScan::copyDetails);
         scans.add(newScan);
         return newScan;
     }
@@ -69,6 +80,12 @@ public class Session {
     public void exportFailed() throws ExportNotRequestedException {
         ensureExportExists();
         this.export.failed();
+    }
+
+    public Scan updateScan(UUID scanId, UpdateScanCommand command) throws ScanNotFoundException {
+        Scan scan = findScanById(scanId);
+        scan.update(command);
+        return scan;
     }
 
     private void ensureExportExists() throws ExportNotRequestedException {

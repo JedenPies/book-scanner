@@ -1,6 +1,7 @@
 package net.patrykdobrowolski.bookscanner.adapter.rest;
 
 import lombok.RequiredArgsConstructor;
+import net.patrykdobrowolski.bookscanner.adapter.rest.mapper.EditScanCommandDtoMapper;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.model.Scan;
@@ -23,6 +24,7 @@ public class ScansResource {
 
     private final ScanServicePort scanService;
     private final ScanDtoMapper scanDtoMapper;
+    private final EditScanCommandDtoMapper editScanCommandDtoMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -52,8 +54,9 @@ public class ScansResource {
     @PatchMapping("{scanId}")
     public ScanDto modifyScan(
             @PathVariable UUID sessionId, @PathVariable UUID scanId,
-            @Validated @RequestBody EditScanCommandDto editScanCommandDto) {
-        return ScanDto.builder().build();
+            @Validated @RequestBody EditScanCommandDto editScanCommandDto) throws ScanNotFoundException, SessionNotFoundException {
+        Scan updated = scanService.updateScan(sessionId, scanId, editScanCommandDtoMapper.map(editScanCommandDto));
+        return scanDtoMapper.toDto(updated);
     }
 
 }
