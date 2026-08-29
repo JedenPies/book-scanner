@@ -1,5 +1,6 @@
 import { Component, HostListener, inject, input, signal } from '@angular/core';
 import {
+  EditScanCommandDto,
   ExportCompleteSseEvent,
   ScanCreatedSseEvent,
   ScanDeletedSseEvent,
@@ -54,6 +55,19 @@ export class EditorComponent {
     if (this.eventSource) {
       this.eventSource.close();
     }
+  }
+
+  handleUpdateScan(event: { scanId: string; command: EditScanCommandDto }) {
+    this.backendService.modifyScan(this.sessionId(), event.scanId, event.command).subscribe({
+      next: (updatedScan) => {
+        this.scans.update((current) =>
+          current.map((s) => (s.id === updatedScan.id ? updatedScan : s)),
+        );
+        this.exportService.invalidateExport();
+        this.toastService.show('Book details updated', 'success');
+      },
+      error: () => this.toastService.show('Failed to update book', 'error'),
+    });
   }
 
   @HostListener('window:keydown.control.space', ['$event'])
@@ -141,18 +155,21 @@ export class EditorComponent {
     this.eventSource.addEventListener('SCAN_CREATED', (event: MessageEvent) => {
       const eventDto: ScanCreatedSseEvent = JSON.parse(event.data);
       this.scans.update((currentScans) => [eventDto.scan, ...currentScans]);
+      this.exportService.invalidateExport();
     });
     this.eventSource.addEventListener('SCAN_UPDATED', (event: MessageEvent) => {
       const eventDto: ScanUpdatedSseEvent = JSON.parse(event.data);
       this.scans.update((currentScans) =>
         currentScans.map((scan) => (scan.id === eventDto.scan.id ? eventDto.scan : scan)),
       );
+      this.exportService.invalidateExport();
     });
     this.eventSource.addEventListener('SCAN_DELETED', (event: MessageEvent) => {
       const eventDto: ScanDeletedSseEvent = JSON.parse(event.data);
       this.scans.update((currentScans) =>
         currentScans.filter((scan) => scan.id !== eventDto.scan.id),
       );
+      this.exportService.invalidateExport();
       this.toastService.show(
         `Deleted ${eventDto.scan.bookDetails?.title || 'ISBN: ' + eventDto.scan.isbn}`,
         'info',

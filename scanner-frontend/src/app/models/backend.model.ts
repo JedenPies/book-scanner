@@ -56,3 +56,13 @@ export interface ExportDto {
   status: ExportStatus;
   createdAt: string;
 }
+
+export interface EditScanCommandDto {
+  title?: string;
+  publisher?: string;
+  publicationYear?: string;
+  publicationPlace?: string;
+  language?: string;
+  authors?: string[];
+  genres?: string[];
+}

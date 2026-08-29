@@ -13,6 +13,7 @@ export class ExportService {
   private toastService = inject(ToastService);
 
   currentExport = signal<ExportDto | null>(null);
+  exportInvalidated = signal<boolean>(false);
 
   isProcessing = computed(() => {
     const status = this.currentExport()?.status;
@@ -54,6 +55,10 @@ export class ExportService {
     }
   });
 
+  invalidateExport() {
+    this.exportInvalidated.set(true);
+  }
+
   loadExport(sessionId: string) {
     if (!sessionId) return;
     this.backendService.loadExport(sessionId).subscribe({
@@ -63,6 +68,7 @@ export class ExportService {
   }
 
   requestExport(sessionId: string, format: ExportFormat) {
+    this.exportInvalidated.set(false);
     this.currentExport.set(null);
     this.backendService.requestExport(sessionId, format).subscribe({
       next: (result) => {
@@ -77,7 +83,11 @@ export class ExportService {
 
   handleSseComplete(exportDto: ExportDto) {
     this.currentExport.set(exportDto);
-    this.toastService.show('Eksport gotowy!', 'success');
+    if (this.exportInvalidated()) {
+      this.toastService.show('Eksport gotowy, ale nieaktualny. Wygeneruj ponownie.', 'warning');
+    } else {
+      this.toastService.show('Eksport gotowy!', 'success');
+    }
   }
 
   download(sessionId: string) {

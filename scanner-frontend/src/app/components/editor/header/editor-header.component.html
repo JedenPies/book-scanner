@@ -22,6 +22,7 @@
         <span class="icon">{{ exportService.exportState()!.icon }}</span>
       }
       <span class="text">{{ exportService.exportState()!.text }}</span>
+      @if (exportService.exportInvalidated()) { <span>(outdated)</span> }
     </button>
   }
 

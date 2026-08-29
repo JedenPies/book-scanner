@@ -1,6 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
+  EditScanCommandDto,
   ExportDto,
   ExportFormat,
   ScanDto,
@@ -10,7 +11,6 @@ import {
 
 @Service()
 export class ScannerBackendService {
-
   private apiScannerUrl = '/api/sessions';
   private apiShareCodeUrl = '/api/share-codes';
   private http = inject(HttpClient);
@@ -28,7 +28,9 @@ export class ScannerBackendService {
   }
 
   notifyScanResult(sessionId: string, scanResult: string) {
-    return this.http.post<ScanDto>(`${this.apiScannerUrl}/${sessionId}/scans`, { isbn: scanResult});
+    return this.http.post<ScanDto>(`${this.apiScannerUrl}/${sessionId}/scans`, {
+      isbn: scanResult
+    });
   }
 
   retrieveAllScans(sessionId: string) {
@@ -54,6 +56,12 @@ export class ScannerBackendService {
   }
 
   requestExport(sessionId: string, format: ExportFormat) {
-    return this.http.put<ExportDto>(`${this.apiScannerUrl}/${sessionId}/export-request`, { format });
+    return this.http.put<ExportDto>(`${this.apiScannerUrl}/${sessionId}/export-request`, {
+      format
+    });
+  }
+
+  modifyScan(sessionId: string, scanId: string, command: EditScanCommandDto) {
+    return this.http.patch<ScanDto>(`/api/sessions/${sessionId}/scans/${scanId}`, command);
   }
 }
