@@ -9,12 +9,12 @@ import java.util.Optional;
 @Mapper(componentModel = "spring")
 public interface YearMapper {
 
-    default String map(Year isbn) {
-        return Optional.ofNullable(isbn).map(Year::value).orElse(null);
+    default String map(Year year) {
+        return Optional.ofNullable(year).map(Year::value).orElse(null);
     }
 
-    default Year map(String isbn) {
-        if(isbn == null) return null;
-        return Year.parse(isbn);
+    default Year map(String year) {
+        if (year == null || year.isBlank()) return null;
+        return Year.parse(year);
     }
 }
