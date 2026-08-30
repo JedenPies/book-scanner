@@ -10,6 +10,7 @@
   (retry)="retryScan($event)"
   (delete)="deleteScan($event)"
   (cancelDelete)="cancelDelete($event)"
+  (edit)="editingScan.set($event)"
 />
 
 @if (isExportModalOpen()) {
@@ -23,5 +24,13 @@
   <app-manual-isbn-modal
     (isbnSubmitted)="addManualIsbn($event)"
     (closed)="isManualIsbnModalOpen.set(false)"
+  />
+}
+
+@if (editingScan(); as scanToEdit) {
+  <app-edit-scan-form-dialog
+    [scan]="scanToEdit"
+    (saved)="handleUpdateScan($event)"
+    (closed)="editingScan.set(null)"
   />
 }

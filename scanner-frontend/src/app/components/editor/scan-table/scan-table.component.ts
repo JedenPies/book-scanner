@@ -23,6 +23,7 @@ export class ScanTableComponent {
   // Wyjścia (zdarzenia)
   retry = output<string>();
   delete = output<string>();
+  edit = output<ScanDto>();
   cancelDelete = output<string>();
 
   // Wewnętrzny stan tabeli

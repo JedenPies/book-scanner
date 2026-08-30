@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, input, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, input, signal } from '@angular/core';
 import {
   EditScanCommandDto,
   ExportCompleteSseEvent,
@@ -14,6 +14,7 @@ import { ExportService } from '../../services/export.service';
 import { ManualIsbnModalComponent } from './manual-isbn-modal/manual-isbn-modal.component';
 import { ExportModalComponent } from './export-modal/export-modal.component';
 import { ScanTableComponent } from './scan-table/scan-table.component';
+import { EditScanFormDialogComponent } from './edit-scan-modal/edit-scan-form-dialog.component';
 
 export interface ScanToDelete {
   scanId: string;
@@ -27,6 +28,7 @@ export interface ScanToDelete {
     ScanTableComponent,
     ManualIsbnModalComponent,
     ExportModalComponent,
+    EditScanFormDialogComponent,
   ],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.scss',
@@ -36,12 +38,17 @@ export class EditorComponent {
   backendService = inject(ScannerBackendService);
   toastService = inject(ToastService);
 
+  isModalOpen = computed<boolean>(() => {
+    return this.isManualIsbnModalOpen() || this.isExportModalOpen() || this.editingScan() !== null;
+  });
+
   sessionId = input.required<string>();
   isExportModalOpen = signal<boolean>(false);
   isManualIsbnModalOpen = signal<boolean>(false);
 
   scans = signal<ScanDto[]>([]);
   scansToDelete = signal<ScanToDelete[]>([]);
+  editingScan = signal<ScanDto | null>(null);
 
   private eventSource?: EventSource;
 
@@ -57,14 +64,17 @@ export class EditorComponent {
     }
   }
 
-  handleUpdateScan(event: { scanId: string; command: EditScanCommandDto }) {
-    this.backendService.modifyScan(this.sessionId(), event.scanId, event.command).subscribe({
+  handleUpdateScan(command: EditScanCommandDto) {
+    const scan = this.editingScan();
+    if (!scan) return;
+
+    this.backendService.modifyScan(this.sessionId(), scan.id, command).subscribe({
       next: (updatedScan) => {
         this.scans.update((current) =>
           current.map((s) => (s.id === updatedScan.id ? updatedScan : s)),
         );
-        this.exportService.invalidateExport();
         this.toastService.show('Book details updated', 'success');
+        this.editingScan.set(null);
       },
       error: () => this.toastService.show('Failed to update book', 'error'),
     });
@@ -72,10 +82,7 @@ export class EditorComponent {
 
   @HostListener('window:keydown.control.space', ['$event'])
   handleCtrlSpace(event: Event) {
-    if (this.isManualIsbnModalOpen() || this.isExportModalOpen()) {
-      return;
-    }
-
+    if (this.isModalOpen()) return;
     event.preventDefault(); // Zapobiega domyślnemu scrollowaniu strony spacją
     this.openManualIsbnModal();
   }

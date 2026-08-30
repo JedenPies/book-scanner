@@ -1,0 +1,98 @@
+<div class="backdrop" (click)="close()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h3>Edit Book Details</h3>
+        <span class="badge isbn-badge">{{ scan().isbn }}</span>
+      </div>
+      <button type="button" class="btn-close" (click)="close()" title="Close">✕</button>
+    </div>
+
+    <!-- UNIWERSALNY KONTENER FORMULARZA -->
+    <form (ngSubmit)="submit()" class="app-form">
+
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          id="title"
+          type="text"
+          [(ngModel)]="formData().title"
+          name="title"
+          placeholder="Enter book title..."
+          autocomplete="off"
+          autofocus
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="authors">Authors</label>
+        <input
+          disabled
+          id="authors"
+          type="text"
+          [(ngModel)]="formData().authors"
+          name="authors"
+          placeholder="Enter authors..."
+          autocomplete="off"
+          autofocus
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label for="publisher">Publisher</label>
+          <input
+            id="publisher"
+            type="text"
+            [(ngModel)]="formData().publisher"
+            name="publisher"
+            placeholder="Publisher..."
+          />
+        </div>
+
+        <div class="form-group flex-1">
+          <label for="publicationPlace">Publication place</label>
+          <input
+            id="publicationPlace"
+            type="text"
+            [(ngModel)]="formData().publicationPlace"
+            name="publicationPlace"
+            placeholder="City..."
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label for="publicationYear">Year</label>
+          <input
+            id="publicationYear"
+            type="text"
+            [(ngModel)]="formData().publicationYear"
+            name="publicationYear"
+            placeholder="YYYY"
+          />
+        </div>
+
+        <div class="form-group flex-1">
+          <label for="language">Language</label>
+          <input
+            id="language"
+            type="text"
+            [(ngModel)]="formData().language"
+            name="language"
+            placeholder="e.g. eng, pol"
+          />
+        </div>
+      </div>
+
+      <!-- AKCJE DIALOGU -->
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="close()">Cancel</button>
+        <button type="submit" class="btn-primary">Save changes</button>
+      </div>
+
+    </form>
+  </div>
+</div>
