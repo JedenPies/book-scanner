@@ -39,6 +39,14 @@ export class ScanTableComponent {
     return this.scansToDelete().some((item) => item.scanId === scanId);
   }
 
+  isExpandable(scan: ScanDto): boolean {
+    return !this.isIntendedToDelete(scan.id) &&
+      scan.status !== 'NOT_FOUND' &&
+      scan.status !== 'FAILED' &&
+      scan.status !== 'PENDING' &&
+      scan.status !== 'FETCHING';
+  }
+
   onScroll() {
     this.checkScroll();
   }

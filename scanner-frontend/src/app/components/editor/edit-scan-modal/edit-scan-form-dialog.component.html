@@ -26,16 +26,9 @@
       </div>
 
       <div class="form-group">
-        <label for="authors">Authors</label>
-        <input
-          disabled
-          id="authors"
-          type="text"
-          [(ngModel)]="formData().authors"
-          name="authors"
-          placeholder="Enter authors..."
-          autocomplete="off"
-          autofocus
+        <label>Authors</label>
+        <app-string-list-input
+          [(items)]="editableAuthors"
         />
       </div>
 
@@ -85,6 +78,13 @@
             placeholder="e.g. eng, pol"
           />
         </div>
+      </div>
+
+      <div class="form-group">
+        <label>Genres</label>
+        <app-string-list-input
+          [(items)]="editableGenres"
+        />
       </div>
 
       <!-- AKCJE DIALOGU -->

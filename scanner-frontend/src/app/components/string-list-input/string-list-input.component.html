@@ -1,0 +1,24 @@
+<div class="tag-input-container">
+  @for (item of items(); track $index) {
+    <span class="tag-badge">
+<span class="tag-text">{{ item }}</span>
+<button
+  type="button"
+  class="btn-remove-tag"
+  (click)="removeItem($index)"
+  title="Usuń"
+>
+&times;
+</button>
+</span>
+  }
+
+  <input
+    type="text"
+    class="tag-input"
+    [placeholder]="placeholder()"
+    [value]="currentInput()"
+    (input)="onInput($event)"
+    (keydown)="onKeyDown($event)"
+  />
+</div>
