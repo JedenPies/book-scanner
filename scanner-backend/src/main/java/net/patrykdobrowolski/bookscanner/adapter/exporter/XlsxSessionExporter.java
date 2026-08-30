@@ -33,7 +33,7 @@ public class XlsxSessionExporter implements SessionExporter {
             headerStyle.setFont(headerFont);
 
             Row headerRow = sheet.createRow(0);
-            String[] columns = {"ISBN", "Status", "Tytuł", "Autorzy", "Rok wydania", "Wydawca", "Miejsce wydania", "Język", "Data Zeskanowania"};
+            String[] columns = {"ISBN", "Status", "Title", "Authors", "Publication year", "Publisher", "Publication place", "Language", "Scanned date"};
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);

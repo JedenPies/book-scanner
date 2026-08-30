@@ -32,7 +32,7 @@ public class CsvSessionExporter implements SessionExporter {
                 CSVPrinter printer = new CSVPrinter(
                         printWriter,
                         CSVFormat.DEFAULT.builder()
-                                .setHeader("ISBN", "Status", "Tytuł", "Autorzy", "Rok wydania", "Wydawca", "Miejsce wydania", "Język", "Data Zeskanowania")
+                                .setHeader("ISBN", "Status", "Title", "Authors", "Publication year", "Publisher", "Publication place", "Language", "Scanned date")
                                 .get())
         ) {
             // Dodanie BOM (Byte Order Mark) dla UTF-8
