@@ -1,5 +1,5 @@
 body {
-  font-family: Tahoma, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 button {
@@ -224,6 +224,7 @@ input {
     .flex-1 { flex: 1; }
     .flex-2 { flex: 2; }
     .flex-3 { flex: 3; }
+    .flex-4 { flex: 4; }
   }
 
   .form-group {

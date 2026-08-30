@@ -9,13 +9,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './string-list-input.component.scss',
 })
 export class StringListInputComponent {
-  // Dwukierunkowy model danych oparty na sygnałach
+
   items = model<string[]>([]);
-
-  // Opcjonalny placeholder dla pola tekstowego
   placeholder = input<string>('Type and press Enter to add. Backspace to remove.');
-
-  // Aktualny tekst w inpucie
   currentInput = signal<string>('');
 
   onKeyDown(event: KeyboardEvent) {
@@ -27,12 +23,16 @@ export class StringListInputComponent {
         this.addItem(text);
       }
     } else if (event.key === 'Backspace' && !this.currentInput()) {
-      // Usunięcie ostatniego elementu przy pustym inpucie
       const currentItems = this.items();
       if (currentItems.length > 0) {
         this.removeItem(currentItems.length - 1);
       }
     }
+  }
+
+  onBlur() {
+    const text = this.currentInput().trim();
+    if (text) this.addItem(text);
   }
 
   onInput(event: Event) {

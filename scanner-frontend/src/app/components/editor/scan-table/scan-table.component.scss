@@ -167,7 +167,6 @@
   table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
-  font-family: system-ui, -apple-system, sans-serif;
 
   thead th {
     position: sticky;
@@ -182,7 +181,7 @@
     letter-spacing: 0.05em;
     text-align: center;
 
-    &:nth-child(1) { width: 130px; }
+    &:nth-child(1) { width: 125px; }
     &:nth-child(2) { width: 45px; }
     &:nth-child(3) { width: auto; }
     &:nth-child(4) { width: 140px; }
