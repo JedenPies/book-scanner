@@ -27,13 +27,12 @@ public class FetchBookForScanService implements FetchBookForScanServicePort {
     @Override
     public ScanStatus fetchBookForScan(UUID sessionId, UUID scanId, boolean lastTry) throws ScanNotFoundException, SessionNotFoundException {
         Session session = sessionService.findById(sessionId);
-        Scan scan = session.findScanById(scanId);
-        scan.markFetching();
+        Scan scan = session.markScanFetching(scanId);
         saveAndPublish(scan, session);
         try {
-            tryFetchBook(scan, lastTry);
+            tryFetchBook(session, scan, lastTry);
         } catch (Exception e) {
-            scan.markFailed();
+            session.markScanFailed(scanId);
         }
         saveAndPublish(scan, session);
         return scan.getStatus();
@@ -44,19 +43,19 @@ public class FetchBookForScanService implements FetchBookForScanServicePort {
         eventPublisher.publishEvent(ScanUpdatedEvent.of(session, scan));
     }
 
-    private void tryFetchBook(Scan scan, boolean lastTry) {
+    private void tryFetchBook(Session session, Scan scan, boolean lastTry) throws ScanNotFoundException {
         Book book = bookDetailsFetcher.fetchBookDetails(scan.getIsbn());
         FetchResult fetchResult = book.getFetchResult();
         switch (fetchResult) {
             case SUCCESS:
                 BookDetails details = new BookDetailsComposer(book.getBookRaws().stream().filter(br -> br.getFetchResult() == FetchResult.SUCCESS).map(mapper::map).toList()).compose();
-                scan.setBookDetails(details, Modifier.SYSTEM);
+                session.setScanBookDetails(scan.getId(), details, Modifier.SYSTEM);
                 break;
             case NOT_FOUND:
-                scan.markNotFound();
+                session.markScanNotFound(scan.getId());
                 break;
             case FAILURE:
-                if (lastTry) scan.markFailed();
+                if (lastTry) session.markScanFailed(scan.getId());
                 break;
 
         }

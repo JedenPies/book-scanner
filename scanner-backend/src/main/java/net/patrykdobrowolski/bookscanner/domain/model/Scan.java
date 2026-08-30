@@ -37,19 +37,19 @@ public class Scan {
         this.status = ScanStatus.DUPLICATE;
     }
 
-    public void markFetching() {
+    void markFetching() {
         this.status = ScanStatus.FETCHING;
     }
 
-    public void markFailed() {
+    void markFailed() {
         this.status = ScanStatus.FAILED;
     }
 
-    public void markNotFound() {
+    void markNotFound() {
         this.status = ScanStatus.NOT_FOUND;
     }
 
-    public void setBookDetails(BookDetails details, Modifier modifier) {
+    void setBookDetails(BookDetails details, Modifier modifier) {
         this.bookDetails = details;
         this.modifiedBy = modifier;
         this.status = ScanStatus.FOUND;

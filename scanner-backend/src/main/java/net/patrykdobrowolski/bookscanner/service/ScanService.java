@@ -33,8 +33,6 @@ public class ScanService implements ScanServicePort {
     public void retryScan(UUID sessionId, UUID scanId) throws ScanNotFoundException, SessionNotFoundException {
         Session session = sessionRepository.findById(sessionId);
         Scan scan = session.findScanById(scanId);
-        scan.markFetching();
-        sessionRepository.save(session);
         eventPublisher.publishEvent(ScanUpdatedEvent.of(session, scan));
         bookDetailsFetcher.fetchBookDetails(session, scan);
     }

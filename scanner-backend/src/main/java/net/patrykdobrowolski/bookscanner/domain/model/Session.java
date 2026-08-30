@@ -88,6 +88,24 @@ public class Session {
         return scan;
     }
 
+    public Scan markScanFetching(UUID scanId) throws ScanNotFoundException {
+        Scan scan = findScanById(scanId);
+        scan.markFetching();
+        return scan;
+    }
+
+    public void markScanFailed(UUID scanId) throws ScanNotFoundException {
+        findScanById(scanId).markFailed();
+    }
+
+    public void markScanNotFound(UUID scanId) throws ScanNotFoundException {
+        findScanById(scanId).markNotFound();
+    }
+
+    public void setScanBookDetails(UUID scanId, BookDetails details, Modifier modifier) throws ScanNotFoundException {
+        findScanById(scanId).setBookDetails(details, modifier);
+    }
+
     private void ensureExportExists() throws ExportNotRequestedException {
         if (export == null) throw new ExportNotRequestedException();
     }
