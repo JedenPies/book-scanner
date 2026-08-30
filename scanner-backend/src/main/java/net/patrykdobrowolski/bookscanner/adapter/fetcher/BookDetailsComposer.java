@@ -36,10 +36,10 @@ public class BookDetailsComposer {
                 .publisher(extractAndRecord(BookDetails::getPublisher, contributingSources))
                 .publicationPlace(extractAndRecord(BookDetails::getPublicationPlace, contributingSources))
                 .publicationYear(extractAndRecord(BookDetails::getPublicationYear, contributingSources))
-                .authors(extractAndRecord(BookDetails::getAuthors, contributingSources))
+                .authors(extractAndRecordCollection(BookDetails::getAuthors, contributingSources))
                 .language(extractAndRecord(BookDetails::getLanguage, contributingSources))
+                .genres(extractAndJoin(BookDetails::getGenres, contributingSources))
                 .sources(contributingSources)
-                .genres(extractAndJoin(BookDetails::getGenres))
                 .build();
     }
 
@@ -55,9 +55,25 @@ public class BookDetailsComposer {
                 })
                 .orElse(null);
     }
+    private <T> @Nullable List<T> extractAndRecordCollection(Function<BookDetails, ? extends Collection<T>> getter, Set<String> sourcesRef) {
+        return (List<T>) sortedDetails.stream()
+                .filter(bd -> getter.apply(bd) != null && !getter.apply(bd).isEmpty())
+                .findFirst()
+                .map(bd -> {
+                    if (bd.getSources() != null) {
+                        sourcesRef.addAll(bd.getSources());
+                    }
+                    return getter.apply(bd);
+                })
+                .orElse(null);
+    }
 
-    private <T> List<T> extractAndJoin(Function<BookDetails, List<T>> getter) {
+    private <T> List<T> extractAndJoin(Function<BookDetails, List<T>> getter, Set<String> sourcesRef) {
         return sortedDetails.stream()
+                .filter(r -> getter.apply(r) != null)
+                .peek(r -> {
+                    if (r.getSources() != null) sourcesRef.addAll(r.getSources());
+                })
                 .map(getter)
                 .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
@@ -68,7 +84,7 @@ public class BookDetailsComposer {
 
         private final static BookDetailsComparator INSTANCE = new BookDetailsComparator();
 
-        private final List<String> providers = List.of("google", "open-library", "biblioteka-narodowa");
+        private final List<String> providers = List.of("biblioteka-narodowa", "google", "open-library");
 
         @Override
         public int compare(BookDetails o1, BookDetails o2) {

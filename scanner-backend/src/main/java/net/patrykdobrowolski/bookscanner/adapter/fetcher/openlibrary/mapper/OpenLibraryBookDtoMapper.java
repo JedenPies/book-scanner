@@ -17,7 +17,7 @@ public class OpenLibraryBookDtoMapper {
 
     public BookDetails fromDto(BookDto dto) {
         return BookDetails.builder()
-                .title(dto.getTitle())
+                .title(title(dto.getTitle()))
                 .authors(fromAuthors(dto.getAuthors()))
                 .publisher(Optional.ofNullable(dto.getPublishers()).orElseGet(Collections::emptyList).stream().findFirst().map(PublisherDto::getName).orElse(null))
                 .publicationPlace(Optional.ofNullable(dto.getPublishPlaces()).orElseGet(Collections::emptyList).stream().findFirst().map(PublishPlaceDto::getName).orElse(null))
@@ -37,5 +37,9 @@ public class OpenLibraryBookDtoMapper {
             Year.parse(strValue.substring(strValue.length() - 4));
         }
         return null;
+    }
+
+    private String title(String title) {
+        return title.substring(0, 1).toUpperCase() + title.substring(1);
     }
 }

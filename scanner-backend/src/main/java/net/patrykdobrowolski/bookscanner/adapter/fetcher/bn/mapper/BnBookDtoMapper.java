@@ -15,7 +15,7 @@ public class BnBookDtoMapper {
     public BookDetails fromDto(BookDto dto) {
         return BookDetails.builder()
                 .title(cleanTitle(dto.getTitle()))
-                .authors(Collections.singletonList(dto.getAuthor()))
+                .authors(AuthorsCleaner.cleanAndExtract(dto.getAuthor(), dto.getPublisher()))
                 .publicationPlace(placeOfPublication(dto.getPlaceOfPublication()))
                 .language(dto.getLanguage())
                 .publisher(publisher(dto.getPublisher()))
@@ -26,12 +26,15 @@ public class BnBookDtoMapper {
 
     private String cleanTitle(String title) {
         if (title == null) return null;
-        return title.replaceAll("\\s*/\\s*$", "").trim();
+        title = title.replaceAll("\\s*/\\s*$", "").trim();
+        if (title.contains(" / " )) title = title.substring(0, title.indexOf('/') - 1);
+        return title;
     }
 
     private String placeOfPublication(String place) {
         if (place == null) return null;
-        if (place.matches(".* : .*")) return place.replace(" : ", ", ");
+        if (place.matches(".* : .*")) place = place.replace(" : ", ", ");
+        if (place.matches(".* ; .*")) place = place.replace(" ; ", ", ");
         return place;
     }
 
