@@ -13,7 +13,7 @@ public interface ScanServicePort {
     void retryScan(UUID sessionId, UUID scanId) throws ScanNotFoundException, SessionNotFoundException;
     List<Scan> getScans(UUID sessionId) throws SessionNotFoundException;
     Scan createScan(UUID sessionId, String isbn) throws SessionNotFoundException;
-    void deleteScan(UUID sessionId, UUID scanId) throws SessionNotFoundException, ScanNotFoundException;
     Scan updateScan(UUID sessionId, UUID scanId, UpdateScanCommand command) throws ScanNotFoundException, SessionNotFoundException;
+    void deleteScans(UUID sessionId, List<UUID> scanIds) throws SessionNotFoundException;
 
 }

@@ -57,19 +57,19 @@ public class ScanService implements ScanServicePort {
 
     @Transactional
     @Override
-    public void deleteScan(UUID sessionId, UUID scanId) throws SessionNotFoundException, ScanNotFoundException {
-        Session session = sessionRepository.findById(sessionId);
-        Scan removedScan = session.removeScan(scanId);
-        sessionRepository.save(session);
-        eventPublisher.publishEvent(ScanDeletedEvent.of(session, removedScan));
-    }
-
-    @Transactional
-    @Override
     public Scan updateScan(UUID sessionId, UUID scanId, UpdateScanCommand command) throws ScanNotFoundException, SessionNotFoundException {
         Session session = sessionRepository.findById(sessionId);
         Scan result = session.updateScan(scanId, command);
         sessionRepository.save(session);
         return result;
+    }
+
+    @Override
+    public void deleteScans(UUID sessionId, List<UUID> scanIds) throws SessionNotFoundException {
+        Session session = sessionRepository.findById(sessionId);
+        List<Scan> scans = session.removeScans(scanIds);
+        if (scans.isEmpty()) return;
+        sessionRepository.save(session);
+        scans.forEach(scan -> eventPublisher.publishEvent(ScanDeletedEvent.of(session, scan)));
     }
 }

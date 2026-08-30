@@ -1,6 +1,7 @@
 package net.patrykdobrowolski.bookscanner.adapter.rest;
 
 import lombok.RequiredArgsConstructor;
+import net.patrykdobrowolski.bookscanner.adapter.rest.dto.DeleteScansCommandDto;
 import net.patrykdobrowolski.bookscanner.adapter.rest.mapper.EditScanCommandDtoMapper;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
@@ -45,12 +46,6 @@ public class ScansResource {
         scanService.retryScan(sessionId, scanId);
     }
 
-    @DeleteMapping("{scanId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteScan(@PathVariable UUID sessionId, @PathVariable UUID scanId) throws ScanNotFoundException, SessionNotFoundException {
-        scanService.deleteScan(sessionId, scanId);
-    }
-
     @PatchMapping("{scanId}")
     public ScanDto modifyScan(
             @PathVariable UUID sessionId, @PathVariable UUID scanId,
@@ -59,4 +54,10 @@ public class ScansResource {
         return scanDtoMapper.toDto(updated);
     }
 
+    @PostMapping("delete-requests")
+    public void deleteScans(
+            @PathVariable UUID sessionId, @RequestBody DeleteScansCommandDto deleteScansCommandDto) throws SessionNotFoundException {
+
+        scanService.deleteScans(sessionId, deleteScansCommandDto.getScanIds());
+    }
 }

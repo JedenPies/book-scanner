@@ -53,10 +53,10 @@ public class Session {
         return newScan;
     }
 
-    public Scan removeScan(UUID scanId) throws ScanNotFoundException {
-        Scan found = findScanById(scanId);
-        scans.remove(found);
-        return found;
+    public List<Scan> removeScans(List<UUID> scanIds) {
+        List<Scan> scans = this.scans.stream().filter(scan -> scanIds.contains(scan.getId())).toList();
+        scans.forEach(this.scans::remove);
+        return scans;
     }
 
     public Export requestExport(ExportSessionCommand command) throws ExportAlreadyRequestedException {
