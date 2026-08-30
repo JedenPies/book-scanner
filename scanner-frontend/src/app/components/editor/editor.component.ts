@@ -99,7 +99,7 @@ export class EditorComponent {
 
   deleteScan(scanId: string) {
     if (this.isIntendedToDelete(scanId)) return;
-    const timeoutHandler = window.setTimeout(() => this.confirmDelete(scanId), 10000);
+    const timeoutHandler = window.setTimeout(() => this.confirmDelete(scanId), 5000);
     const scanToDelete: ScanToDelete = { scanId, timeoutHandler };
     this.scansToDelete.update((current) => [...current, scanToDelete]);
   }
