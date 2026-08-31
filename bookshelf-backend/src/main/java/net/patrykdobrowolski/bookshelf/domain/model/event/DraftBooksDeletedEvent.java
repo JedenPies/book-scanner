@@ -2,8 +2,8 @@ package net.patrykdobrowolski.bookshelf.domain.model.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
-import net.patrykdobrowolski.bookshelf.domain.model.Session;
 
 import java.util.List;
 
@@ -11,6 +11,6 @@ import java.util.List;
 @Getter
 public class DraftBooksDeletedEvent extends BusinessEvent {
 
-    private final Session session;
+    private final CatalogingSession catalogingSession;
     private final List<DraftBook> draftBooks;
 }

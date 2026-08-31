@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Builder @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @Getter
-public class Session extends Aggregate {
+public class CatalogingSession extends Aggregate {
 
     private UUID id;
     private Instant createdAt;
@@ -27,9 +27,9 @@ public class Session extends Aggregate {
     private List<DraftBook> draftBooks;
     private Export export;
 
-    public static Session createNew() {
+    public static CatalogingSession createNew() {
         Instant now = Instant.now();
-        return Session.builder()
+        return CatalogingSession.builder()
                 .draftBooks(new ArrayList<>())
                 .id(UUID.randomUUID())
                 .createdAt(now)

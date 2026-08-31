@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Jacksonized
 @Builder @Getter
-public class SessionDto {
+public class CatalogingSessionDto {
 
     private final UUID id;
 }

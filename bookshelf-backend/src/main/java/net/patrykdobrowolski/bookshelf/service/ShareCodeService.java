@@ -4,8 +4,8 @@ import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookshelf.domain.exception.ShareCodeGenerationException;
 import net.patrykdobrowolski.bookshelf.domain.exception.ShareCodeNotFoundException;
-import net.patrykdobrowolski.bookshelf.adapter.redis.SessionShareCodeEntity;
-import net.patrykdobrowolski.bookshelf.adapter.redis.SessionShareCodeRepository;
+import net.patrykdobrowolski.bookshelf.adapter.redis.CatalogingSessionShareCodeEntity;
+import net.patrykdobrowolski.bookshelf.adapter.redis.CatalogingSessionShareCodeRepository;
 
 import java.security.SecureRandom;
 import java.util.Optional;
@@ -19,16 +19,16 @@ public class ShareCodeService {
 
     private final static SecureRandom random = new SecureRandom();
 
-    private final SessionShareCodeRepository shareCodeRepository;
+    private final CatalogingSessionShareCodeRepository shareCodeRepository;
 
     public UUID getSessionByShareCode(String shareCode) throws ShareCodeNotFoundException {
-        return shareCodeRepository.findByShareCode(shareCode).map(SessionShareCodeEntity::getSessionId).orElseThrow(ShareCodeNotFoundException::new);
+        return shareCodeRepository.findByShareCode(shareCode).map(CatalogingSessionShareCodeEntity::getCatalogingSessionId).orElseThrow(ShareCodeNotFoundException::new);
     }
 
     public String generateShareCode(UUID sessionId) throws ShareCodeGenerationException {
         String shareCode = generateUniqueShareCode().orElseThrow(ShareCodeGenerationException::new);
-        SessionShareCodeEntity entity = SessionShareCodeEntity.builder()
-                .sessionId(sessionId)
+        CatalogingSessionShareCodeEntity entity = CatalogingSessionShareCodeEntity.builder()
+                .catalogingSessionId(sessionId)
                 .shareCode(shareCode)
                 .build();
         shareCodeRepository.save(entity);

@@ -1,9 +1,9 @@
 package net.patrykdobrowolski.bookshelf.adapter.exporter;
 
 import jakarta.inject.Named;
+import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
 import net.patrykdobrowolski.bookshelf.domain.model.ExportFormat;
-import net.patrykdobrowolski.bookshelf.domain.model.Session;
 import net.patrykdobrowolski.bookshelf.domain.model.Year;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 @Named
-public class XlsxSessionExporter implements SessionExporter {
+public class XlsxCatalogingSessionExporter implements CatalogingSessionExporter {
 
     @Override
     public boolean supports(ExportFormat format) {
@@ -21,7 +21,7 @@ public class XlsxSessionExporter implements SessionExporter {
     }
 
     @Override
-    public ExportResult export(Session session) throws ExportFailedException {
+    public ExportResult export(CatalogingSession catalogingSession) throws ExportFailedException {
         try (
                 Workbook workbook = new XSSFWorkbook();
                 ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -42,7 +42,7 @@ public class XlsxSessionExporter implements SessionExporter {
             }
 
             int rowNum = 1;
-            for (DraftBook draftBook : session.getDraftBooks()) {
+            for (DraftBook draftBook : catalogingSession.getDraftBooks()) {
                 Row row = sheet.createRow(rowNum++);
                 boolean hasDetails = draftBook.getBookDetails() != null;
 

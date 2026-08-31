@@ -93,7 +93,7 @@ export class ExportService {
   download(sessionId: string) {
     const exp = this.currentExport();
     if (exp && exp.status === 'SUCCEED') {
-      window.open(`/api/sessions/${sessionId}/export/data`);
+      window.open(`/api/cataloging-sessions/${sessionId}/export/data`);
     }
   }
 }

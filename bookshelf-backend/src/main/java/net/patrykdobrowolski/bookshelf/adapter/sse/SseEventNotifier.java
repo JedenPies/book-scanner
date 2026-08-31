@@ -15,30 +15,30 @@ import org.springframework.context.event.EventListener;
 @Slf4j
 public class SseEventNotifier {
 
-    private final SseSessionService sseSessionService;
+    private final SseCatalogingSessionService sseCatalogingSessionService;
     private final EventsMapper eventsMapper;
 
     @EventListener
     public void handleDraftBookRequestedEvent(DraftBookCreatedEvent event) {
         log.debug("Sending DRAFT_BOOK_CREATED event to all connected clients");
-        sseSessionService.broadcastToSession(event.getSession().getId(), "DRAFT_BOOK_CREATED", eventsMapper.toSseEvent(event));
+        sseCatalogingSessionService.broadcastToSession(event.getCatalogingSession().getId(), "DRAFT_BOOK_CREATED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener
     public void handleDraftBookUpdatedEvent(DraftBookUpdatedEvent event) {
         log.debug("Sending DRAFT_BOOK_UPDATED event");
-        sseSessionService.broadcastToSession(event.getSession().getId(), "DRAFT_BOOK_UPDATED", eventsMapper.toSseEvent(event));
+        sseCatalogingSessionService.broadcastToSession(event.getCatalogingSession().getId(), "DRAFT_BOOK_UPDATED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener
     public void handleDraftBooksDeletedEvent(DraftBooksDeletedEvent event) {
         log.debug("Sending DRAFT_BOOKS_DELETED event");
-        sseSessionService.broadcastToSession(event.getSession().getId(), "DRAFT_BOOKS_DELETED", eventsMapper.toSseEvent(event));
+        sseCatalogingSessionService.broadcastToSession(event.getCatalogingSession().getId(), "DRAFT_BOOKS_DELETED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener
     public void handleExportCompleteEvent(ExportCompleteEvent event) {
         log.debug("Sending EXPORT_COMPLETE event");
-        sseSessionService.broadcastToSession(event.getSession().getId(), "EXPORT_COMPLETE", eventsMapper.toSseEvent(event));
+        sseCatalogingSessionService.broadcastToSession(event.getCatalogingSession().getId(), "EXPORT_COMPLETE", eventsMapper.toSseEvent(event));
     }
 }

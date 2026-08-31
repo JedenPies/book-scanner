@@ -4,7 +4,7 @@ import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.patrykdobrowolski.bookshelf.domain.exception.DraftBookNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.exception.SessionNotFoundException;
+import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
 import net.patrykdobrowolski.bookshelf.domain.model.DraftBookStatus;
 import net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto.FetchBookDetailsCommandDto;
 import net.patrykdobrowolski.bookshelf.service.FetchBookService;
@@ -38,7 +38,7 @@ public class FetchBookDetailsCommandListener {
         } catch (DraftBookNotFoundException e) {
             log.error("Draft book not found", e);
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
-        } catch (SessionNotFoundException e) {
+        } catch (CatalogingSessionNotFoundException e) {
             log.error("Session not found", e);
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
         }

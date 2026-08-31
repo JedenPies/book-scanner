@@ -12,15 +12,15 @@ import org.springframework.data.redis.core.index.Indexed;
 
 import java.util.UUID;
 
-@RedisHash(value = "session-share-code", timeToLive = 300)
+@RedisHash(value = "cataloging-session-share-code", timeToLive = 300)
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Builder
-public class SessionShareCodeEntity {
+public class CatalogingSessionShareCodeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private UUID sessionId;
+    private UUID catalogingSessionId;
 
     @Indexed
     private String shareCode;

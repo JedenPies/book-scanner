@@ -4,9 +4,9 @@ import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.patrykdobrowolski.bookshelf.domain.exception.ExportNotRequestedException;
-import net.patrykdobrowolski.bookshelf.domain.exception.SessionNotFoundException;
+import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
 import net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto.ExportSessionCommandDto;
-import net.patrykdobrowolski.bookshelf.service.ExportSessionService;
+import net.patrykdobrowolski.bookshelf.service.ExportCatalogingSessionService;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
@@ -16,10 +16,10 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 @RequiredArgsConstructor
 public class ExportSessionCommandListener {
 
-    private final ExportSessionService exportSessionService;
+    private final ExportCatalogingSessionService exportCatalogingSessionService;
 
     @RabbitHandler
-    public void handleFetchBookDetailsCommand(ExportSessionCommandDto command) throws SessionNotFoundException, ExportNotRequestedException {
-        exportSessionService.exportSession(command.getSessionId());
+    public void handleFetchBookDetailsCommand(ExportSessionCommandDto command) throws CatalogingSessionNotFoundException, ExportNotRequestedException {
+        exportCatalogingSessionService.exportCatalogingSession(command.getSessionId());
     }
 }

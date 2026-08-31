@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(SessionNotFoundException.class)
+    @ExceptionHandler(CatalogingSessionNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public void handleException() {}
 

@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005.01-rename-table-sessions
+      author: patryk
+      changes:
+        - renameTable:
+            oldTableName: sessions
+            newTableName: cataloging_sessions

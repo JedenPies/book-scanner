@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "sessions")
+@Table(name = "cataloging_sessions")
 @Getter @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
-public class SessionEntity {
+public class CatalogingSessionEntity {
 
     @Id
     private UUID id;

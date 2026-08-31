@@ -3,8 +3,8 @@ package net.patrykdobrowolski.bookshelf.adapter.rabbitmq;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
-import net.patrykdobrowolski.bookshelf.domain.model.Session;
 import net.patrykdobrowolski.bookshelf.domain.port.BookDetailsAsyncFetcherPort;
 import net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto.FetchBookDetailsCommandDto;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -24,9 +24,9 @@ public class BookDetailsAsyncFetcherAdapter implements BookDetailsAsyncFetcherPo
     private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public void fetchBookDetails(Session session, DraftBook draftBook) {
+    public void fetchBookDetails(CatalogingSession catalogingSession, DraftBook draftBook) {
 
-        FetchBookDetailsCommandDto command = FetchBookDetailsCommandDto.forDraftBook(session.getId(), draftBook.getId());
+        FetchBookDetailsCommandDto command = FetchBookDetailsCommandDto.forDraftBook(catalogingSession.getId(), draftBook.getId());
         rabbitTemplate.convertAndSend(
                 commandExchangeName,
                 fetchBookCommandQueueName,

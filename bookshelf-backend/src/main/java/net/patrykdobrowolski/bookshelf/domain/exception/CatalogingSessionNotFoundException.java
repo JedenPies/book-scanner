@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.UUID;
 
 @RequiredArgsConstructor(staticName = "of")
-public class SessionNotFoundException extends Exception {
+public class CatalogingSessionNotFoundException extends Exception {
 
-    private final UUID sessionId;
+    private final UUID catalogingSessionId;
 }

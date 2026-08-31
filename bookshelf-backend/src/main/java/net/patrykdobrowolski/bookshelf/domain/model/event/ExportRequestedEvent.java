@@ -2,14 +2,14 @@ package net.patrykdobrowolski.bookshelf.domain.model.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookshelf.domain.model.Session;
+import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
 
 @RequiredArgsConstructor @Getter
 public class ExportRequestedEvent extends BusinessEvent {
 
-    private final Session session;
+    private final CatalogingSession catalogingSession;
 
-    public static ExportRequestedEvent of(Session session) {
-        return new ExportRequestedEvent(session);
+    public static ExportRequestedEvent of(CatalogingSession catalogingSession) {
+        return new ExportRequestedEvent(catalogingSession);
     }
 }

@@ -5,13 +5,13 @@ import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.BookDetailsComposer;
 import net.patrykdobrowolski.bookshelf.domain.model.event.DraftBookUpdatedEvent;
 import net.patrykdobrowolski.bookshelf.domain.exception.DraftBookNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.exception.SessionNotFoundException;
+import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
 import net.patrykdobrowolski.bookshelf.domain.model.*;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 import net.patrykdobrowolski.bookshelf.domain.port.BookDetailsFetcherPort;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.BookRawResultMapperAdapter;
 import net.patrykdobrowolski.bookshelf.domain.port.FetchBookServicePort;
-import net.patrykdobrowolski.bookshelf.domain.port.SessionServicePort;
+import net.patrykdobrowolski.bookshelf.domain.port.CatalogingSessionServicePort;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.UUID;
@@ -20,43 +20,43 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FetchBookService implements FetchBookServicePort {
 
-    private final SessionServicePort sessionService;
+    private final CatalogingSessionServicePort sessionService;
     private final BookDetailsFetcherPort bookDetailsFetcher;
     private final BookRawResultMapperAdapter mapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
-    public DraftBookStatus fetchBookForDraft(UUID sessionId, UUID draftBookId, boolean lastTry) throws DraftBookNotFoundException, SessionNotFoundException {
-        Session session = sessionService.findById(sessionId);
-        DraftBook draftBook = session.markDraftBookFetching(draftBookId);
-        saveAndPublish(draftBook, session);
+    public DraftBookStatus fetchBookForDraft(UUID sessionId, UUID draftBookId, boolean lastTry) throws DraftBookNotFoundException, CatalogingSessionNotFoundException {
+        CatalogingSession catalogingSession = sessionService.findById(sessionId);
+        DraftBook draftBook = catalogingSession.markDraftBookFetching(draftBookId);
+        saveAndPublish(draftBook, catalogingSession);
         try {
-            tryFetchBook(session, draftBook, lastTry);
+            tryFetchBook(catalogingSession, draftBook, lastTry);
         } catch (Exception e) {
-            session.markDraftBookFailed(draftBookId);
+            catalogingSession.markDraftBookFailed(draftBookId);
         }
-        saveAndPublish(draftBook, session);
+        saveAndPublish(draftBook, catalogingSession);
         return draftBook.getStatus();
     }
 
-    private void saveAndPublish(DraftBook draftBook, Session session) {
-        sessionService.save(session);
-        eventPublisher.publishEvent(DraftBookUpdatedEvent.of(session, draftBook));
+    private void saveAndPublish(DraftBook draftBook, CatalogingSession catalogingSession) {
+        sessionService.save(catalogingSession);
+        eventPublisher.publishEvent(DraftBookUpdatedEvent.of(catalogingSession, draftBook));
     }
 
-    private void tryFetchBook(Session session, DraftBook draftBook, boolean lastTry) throws DraftBookNotFoundException {
+    private void tryFetchBook(CatalogingSession catalogingSession, DraftBook draftBook, boolean lastTry) throws DraftBookNotFoundException {
         Book book = bookDetailsFetcher.fetchBookDetails(draftBook.getIsbn());
         FetchResult fetchResult = book.getFetchResult();
         switch (fetchResult) {
             case SUCCESS:
                 BookDetails details = new BookDetailsComposer(book.getBookRaws().stream().filter(br -> br.getFetchResult() == FetchResult.SUCCESS).map(mapper::map).toList()).compose();
-                session.setDraftBookBookDetails(draftBook.getId(), details, Modifier.SYSTEM);
+                catalogingSession.setDraftBookBookDetails(draftBook.getId(), details, Modifier.SYSTEM);
                 break;
             case NOT_FOUND:
-                session.markDraftBookNotFound(draftBook.getId());
+                catalogingSession.markDraftBookNotFound(draftBook.getId());
                 break;
             case FAILURE:
-                if (lastTry) session.markDraftBookFailed(draftBook.getId());
+                if (lastTry) catalogingSession.markDraftBookFailed(draftBook.getId());
                 break;
 
         }

@@ -11,7 +11,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Named
 @RequiredArgsConstructor
-public class SessionApplicationEventsListener {
+public class CatalogingSessionApplicationEventsListener {
 
     private final BookDetailsAsyncFetcherPort bookDetailsFetcher;
     private final ExportCreatorAsyncPort exportCreator;
@@ -19,12 +19,12 @@ public class SessionApplicationEventsListener {
     @TransactionalEventListener
     public void onDraftBookCreated(DraftBookCreatedEvent event) {
         if (event.getDraftBook().getStatus() == DraftBookStatus.PENDING)
-            bookDetailsFetcher.fetchBookDetails(event.getSession(), event.getDraftBook());
+            bookDetailsFetcher.fetchBookDetails(event.getCatalogingSession(), event.getDraftBook());
     }
 
     @TransactionalEventListener
     public void onExportRequested(ExportRequestedEvent event) {
-        exportCreator.exportSession(event.getSession());
+        exportCreator.exportSession(event.getCatalogingSession());
     }
 
 }

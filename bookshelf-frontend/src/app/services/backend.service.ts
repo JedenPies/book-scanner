@@ -12,7 +12,7 @@ import {
 @Service()
 export class BackendService {
 
-  private apiCatalogingSessionUrl = '/api/sessions';
+  private apiCatalogingSessionUrl = '/api/cataloging-sessions';
   private apiShareCodeUrl = '/api/share-codes';
   private http = inject(HttpClient);
 
@@ -70,6 +70,9 @@ export class BackendService {
   }
 
   modifyDraftBook(sessionId: string, draftBookId: string, command: EditDraftBookCommandDto) {
-    return this.http.patch<DraftBookDto>(`/api/sessions/${sessionId}/draft-books/${draftBookId}`, command);
+    return this.http.patch<DraftBookDto>(
+      `${this.apiCatalogingSessionUrl}/${sessionId}/draft-books/${draftBookId}`,
+      command,
+    );
   }
 }

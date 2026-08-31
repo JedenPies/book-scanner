@@ -3,8 +3,8 @@ package net.patrykdobrowolski.bookshelf.adapter.sse;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.patrykdobrowolski.bookshelf.domain.exception.SessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.service.SessionService;
+import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
+import net.patrykdobrowolski.bookshelf.service.CatalogingSessionService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -15,13 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Named
 @RequiredArgsConstructor
 @Slf4j
-public class SseSessionService {
+public class SseCatalogingSessionService {
 
-    private final SessionService sessionService;
+    private final CatalogingSessionService sessionService;
 
     private final Map<UUID, List<SseEmitter>> emitters = new ConcurrentHashMap<>();
 
-    public SseEmitter createConnection(UUID sessionId) throws SessionNotFoundException {
+    public SseEmitter createConnection(UUID sessionId) throws CatalogingSessionNotFoundException {
         log.debug("Creating SSE connection for session: {}", sessionId);
         sessionService.ensureSessionExists(sessionId);
         SseEmitter emitter = new SseEmitter(-1L);

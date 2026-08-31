@@ -1,8 +1,8 @@
 package net.patrykdobrowolski.bookshelf.domain.port;
 
-import net.patrykdobrowolski.bookshelf.domain.model.Session;
+import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
 
 public interface ExportCreatorAsyncPort {
 
-    void exportSession(Session session);
+    void exportSession(CatalogingSession catalogingSession);
 }

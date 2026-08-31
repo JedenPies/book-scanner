@@ -3,7 +3,7 @@ package net.patrykdobrowolski.bookshelf.adapter.rabbitmq;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.patrykdobrowolski.bookshelf.domain.model.Session;
+import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.port.ExportCreatorAsyncPort;
 import net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto.ExportSessionCommandDto;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -23,14 +23,14 @@ public class ExportCreatorAsyncAdapter implements ExportCreatorAsyncPort {
     private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public void exportSession(Session session) {
+    public void exportSession(CatalogingSession catalogingSession) {
 
-        ExportSessionCommandDto command = ExportSessionCommandDto.forSession(session.getId());
+        ExportSessionCommandDto command = ExportSessionCommandDto.forSession(catalogingSession.getId());
         rabbitTemplate.convertAndSend(
                 commandExchangeName,
                 exportSessionCommandRetryQueueName,
                 command);
-        log.info("Sent export command for session {}", session.getId());
+        log.info("Sent export command for session {}", catalogingSession.getId());
 
     }
 }

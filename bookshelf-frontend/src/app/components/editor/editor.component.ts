@@ -127,7 +127,7 @@ export class EditorComponent {
   private initSseStream() {
     const sessionId = this.sessionId();
     if (!sessionId) return;
-    this.eventSource = new EventSource(`/api/sessions/${sessionId}/events-stream`);
+    this.eventSource = new EventSource(`/api/cataloging-sessions/${sessionId}/events-stream`);
     this.eventSource.addEventListener('DRAFT_BOOK_CREATED', (event: MessageEvent) => {
       const eventDto: DraftBookCreatedSseEvent = JSON.parse(event.data);
       this.draftBooks.update((currentDraftBooks) => [eventDto.draftBook, ...currentDraftBooks]);

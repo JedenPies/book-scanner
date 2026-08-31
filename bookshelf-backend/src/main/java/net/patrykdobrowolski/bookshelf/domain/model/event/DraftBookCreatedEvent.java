@@ -2,17 +2,17 @@ package net.patrykdobrowolski.bookshelf.domain.model.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
-import net.patrykdobrowolski.bookshelf.domain.model.Session;
 
 @RequiredArgsConstructor
 @Getter
 public class DraftBookCreatedEvent extends BusinessEvent {
 
-    private final Session session;
+    private final CatalogingSession catalogingSession;
     private final DraftBook draftBook;
 
-    public static DraftBookCreatedEvent of(Session session, DraftBook draftBook) {
-        return new DraftBookCreatedEvent(session, draftBook);
+    public static DraftBookCreatedEvent of(CatalogingSession catalogingSession, DraftBook draftBook) {
+        return new DraftBookCreatedEvent(catalogingSession, draftBook);
     }
 }

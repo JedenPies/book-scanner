@@ -2,9 +2,9 @@ package net.patrykdobrowolski.bookshelf.adapter.exporter;
 
 import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
+import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.model.ExportFormat;
 import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
-import net.patrykdobrowolski.bookshelf.domain.model.Session;
 import net.patrykdobrowolski.bookshelf.domain.model.Year;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 import org.apache.commons.csv.CSVFormat;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Slf4j
 @Named
-public class CsvSessionExporter implements SessionExporter {
+public class CsvCatalogingSessionExporter implements CatalogingSessionExporter {
 
     @Override
     public boolean supports(ExportFormat format) {
@@ -25,7 +25,7 @@ public class CsvSessionExporter implements SessionExporter {
     }
 
     @Override
-    public ExportResult export(Session session) throws ExportFailedException {
+    public ExportResult export(CatalogingSession catalogingSession) throws ExportFailedException {
         try (
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 PrintWriter printWriter = new PrintWriter(outputStream);
@@ -40,7 +40,7 @@ public class CsvSessionExporter implements SessionExporter {
             outputStream.write(187);
             outputStream.write(191);
 
-            for (DraftBook draftBook : session.getDraftBooks()) {
+            for (DraftBook draftBook : catalogingSession.getDraftBooks()) {
                 printer.printRecord(
                         draftBook.getIsbn().value(),
                         draftBook.getStatus().name(),
