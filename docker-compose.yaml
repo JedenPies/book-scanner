@@ -63,7 +63,7 @@ services:
 
   bookshelf-backend:
     build:
-      context: scanner-backend
+      context: bookshelf-backend
       dockerfile: Dockerfile
     image: bookshelf-backend
     container_name: bookshelf-backend
