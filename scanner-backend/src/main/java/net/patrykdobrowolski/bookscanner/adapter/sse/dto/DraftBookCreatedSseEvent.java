@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ScanDeletedSseEvent {
+public class DraftBookCreatedSseEvent {
 
-    private final ScanDto scan;
+    private final DraftBookDto scan;
 }

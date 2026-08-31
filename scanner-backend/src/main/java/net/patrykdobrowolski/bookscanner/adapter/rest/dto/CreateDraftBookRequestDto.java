@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.ISBN;
 
 @Jacksonized
 @Builder @Getter
-public class CreateScanRequestDto {
+public class CreateDraftBookRequestDto {
 
     @NotBlank(message = "ISBN cannot be empty")
     @ISBN(message = "Invalid ISBN format", type = ISBN.Type.ANY)

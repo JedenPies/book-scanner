@@ -31,7 +31,7 @@ public class SessionEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "session_id", insertable = false, updatable = false)
-    private List<ScanEntity> scans;
+    private List<DraftBookEntity> scans;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "export_id")

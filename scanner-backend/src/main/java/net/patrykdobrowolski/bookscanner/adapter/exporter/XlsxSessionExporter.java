@@ -1,8 +1,8 @@
 package net.patrykdobrowolski.bookscanner.adapter.exporter;
 
 import jakarta.inject.Named;
+import net.patrykdobrowolski.bookscanner.domain.model.DraftBook;
 import net.patrykdobrowolski.bookscanner.domain.model.ExportFormat;
-import net.patrykdobrowolski.bookscanner.domain.model.Scan;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
 import net.patrykdobrowolski.bookscanner.domain.model.Year;
 import org.apache.poi.ss.usermodel.*;
@@ -42,19 +42,19 @@ public class XlsxSessionExporter implements SessionExporter {
             }
 
             int rowNum = 1;
-            for (Scan scan : session.getScans()) {
+            for (DraftBook draftBook : session.getDraftBooks()) {
                 Row row = sheet.createRow(rowNum++);
-                boolean hasDetails = scan.getBookDetails() != null;
+                boolean hasDetails = draftBook.getBookDetails() != null;
 
-                row.createCell(0).setCellValue(scan.getIsbn().value());
-                row.createCell(1).setCellValue(scan.getStatus().name());
-                row.createCell(2).setCellValue(hasDetails ? scan.getBookDetails().title() : "");
-                row.createCell(3).setCellValue(hasDetails ? String.join(", ", Optional.ofNullable(scan.getBookDetails().authors()).orElseGet(Collections::emptyList)) : "");
-                row.createCell(4).setCellValue(hasDetails ? Optional.ofNullable(scan.getBookDetails().publicationYear()).map(Year::value).orElse("") : "");
-                row.createCell(5).setCellValue(hasDetails ? scan.getBookDetails().publisher() : "");
-                row.createCell(6).setCellValue(hasDetails ? scan.getBookDetails().publicationPlace() : "");
-                row.createCell(7).setCellValue(hasDetails ? scan.getBookDetails().language() : "");
-                row.createCell(8).setCellValue(scan.getCreatedAt().toString());
+                row.createCell(0).setCellValue(draftBook.getIsbn().value());
+                row.createCell(1).setCellValue(draftBook.getStatus().name());
+                row.createCell(2).setCellValue(hasDetails ? draftBook.getBookDetails().title() : "");
+                row.createCell(3).setCellValue(hasDetails ? String.join(", ", Optional.ofNullable(draftBook.getBookDetails().authors()).orElseGet(Collections::emptyList)) : "");
+                row.createCell(4).setCellValue(hasDetails ? Optional.ofNullable(draftBook.getBookDetails().publicationYear()).map(Year::value).orElse("") : "");
+                row.createCell(5).setCellValue(hasDetails ? draftBook.getBookDetails().publisher() : "");
+                row.createCell(6).setCellValue(hasDetails ? draftBook.getBookDetails().publicationPlace() : "");
+                row.createCell(7).setCellValue(hasDetails ? draftBook.getBookDetails().language() : "");
+                row.createCell(8).setCellValue(draftBook.getCreatedAt().toString());
             }
 
             // 4. Estetyka: Automatyczne dopasowanie szerokości kolumn do tekstu

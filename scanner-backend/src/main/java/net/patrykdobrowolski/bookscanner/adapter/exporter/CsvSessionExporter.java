@@ -3,7 +3,7 @@ package net.patrykdobrowolski.bookscanner.adapter.exporter;
 import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import net.patrykdobrowolski.bookscanner.domain.model.ExportFormat;
-import net.patrykdobrowolski.bookscanner.domain.model.Scan;
+import net.patrykdobrowolski.bookscanner.domain.model.DraftBook;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
 import net.patrykdobrowolski.bookscanner.domain.model.Year;
 import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
@@ -40,17 +40,17 @@ public class CsvSessionExporter implements SessionExporter {
             outputStream.write(187);
             outputStream.write(191);
 
-            for (Scan scan : session.getScans()) {
+            for (DraftBook draftBook : session.getDraftBooks()) {
                 printer.printRecord(
-                        scan.getIsbn().value(),
-                        scan.getStatus().name(),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::title).orElse(""),
-                        String.join(", ", Optional.ofNullable(scan.getBookDetails()).map(BookDetails::authors).orElseGet(Collections::emptyList)),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::publicationYear).map(Year::value).orElse(""),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::publisher).orElse(""),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::publicationPlace).orElse(""),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::language).orElse(""),
-                        Optional.ofNullable(scan.getCreatedAt()).map(Object::toString).orElse(""));
+                        draftBook.getIsbn().value(),
+                        draftBook.getStatus().name(),
+                        Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::title).orElse(""),
+                        String.join(", ", Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::authors).orElseGet(Collections::emptyList)),
+                        Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::publicationYear).map(Year::value).orElse(""),
+                        Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::publisher).orElse(""),
+                        Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::publicationPlace).orElse(""),
+                        Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::language).orElse(""),
+                        Optional.ofNullable(draftBook.getCreatedAt()).map(Object::toString).orElse(""));
             }
             printer.flush();
             return new ExportResult(outputStream.toByteArray());

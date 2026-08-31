@@ -6,8 +6,8 @@ import lombok.Getter;
 import java.util.List;
 
 @Builder @Getter
-public class ScansDeletedSseEvent {
+public class DraftBooksDeletedSseEvent {
 
-    private final List<ScanDto> scans;
+    private final List<DraftBookDto> scans;
     private final int count;
 }

@@ -4,10 +4,10 @@ import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.patrykdobrowolski.bookscanner.adapter.sse.mapper.EventsMapper;
+import net.patrykdobrowolski.bookscanner.domain.model.event.DraftBookUpdatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ExportCompleteEvent;
-import net.patrykdobrowolski.bookscanner.domain.model.event.ScanCreatedEvent;
-import net.patrykdobrowolski.bookscanner.domain.model.event.ScanUpdatedEvent;
-import net.patrykdobrowolski.bookscanner.domain.model.event.ScansDeletedEvent;
+import net.patrykdobrowolski.bookscanner.domain.model.event.DraftBookCreatedEvent;
+import net.patrykdobrowolski.bookscanner.domain.model.event.DraftBooksDeletedEvent;
 import org.springframework.context.event.EventListener;
 
 @Named
@@ -19,19 +19,19 @@ public class SseEventNotifier {
     private final EventsMapper eventsMapper;
 
     @EventListener
-    public void handleScanRequestedEvent(ScanCreatedEvent event) {
+    public void handleScanRequestedEvent(DraftBookCreatedEvent event) {
         log.debug("Sending SCAN_CREATED event to all connected clients");
         sseSessionService.broadcastToSession(event.getSession().getId(), "SCAN_CREATED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener
-    public void handleScanUpdatedEvent(ScanUpdatedEvent event) {
+    public void handleScanUpdatedEvent(DraftBookUpdatedEvent event) {
         log.debug("Sending SCAN_UPDATED event");
         sseSessionService.broadcastToSession(event.getSession().getId(), "SCAN_UPDATED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener
-    public void handleScansDeletedEvent(ScansDeletedEvent event) {
+    public void handleScansDeletedEvent(DraftBooksDeletedEvent event) {
         log.debug("Sending SCANS_DELETED event");
         sseSessionService.broadcastToSession(event.getSession().getId(), "SCANS_DELETED", eventsMapper.toSseEvent(event));
     }

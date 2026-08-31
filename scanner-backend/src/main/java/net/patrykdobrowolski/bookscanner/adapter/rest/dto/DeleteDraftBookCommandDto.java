@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Jacksonized
 @Builder @Getter
-public class DeleteScansCommandDto {
+public class DeleteDraftBookCommandDto {
 
     private List<UUID> scanIds;
 }

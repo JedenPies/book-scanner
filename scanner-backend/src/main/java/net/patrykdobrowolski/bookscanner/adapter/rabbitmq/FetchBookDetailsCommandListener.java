@@ -3,11 +3,11 @@ package net.patrykdobrowolski.bookscanner.adapter.rabbitmq;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
+import net.patrykdobrowolski.bookscanner.domain.exception.DraftBookNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
-import net.patrykdobrowolski.bookscanner.domain.model.ScanStatus;
+import net.patrykdobrowolski.bookscanner.domain.model.DraftBookStatus;
 import net.patrykdobrowolski.bookscanner.adapter.rabbitmq.dto.FetchBookDetailsCommandDto;
-import net.patrykdobrowolski.bookscanner.service.FetchBookForScanService;
+import net.patrykdobrowolski.bookscanner.service.FetchBookService;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -26,16 +26,16 @@ public class FetchBookDetailsCommandListener {
     @Value("${rabbitmq.fetch-book-command-retry-queue}")
     private String fetchBookCommandRetryQueueName;
 
-    private final FetchBookForScanService fetchBookForScanService;
+    private final FetchBookService fetchBookService;
     private final RabbitTemplate rabbitTemplate;
 
     @RabbitHandler
     public void handleFetchBookDetailsCommand(FetchBookDetailsCommandDto command) {
         try {
             command.tried();
-            ScanStatus scanStatus = fetchBookForScanService.fetchBookForScan(command.getSessionId(), command.getScanId(), command.getTryCount() >= 3);
-            if (scanStatus == ScanStatus.FETCHING) retry(command);
-        } catch (ScanNotFoundException e) {
+            DraftBookStatus draftBookStatus = fetchBookService.fetchBookForScan(command.getSessionId(), command.getScanId(), command.getTryCount() >= 3);
+            if (draftBookStatus == DraftBookStatus.FETCHING) retry(command);
+        } catch (DraftBookNotFoundException e) {
             log.error("Scan not found", e);
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
         } catch (SessionNotFoundException e) {

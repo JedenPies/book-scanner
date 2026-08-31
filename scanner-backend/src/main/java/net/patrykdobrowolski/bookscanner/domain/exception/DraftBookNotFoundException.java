@@ -1,4 +1,4 @@
 package net.patrykdobrowolski.bookscanner.domain.exception;
 
-public class ScanNotFoundException extends Exception {
+public class DraftBookNotFoundException extends Exception {
 }

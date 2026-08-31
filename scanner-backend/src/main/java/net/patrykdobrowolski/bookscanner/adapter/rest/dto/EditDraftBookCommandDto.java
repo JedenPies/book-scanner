@@ -8,7 +8,7 @@ import java.util.List;
 
 @Jacksonized
 @Builder @Getter
-public class EditScanCommandDto {
+public class EditDraftBookCommandDto {
 
     private final String title;
     private final List<String> authors;

@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Builder @Getter
-public class ScanDto {
+public class DraftBookDto {
 
     private final String id;
     private final String isbn;

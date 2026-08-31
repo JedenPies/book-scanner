@@ -10,11 +10,11 @@ import java.util.UUID;
 
 @Builder @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @Getter
-public class Scan {
+public class DraftBook {
 
     private UUID id;
     private UUID sessionId;
-    private ScanStatus status;
+    private DraftBookStatus status;
     private ISBN isbn;
 
     private BookDetails bookDetails;
@@ -22,35 +22,35 @@ public class Scan {
     private Instant createdAt;
     private Modifier modifiedBy;
 
-    static Scan createNew(ISBN isbn, UUID sessionId) {
-        return Scan.builder()
+    static DraftBook createNew(ISBN isbn, UUID sessionId) {
+        return DraftBook.builder()
                 .id(UUID.randomUUID())
                 .sessionId(sessionId)
                 .createdAt(Instant.now())
-                .status(ScanStatus.PENDING)
+                .status(DraftBookStatus.PENDING)
                 .isbn(isbn).build();
     }
 
-    void copyDetails(Scan scan) {
-        this.bookDetails = scan.getBookDetails();
-        this.status = ScanStatus.DUPLICATE;
+    void copyDetails(DraftBook draftBook) {
+        this.bookDetails = draftBook.getBookDetails();
+        this.status = DraftBookStatus.DUPLICATE;
     }
 
     void markFetching() {
-        this.status = ScanStatus.FETCHING;
+        this.status = DraftBookStatus.FETCHING;
     }
 
     void markFailed() {
-        this.status = ScanStatus.FAILED;
+        this.status = DraftBookStatus.FAILED;
     }
 
     void markNotFound() {
-        this.status = ScanStatus.NOT_FOUND;
+        this.status = DraftBookStatus.NOT_FOUND;
     }
 
     void setBookDetails(BookDetails details, Modifier modifier) {
         this.bookDetails = details;
         this.modifiedBy = modifier;
-        this.status = ScanStatus.FOUND;
+        this.status = DraftBookStatus.FOUND;
     }
 }

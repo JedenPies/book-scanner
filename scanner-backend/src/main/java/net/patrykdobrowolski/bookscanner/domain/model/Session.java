@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import net.patrykdobrowolski.bookscanner.domain.exception.ExportAlreadyRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ExportNotRequestedException;
-import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
+import net.patrykdobrowolski.bookscanner.domain.exception.DraftBookNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.model.command.ExportSessionCommand;
 import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 
@@ -19,42 +19,42 @@ import java.util.UUID;
 
 @Builder @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @Getter
-public class Session {
+public class Session extends Aggregate {
 
     private UUID id;
     private Instant createdAt;
     private Instant lastUse;
-    private List<Scan> scans;
+    private List<DraftBook> draftBooks;
     private Export export;
 
     public static Session createNew() {
         Instant now = Instant.now();
         return Session.builder()
-                .scans(new ArrayList<>())
+                .draftBooks(new ArrayList<>())
                 .id(UUID.randomUUID())
                 .createdAt(now)
                 .lastUse(now)
                 .build();
     }
 
-    public Scan findScanById(UUID scanId) throws ScanNotFoundException {
-        return scans.stream().filter(scan -> Objects.equals(scan.getId(), scanId)).findFirst().orElseThrow(ScanNotFoundException::new);
+    public DraftBook findScanById(UUID scanId) throws DraftBookNotFoundException {
+        return draftBooks.stream().filter(scan -> Objects.equals(scan.getId(), scanId)).findFirst().orElseThrow(DraftBookNotFoundException::new);
     }
 
-    public Scan createNewScan(ISBN isbn) {
+    public DraftBook createNewScan(ISBN isbn) {
         touch();
-        Scan newScan = Scan.createNew(isbn, this.id);
-        Scan foundScan = findOldestScanByIsbn(isbn);
-        Optional.ofNullable(foundScan).ifPresent(newScan::copyDetails);
-        scans.add(newScan);
-        return newScan;
+        DraftBook newDraftBook = DraftBook.createNew(isbn, this.id);
+        DraftBook foundDraftBook = findOldestScanByIsbn(isbn);
+        Optional.ofNullable(foundDraftBook).ifPresent(newDraftBook::copyDetails);
+        draftBooks.add(newDraftBook);
+        return newDraftBook;
     }
 
-    public List<Scan> removeScans(List<UUID> scanIds) {
+    public List<DraftBook> removeScans(List<UUID> scanIds) {
         touch();
-        List<Scan> scans = this.scans.stream().filter(scan -> scanIds.contains(scan.getId())).toList();
-        scans.forEach(this.scans::remove);
-        return scans;
+        List<DraftBook> draftBooks = this.draftBooks.stream().filter(scan -> scanIds.contains(scan.getId())).toList();
+        draftBooks.forEach(this.draftBooks::remove);
+        return draftBooks;
     }
 
     public Export requestExport(ExportSessionCommand command) throws ExportAlreadyRequestedException {
@@ -84,31 +84,31 @@ public class Session {
         this.export.failed();
     }
 
-    public Scan updateScan(UUID scanId, BookDetails newDetails) throws ScanNotFoundException {
+    public DraftBook updateScan(UUID scanId, BookDetails newDetails) throws DraftBookNotFoundException {
         touch();
-        Scan scan = findScanById(scanId);
-        scan.setBookDetails(newDetails, Modifier.USER);
-        return scan;
+        DraftBook draftBook = findScanById(scanId);
+        draftBook.setBookDetails(newDetails, Modifier.USER);
+        return draftBook;
     }
 
-    public Scan markScanFetching(UUID scanId) throws ScanNotFoundException {
+    public DraftBook markScanFetching(UUID scanId) throws DraftBookNotFoundException {
         touch();
-        Scan scan = findScanById(scanId);
-        scan.markFetching();
-        return scan;
+        DraftBook draftBook = findScanById(scanId);
+        draftBook.markFetching();
+        return draftBook;
     }
 
-    public void markScanFailed(UUID scanId) throws ScanNotFoundException {
+    public void markScanFailed(UUID scanId) throws DraftBookNotFoundException {
         touch();
         findScanById(scanId).markFailed();
     }
 
-    public void markScanNotFound(UUID scanId) throws ScanNotFoundException {
+    public void markScanNotFound(UUID scanId) throws DraftBookNotFoundException {
         touch();
         findScanById(scanId).markNotFound();
     }
 
-    public void setScanBookDetails(UUID scanId, BookDetails details, Modifier modifier) throws ScanNotFoundException {
+    public void setScanBookDetails(UUID scanId, BookDetails details, Modifier modifier) throws DraftBookNotFoundException {
         touch();
         findScanById(scanId).setBookDetails(details, modifier);
     }
@@ -117,10 +117,10 @@ public class Session {
         if (export == null) throw new ExportNotRequestedException();
     }
 
-    private Scan findOldestScanByIsbn(ISBN isbn) {
-        return scans.stream()
+    private DraftBook findOldestScanByIsbn(ISBN isbn) {
+        return draftBooks.stream()
                 .filter(scan -> Objects.equals(scan.getIsbn(), isbn))
-                .min(Comparator.comparing(Scan::getCreatedAt)).orElse(null);
+                .min(Comparator.comparing(DraftBook::getCreatedAt)).orElse(null);
     }
 
     private void touch() {
