@@ -6,7 +6,7 @@ import net.patrykdobrowolski.bookshelf.util.ISBNMapper;
 import net.patrykdobrowolski.bookshelf.util.YearMapper;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = { ISBNMapper.class, YearMapper.class })
+@Mapper(componentModel = "spring", uses = { ISBNMapper.class, YearMapper.class, BookDetailsEntityMapper.class })
 public interface SessionEntityMapper {
 
     SessionEntity toEntity(Session entity);

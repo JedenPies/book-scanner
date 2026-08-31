@@ -26,14 +26,14 @@ public class XlsxSessionExporter implements SessionExporter {
                 Workbook workbook = new XSSFWorkbook();
                 ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 
-            Sheet sheet = workbook.createSheet("Scanned books");
+            Sheet sheet = workbook.createSheet("Books");
             CellStyle headerStyle = workbook.createCellStyle();
             Font headerFont = workbook.createFont();
             headerFont.setBold(true);
             headerStyle.setFont(headerFont);
 
             Row headerRow = sheet.createRow(0);
-            String[] columns = {"ISBN", "Status", "Title", "Authors", "Publication year", "Publisher", "Publication place", "Language", "Scanned date"};
+            String[] columns = {"ISBN", "Status", "Title", "Authors", "Publication year", "Publisher", "Publication place", "Language", "Added date"};
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);

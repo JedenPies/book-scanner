@@ -1,6 +1,6 @@
 <div class="table-wrapper">
   <div class="table-container" #scrollContainer (scroll)="onScroll()">
-    <table class="scan-table">
+    <table class="draft-books-table">
       <thead>
       <tr>
         <th>ISBN</th>
@@ -10,37 +10,37 @@
       </tr>
       </thead>
       <tbody>
-        @for (scan of scans(); track scan.id) {
+        @for (draftBook of draftBooks(); track draftBook.id) {
           <tr
             class="main-row"
-            [class.is-expanded]="expandedScanId() === scan.id"
-            [class.not-expandable]="scan.status === 'NOT_FOUND'"
-            (click)="toggleExpand(scan.id)"
+            [class.is-expanded]="expandedDraftBookId() === draftBook.id"
+            [class.not-expandable]="draftBook.status === 'NOT_FOUND'"
+            (click)="toggleExpand(draftBook.id)"
           >
             <!-- ISBN -->
             <td class="valign-top" style="padding-top: 19px; text-align: center;">
               <span
                 class="badge"
-                (click)="$event.stopPropagation(); clipboardService.copyToClipboard(scan.isbn, true, 'ISBN')"
+                (click)="$event.stopPropagation(); clipboardService.copyToClipboard(draftBook.isbn, true, 'ISBN')"
               >
-                {{ scan.isbn }}
+                {{ draftBook.isbn }}
               </span>
             </td>
 
             <!-- STATUS -->
             <td class="valign-top">
-              <div class="status-{{ scan.status | lowercase }}">
-                @if (scan.status === 'PENDING' || scan.status === 'FETCHING') {
+              <div class="status-{{ draftBook.status | lowercase }}">
+                @if (draftBook.status === 'PENDING' || draftBook.status === 'FETCHING') {
                   <span class="spinner" title="Fetching..."></span>
-                } @else if (scan.status === 'FOUND') {
+                } @else if (draftBook.status === 'FOUND') {
                   <span title="Found">✅</span>
-                } @else if (scan.status === 'NOT_FOUND') {
+                } @else if (draftBook.status === 'NOT_FOUND') {
                   <span title="Not found">❓</span>
-                } @else if (scan.status === 'FAILED') {
+                } @else if (draftBook.status === 'FAILED') {
                   <span title="Fetch error">❌</span>
-                } @else if (scan.status === 'DUPLICATE') {
+                } @else if (draftBook.status === 'DUPLICATE') {
                   <span title="Duplicate">🔄</span>
-                } @else if (scan.status === 'MODIFIED') {
+                } @else if (draftBook.status === 'MODIFIED') {
                   <span title="Modified">✏️</span>
                 }
               </div>
@@ -51,43 +51,43 @@
               <div class="title-wrapper">
                 <span
                   class="chevron"
-                  [class.rotated]="expandedScanId() === scan.id"
-                  [class.invisible]="!isExpandable(scan)"
+                  [class.rotated]="expandedDraftBookId() === draftBook.id"
+                  [class.invisible]="!isExpandable(draftBook)"
                 >▼</span>
-                <span class="primary-text">{{ scan.bookDetails?.title || '-' }}</span>
+                <span class="primary-text">{{ draftBook.bookDetails?.title || '-' }}</span>
               </div>
               <div
                 class="book-card-collapsible"
-                [class.is-open]="expandedScanId() === scan.id && isExpandable(scan)"
+                [class.is-open]="expandedDraftBookId() === draftBook.id && isExpandable(draftBook)"
                 (click)="$event.stopPropagation()"
               >
                 <div class="book-card-inner">
                   <div class="book-card">
                     <div class="book-header">
-                      <span class="authors">{{ scan.bookDetails?.authors?.join(', ') || 'No info about author' }}</span>
+                      <span class="authors">{{ draftBook.bookDetails?.authors?.join(', ') || 'No info about author' }}</span>
                     </div>
 
                     <div class="book-grid">
                       <div class="info-group">
                         <span class="label">Publisher</span>
-                        <span class="value">{{ scan.bookDetails?.publisher || '-' }}</span>
+                        <span class="value">{{ draftBook.bookDetails?.publisher || '-' }}</span>
                       </div>
                       <div class="info-group">
                         <span class="label">Publication place</span>
-                        <span class="value">{{ scan.bookDetails?.publicationPlace || '-' }}</span>
+                        <span class="value">{{ draftBook.bookDetails?.publicationPlace || '-' }}</span>
                       </div>
                       <div class="info-group">
                         <span class="label">Year</span>
-                        <span class="value">{{ scan.bookDetails?.publicationYear || '-' }}</span>
+                        <span class="value">{{ draftBook.bookDetails?.publicationYear || '-' }}</span>
                       </div>
                       <div class="info-group">
                         <span class="label">Language</span>
-                        <span class="value">{{ scan.bookDetails?.language || '-' }}</span>
+                        <span class="value">{{ draftBook.bookDetails?.language || '-' }}</span>
                       </div>
                       <div class="info-group">
                         <span class="label">Genres</span>
                         <div class="sources-list">
-                          @for (genre of scan.bookDetails?.genres; track genre) {
+                          @for (genre of draftBook.bookDetails?.genres; track genre) {
                             <span class="badge source-badge">{{ genre }}</span>
                           } @empty {
                             <span class="value">-</span>
@@ -97,7 +97,7 @@
                       <div class="info-group">
                         <span class="label">Sources</span>
                         <div class="sources-list">
-                          @for (source of scan.bookDetails?.sources; track source) {
+                          @for (source of draftBook.bookDetails?.sources; track source) {
                             <span class="badge source-badge">{{ source }}</span>
                           } @empty {
                             <span class="value">-</span>
@@ -112,15 +112,15 @@
 
             <!-- AKCJE -->
             <td class="actions valign-top" (click)="$event.stopPropagation()">
-              @if (scan.status === 'FAILED') {
-                <button (click)="retry.emit(scan.id)" class="btn-secondary small square icon">
+              @if (draftBook.status === 'FAILED') {
+                <button (click)="retry.emit(draftBook.id)" class="btn-secondary small square icon">
                   <img ngSrc="/icons/refresh.svg" width="18" height="18" alt="Retry fetch" />
                 </button>
               }
-              <button (click)="edit.emit(scan)" class="btn-secondary small square icon">
+              <button (click)="edit.emit(draftBook)" class="btn-secondary small square icon">
                 <img ngSrc="/icons/edit.svg" width="18" height="18" alt="Edit" />
               </button>
-              <button (click)="delete.emit(scan)" class="btn-delete small square icon">
+              <button (click)="delete.emit(draftBook)" class="btn-delete small square icon">
                 <img ngSrc="/icons/trash.svg" width="18" height="18" alt="Delete" />
               </button>
             </td>

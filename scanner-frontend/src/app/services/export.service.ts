@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { ScannerBackendService } from './scanner-backend.service';
+import { BackendService } from './backend.service';
 import { ToastService } from './toast.service';
 import { ExportDto, ExportFormat } from '../models/backend.model';
 import { ExportState } from '../components/editor/editor.model';
@@ -9,7 +9,7 @@ import { ExportState } from '../components/editor/editor.model';
 })
 export class ExportService {
 
-  private backendService = inject(ScannerBackendService);
+  private backendService = inject(BackendService);
   private toastService = inject(ToastService);
 
   currentExport = signal<ExportDto | null>(null);

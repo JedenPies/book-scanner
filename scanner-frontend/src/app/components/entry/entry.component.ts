@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, QueryList, signal, ViewChildren } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ScannerBackendService } from '../../services/scanner-backend.service';
+import { BackendService } from '../../services/backend.service';
 import { Router } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
 
@@ -13,7 +13,7 @@ import { ToastService } from '../../services/toast.service';
 export class EntryComponent {
   @ViewChildren('codeInput') inputs!: QueryList<ElementRef<HTMLInputElement>>;
 
-  private scannerService = inject(ScannerBackendService);
+  private scannerService = inject(BackendService);
 
   router = inject(Router);
   toasts = inject(ToastService);

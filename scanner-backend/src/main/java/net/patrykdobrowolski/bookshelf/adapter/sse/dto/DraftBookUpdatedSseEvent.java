@@ -6,5 +6,5 @@ import lombok.Getter;
 @Builder @Getter
 public class DraftBookUpdatedSseEvent {
 
-    private final DraftBookDto scan;
+    private final DraftBookDto draftBook;
 }

@@ -2,46 +2,46 @@ version: '3.8'
 
 services:
 
-  book-scanner-api-gateway:
+  bookshelf-api-gateway:
     build:
-      context: scanner-api-gateway
+      context: bookshelf-api-gateway
       dockerfile: Dockerfile
-    container_name: scanner-api-gateway
+    container_name: bookshelf-api-gateway
     volumes:
-      - ./.config/scanner-api-gateway/nginx:/etc/nginx/conf.d:ro
-      - ./.config/scanner-api-gateway/letsencrypt:/etc/letsencrypt:ro # <-- Podmontowanie certyfikatów
+      - ./.config/bookshelf-api-gateway/nginx:/etc/nginx/conf.d:ro
+      - ./.config/bookshelf-api-gateway/letsencrypt:/etc/letsencrypt:ro # <-- Podmontowanie certyfikatów
     ports:
       - "80:80"
       - "443:443"
     networks:
-      - book-scanner-network
+      - bookshelf-network
 
-  book-scanner-pg:
+  bookshelf-pg:
     image: postgres:17-alpine
-    container_name: book-scanner-pg
+    container_name: bookshelf-pg
     environment:
-      POSTGRES_USER: ${POSTGRES_BOOK_SCANNER_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_BOOK_SCANNER_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_BOOK_SCANNER_DATABASE}
+      POSTGRES_USER: ${POSTGRES_BOOKSHELF_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_BOOKSHELF_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_BOOKSHELF_DATABASE}
     ports:
       - "5432:5432"
     volumes:
-      - book-scanner-pg-data:/var/lib/postgresql/data
+      - bookshelf-pg-data:/var/lib/postgresql/data
     networks:
-      - book-scanner-network
+      - bookshelf-network
 
-  book-scanner-redis:
+  bookshelf-redis:
     image: redis:alpine
-    container_name: book-scanner-redis
+    container_name: bookshelf-redis
     ports:
       - "6379:6379"
     restart: unless-stopped
     networks:
-      - book-scanner-network
+      - bookshelf-network
 
-  book-scanner-rabbitmq:
+  bookshelf-rabbitmq:
     image: rabbitmq:3-management
-    container_name: book-scanner-rabbitmq
+    container_name: bookshelf-rabbitmq
     hostname: rabbitmq-node
     ports:
       - "5672:5672"
@@ -59,28 +59,28 @@ services:
       retries: 5
       start_period: 15s
     networks:
-      - book-scanner-network
+      - bookshelf-network
 
-  book-scanner-backend:
+  bookshelf-backend:
     build:
       context: scanner-backend
       dockerfile: Dockerfile
-    image: book-scanner-backend
-    container_name: book-scanner-backend
+    image: bookshelf-backend
+    container_name: bookshelf-backend
     environment:
       - JAVA_TOOL_OPTIONS=-Xmx128m -Xms128m
-      - POSTGRES_BOOK_SCANNER_HOST=book-scanner-pg
-      - POSTGRES_BOOK_SCANNER_PORT=5432
-      - POSTGRES_BOOK_SCANNER_DATABASE=${POSTGRES_BOOK_SCANNER_DATABASE}
-      - POSTGRES_BOOK_SCANNER_USERNAME=${POSTGRES_BOOK_SCANNER_USER}
-      - POSTGRES_BOOK_SCANNER_PASSWORD=${POSTGRES_BOOK_SCANNER_PASSWORD}
-      - RABBITMQ_HOST=book-scanner-rabbitmq
+      - POSTGRES_BOOKSHELF_HOST=bookshelf-pg
+      - POSTGRES_BOOKSHELF_PORT=5432
+      - POSTGRES_BOOKSHELF_DATABASE=${POSTGRES_BOOKSHELF_DATABASE}
+      - POSTGRES_BOOKSHELF_USERNAME=${POSTGRES_BOOKSHELF_USER}
+      - POSTGRES_BOOKSHELF_PASSWORD=${POSTGRES_BOOKSHELF_PASSWORD}
+      - RABBITMQ_HOST=bookshelf-rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_DEFAULT_PASS}
       - GOOGLE_BOOKS_API_KEY=${GOOGLE_BOOKS_API_KEY}
     networks:
-      - book-scanner-network
+      - bookshelf-network
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8081/actuator/health"]
       interval: 10s
@@ -88,12 +88,12 @@ services:
       retries: 5
       start_period: 20s
     depends_on:
-      book-scanner-pg:
+      bookshelf-pg:
         condition: service_started
 
 volumes:
-  book-scanner-pg-data:
+  bookshelf-pg-data:
   rabbitmq-data:
 
 networks:
-  book-scanner-network:
+  bookshelf-network:

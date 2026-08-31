@@ -1,42 +1,42 @@
 import { Component, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
 import { LowerCasePipe, NgOptimizedImage } from '@angular/common';
 import { ClipboardService } from '../../../services/clipboard.service';
-import { ScanDto } from '../../../models/backend.model';
+import { DraftBookDto } from '../../../models/backend.model';
 
 @Component({
-  selector: 'app-scan-table',
+  selector: 'app-draft-books-table',
   standalone: true,
   imports: [LowerCasePipe, NgOptimizedImage],
-  templateUrl: './scan-table.component.html',
-  styleUrl: './scan-table.component.scss',
+  templateUrl: './draft-books-table.component.html',
+  styleUrl: './draft-books-table.component.scss',
 })
-export class ScanTableComponent {
+export class DraftBooksTableComponent {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
 
   clipboardService = inject(ClipboardService);
 
-  scans = input.required<ScanDto[]>();
+  draftBooks = input.required<DraftBookDto[]>();
 
   // Wyjścia (zdarzenia)
   retry = output<string>();
-  delete = output<ScanDto>();
-  edit = output<ScanDto>();
+  delete = output<DraftBookDto>();
+  edit = output<DraftBookDto>();
 
   // Wewnętrzny stan tabeli
-  expandedScanId = signal<string | null>(null);
+  expandedDraftBookId = signal<string | null>(null);
   showScrollDown = signal<boolean>(false);
   showScrollUp = signal<boolean>(false);
 
-  toggleExpand(scanId: string) {
-    this.expandedScanId.update((current) => (current === scanId ? null : scanId));
+  toggleExpand(draftBookId: string) {
+    this.expandedDraftBookId.update((current) => (current === draftBookId ? null : draftBookId));
   }
 
-  isExpandable(scan: ScanDto): boolean {
+  isExpandable(draftBook: DraftBookDto): boolean {
     return (
-      scan.status !== 'NOT_FOUND' &&
-      scan.status !== 'FAILED' &&
-      scan.status !== 'PENDING' &&
-      scan.status !== 'FETCHING'
+      draftBook.status !== 'NOT_FOUND' &&
+      draftBook.status !== 'FAILED' &&
+      draftBook.status !== 'PENDING' &&
+      draftBook.status !== 'FETCHING'
     );
   }
 

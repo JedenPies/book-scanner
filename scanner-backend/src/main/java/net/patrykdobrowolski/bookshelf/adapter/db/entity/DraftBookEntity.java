@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "scans")
+@Table(name = "draft_books")
 @EntityListeners(AuditingEntityListener.class)
 @Getter @Builder @NoArgsConstructor @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class DraftBookEntity {
@@ -36,8 +36,6 @@ public class DraftBookEntity {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "book_details_id")
     private BookDetailsEntity bookDetails;
-
-    private String errorMessage;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

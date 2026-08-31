@@ -1,34 +1,29 @@
 import { Component, computed, HostListener, inject, input, signal } from '@angular/core';
 import {
-  EditScanCommandDto,
+  EditDraftBookCommandDto,
   ExportCompleteSseEvent,
-  ScanCreatedSseEvent,
-  ScanDto,
-  ScansDeletedSseEvent,
-  ScanUpdatedSseEvent,
+  DraftBookCreatedSseEvent,
+  DraftBookDto,
+  DraftBookDeletedSseEvent,
+  DraftBookUpdatedSseEvent,
 } from '../../models/backend.model';
-import { ScannerBackendService } from '../../services/scanner-backend.service';
+import { BackendService } from '../../services/backend.service';
 import { ToastService } from '../../services/toast.service';
 import { EditorHeaderComponent } from './header/editor-header.component';
 import { ExportService } from '../../services/export.service';
 import { ManualIsbnModalComponent } from './manual-isbn-modal/manual-isbn-modal.component';
 import { ExportModalComponent } from './export-modal/export-modal.component';
-import { ScanTableComponent } from './scan-table/scan-table.component';
-import { EditScanFormDialogComponent } from './edit-scan-modal/edit-scan-form-dialog.component';
-
-export interface ScanToDelete {
-  scanId: string;
-  timeoutHandler: number;
-}
+import { DraftBooksTableComponent } from './draft-books-table/draft-books-table.component';
+import { EditDraftBookFormDialogComponent } from './edit-draft-book-modal/edit-draft-book-form-dialog.component';
 
 @Component({
   selector: 'app-scanner',
   imports: [
     EditorHeaderComponent,
-    ScanTableComponent,
+    DraftBooksTableComponent,
     ManualIsbnModalComponent,
     ExportModalComponent,
-    EditScanFormDialogComponent,
+    EditDraftBookFormDialogComponent,
   ],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.scss',
@@ -39,32 +34,31 @@ export class EditorComponent {
   private readonly DELETE_TOAST_ID = 'batch-delete-toast';
 
   exportService = inject(ExportService);
-  backendService = inject(ScannerBackendService);
+  backendService = inject(BackendService);
   toastService = inject(ToastService);
 
   isModalOpen = computed<boolean>(() => {
-    return this.isManualIsbnModalOpen() || this.isExportModalOpen() || this.editingScan() !== null;
+    return this.isManualIsbnModalOpen() || this.isExportModalOpen() || this.editingDraftBook() !== null;
   });
-  scansToShow = computed<ScanDto[]>(() => {
-    const deleIds = new Set(this.pendingDeletionScans().map((item) => item));
-    return this.scans().filter((scan) => !deleIds.has(scan));
+  draftBooksToShow = computed<DraftBookDto[]>(() => {
+    const deleIds = new Set(this.pendingDeletionDraftBooks().map((item) => item));
+    return this.draftBooks().filter((draftBook) => !deleIds.has(draftBook));
   });
 
   sessionId = input.required<string>();
   isExportModalOpen = signal<boolean>(false);
   isManualIsbnModalOpen = signal<boolean>(false);
 
-  scans = signal<ScanDto[]>([]);
-  scansToDelete = signal<ScanToDelete[]>([]);
-  pendingDeletionScans = signal<ScanDto[]>([]);
-  editingScan = signal<ScanDto | null>(null);
+  draftBooks = signal<DraftBookDto[]>([]);
+  pendingDeletionDraftBooks = signal<DraftBookDto[]>([]);
+  editingDraftBook = signal<DraftBookDto | null>(null);
 
   private deleteTimeoutId?: any;
 
   private eventSource?: EventSource;
 
   ngOnInit() {
-    this.loadScans();
+    this.loadDraftBooks();
     this.exportService.loadExport(this.sessionId());
     this.initSseStream();
   }
@@ -75,17 +69,17 @@ export class EditorComponent {
     }
   }
 
-  handleUpdateScan(command: EditScanCommandDto) {
-    const scan = this.editingScan();
-    if (!scan) return;
+  handleUpdateDraftBook(command: EditDraftBookCommandDto) {
+    const draftBook = this.editingDraftBook();
+    if (!draftBook) return;
 
-    this.backendService.modifyScan(this.sessionId(), scan.id, command).subscribe({
-      next: (updatedScan) => {
-        this.scans.update((current) =>
-          current.map((s) => (s.id === updatedScan.id ? updatedScan : s)),
+    this.backendService.modifyDraftBook(this.sessionId(), draftBook.id, command).subscribe({
+      next: (updatedDraftBook) => {
+        this.draftBooks.update((current) =>
+          current.map((s) => (s.id === updatedDraftBook.id ? updatedDraftBook : s)),
         );
         this.toastService.show('Book details updated', 'success');
-        this.editingScan.set(null);
+        this.editingDraftBook.set(null);
       },
       error: () => this.toastService.show('Failed to update book', 'error'),
     });
@@ -103,28 +97,28 @@ export class EditorComponent {
   }
 
   addManualIsbn(isbn: string) {
-    this.backendService.addScan(this.sessionId(), isbn).subscribe({
+    this.backendService.addDraftBook(this.sessionId(), isbn).subscribe({
       error: () => this.toastService.show('Błąd dodawania ISBN', 'error'),
     });
   }
 
-  retryScan(scanId: string) {
+  retryFetch(draftBookId: string) {
     const sessionId = this.sessionId();
     if (!sessionId) return;
-    this.backendService.retryScan(sessionId, scanId).subscribe({
+    this.backendService.retryFetch(sessionId, draftBookId).subscribe({
       error: (err) => console.error('Błąd podczas ponawiania skanowania:', err),
     });
   }
 
-  private loadScans() {
+  private loadDraftBooks() {
     const sessionId = this.sessionId();
     if (sessionId) {
-      this.backendService.retrieveAllScans(sessionId).subscribe({
+      this.backendService.retrieveAllDraftBooks(sessionId).subscribe({
         next: (result) => {
-          const sortedScans = result.sort(
+          const sortedDraftBooks = result.sort(
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
           );
-          this.scans.set(sortedScans);
+          this.draftBooks.set(sortedDraftBooks);
         },
       });
     }
@@ -134,22 +128,22 @@ export class EditorComponent {
     const sessionId = this.sessionId();
     if (!sessionId) return;
     this.eventSource = new EventSource(`/api/sessions/${sessionId}/events-stream`);
-    this.eventSource.addEventListener('SCAN_CREATED', (event: MessageEvent) => {
-      const eventDto: ScanCreatedSseEvent = JSON.parse(event.data);
-      this.scans.update((currentScans) => [eventDto.scan, ...currentScans]);
+    this.eventSource.addEventListener('DRAFT_BOOK_CREATED', (event: MessageEvent) => {
+      const eventDto: DraftBookCreatedSseEvent = JSON.parse(event.data);
+      this.draftBooks.update((currentDraftBooks) => [eventDto.draftBook, ...currentDraftBooks]);
       this.exportService.invalidateExport();
     });
-    this.eventSource.addEventListener('SCAN_UPDATED', (event: MessageEvent) => {
-      const eventDto: ScanUpdatedSseEvent = JSON.parse(event.data);
-      this.scans.update((currentScans) =>
-        currentScans.map((scan) => (scan.id === eventDto.scan.id ? eventDto.scan : scan)),
+    this.eventSource.addEventListener('DRAFT_BOOK_UPDATED', (event: MessageEvent) => {
+      const eventDto: DraftBookUpdatedSseEvent = JSON.parse(event.data);
+      this.draftBooks.update((currentDraftBooks) =>
+        currentDraftBooks.map((draftBook) => (draftBook.id === eventDto.draftBook.id ? eventDto.draftBook : draftBook)),
       );
       this.exportService.invalidateExport();
     });
-    this.eventSource.addEventListener('SCANS_DELETED', (event: MessageEvent) => {
-      const eventDto: ScansDeletedSseEvent = JSON.parse(event.data);
+    this.eventSource.addEventListener('DRAFT_BOOKS_DELETED', (event: MessageEvent) => {
+      const eventDto: DraftBookDeletedSseEvent = JSON.parse(event.data);
       this.exportService.invalidateExport();
-      this.toastService.show(`${eventDto.count} scans permanently deleted`, 'info');
+      this.toastService.show(`${eventDto.count} draft books permanently deleted`, 'info');
     });
     this.eventSource.addEventListener('EXPORT_COMPLETE', (event: MessageEvent) => {
       const eventDto: ExportCompleteSseEvent = JSON.parse(event.data);
@@ -160,14 +154,14 @@ export class EditorComponent {
     };
   }
 
-  deleteScan(scan: ScanDto) {
-    this.pendingDeletionScans.update((list) => [...list, scan]);
+  deleteDraftBook(draftBook: DraftBookDto) {
+    this.pendingDeletionDraftBooks.update((list) => [...list, draftBook]);
     if (this.deleteTimeoutId) {
       clearTimeout(this.deleteTimeoutId);
     }
 
-    const count = this.pendingDeletionScans().length;
-    const message = count === 1 ? '1 scan deleted' : `${count} elements deleted`;
+    const count = this.pendingDeletionDraftBooks().length;
+    const message = count === 1 ? '1 draftBook deleted' : `${count} elements deleted`;
     this.toastService.show(
       message,
       'warning',
@@ -189,17 +183,17 @@ export class EditorComponent {
       clearTimeout(this.deleteTimeoutId);
       this.deleteTimeoutId = undefined;
     }
-    this.pendingDeletionScans.set([]);
+    this.pendingDeletionDraftBooks.set([]);
     this.toastService.remove(this.DELETE_TOAST_ID);
   }
 
   private commitBatchDelete() {
-    const scansToDelete = this.pendingDeletionScans();
-    if (scansToDelete.length === 0) return;
+    const draftBooksToDelete = this.pendingDeletionDraftBooks();
+    if (draftBooksToDelete.length === 0) return;
     this.toastService.remove(this.DELETE_TOAST_ID);
-    this.pendingDeletionScans.set([]);
-    const ids = scansToDelete.map((s) => s.id);
-    this.scans.update((current) => current.filter((s) => !ids.includes(s.id)));
-    this.backendService.deleteScans(this.sessionId(), scansToDelete).subscribe({});
+    this.pendingDeletionDraftBooks.set([]);
+    const ids = draftBooksToDelete.map((s) => s.id);
+    this.draftBooks.update((current) => current.filter((s) => !ids.includes(s.id)));
+    this.backendService.deleteDraftBooks(this.sessionId(), draftBooksToDelete).subscribe({});
   }
 }

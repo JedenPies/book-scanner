@@ -11,5 +11,5 @@ import java.util.UUID;
 @Builder @Getter
 public class DeleteDraftBookCommandDto {
 
-    private List<UUID> scanIds;
+    private List<UUID> draftBooksIds;
 }

@@ -11,11 +11,11 @@ import java.util.UUID;
 public class FetchBookDetailsCommandDto {
 
     private UUID sessionId;
-    private UUID scanId;
+    private UUID draftBookId;
     private int tryCount;
 
-    public static FetchBookDetailsCommandDto forScan(UUID sessionId, UUID scanId) {
-        return new FetchBookDetailsCommandDto(sessionId, scanId, 0);
+    public static FetchBookDetailsCommandDto forDraftBook(UUID sessionId, UUID draftBookId) {
+        return new FetchBookDetailsCommandDto(sessionId, draftBookId, 0);
     }
 
     public void tried() {

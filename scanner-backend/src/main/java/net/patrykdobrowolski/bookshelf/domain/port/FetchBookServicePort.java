@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface FetchBookServicePort {
 
-    DraftBookStatus fetchBookForScan(UUID sessionId, UUID scanId, boolean lastTry) throws DraftBookNotFoundException, SessionNotFoundException;
+    DraftBookStatus fetchBookForDraft(UUID sessionId, UUID draftBookId, boolean lastTry) throws DraftBookNotFoundException, SessionNotFoundException;
 }

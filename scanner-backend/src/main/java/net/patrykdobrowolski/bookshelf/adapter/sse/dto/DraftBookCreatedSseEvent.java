@@ -7,5 +7,5 @@ import lombok.Getter;
 @Builder
 public class DraftBookCreatedSseEvent {
 
-    private final DraftBookDto scan;
+    private final DraftBookDto draftBook;
 }

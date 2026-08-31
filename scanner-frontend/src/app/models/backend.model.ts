@@ -1,4 +1,4 @@
-export type ScanStatus =
+export type DraftBookStatus =
   'PENDING' | 'FETCHING' | 'FOUND' | 'NOT_FOUND' | 'FAILED' | 'MODIFIED' | 'DUPLICATE';
 
 export type ExportFormat = 'CSV' | 'XLSX';
@@ -20,10 +20,10 @@ export interface BookDetailsDto {
   genres: string[];
 }
 
-export interface ScanDto {
+export interface DraftBookDto {
   id: string;
   isbn: string;
-  status: ScanStatus;
+  status: DraftBookStatus;
   bookDetails: BookDetailsDto | null;
   createdAt: string;
 }
@@ -33,16 +33,16 @@ export interface ShareCodeDto {
   code: string;
 }
 
-export interface ScanCreatedSseEvent {
-  scan: ScanDto;
+export interface DraftBookCreatedSseEvent {
+  draftBook: DraftBookDto;
 }
 
-export interface ScanUpdatedSseEvent {
-  scan: ScanDto;
+export interface DraftBookUpdatedSseEvent {
+  draftBook: DraftBookDto;
 }
 
-export interface ScansDeletedSseEvent {
-  scans: ScanDto[];
+export interface DraftBookDeletedSseEvent {
+  draftBooks: DraftBookDto[];
   count: number;
 }
 
@@ -58,7 +58,7 @@ export interface ExportDto {
   createdAt: string;
 }
 
-export interface EditScanCommandDto {
+export interface EditDraftBookCommandDto {
   title?: string;
   publisher?: string;
   publicationYear?: string;

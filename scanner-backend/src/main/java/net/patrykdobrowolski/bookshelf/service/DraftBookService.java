@@ -30,25 +30,25 @@ public class DraftBookService implements DraftBookServicePort {
 
     @Transactional
     @Override
-    public void retryScan(UUID sessionId, UUID scanId) throws DraftBookNotFoundException, SessionNotFoundException {
+    public void retryDraftBookFetch(UUID sessionId, UUID draftBookId) throws DraftBookNotFoundException, SessionNotFoundException {
         Session session = sessionRepository.findById(sessionId);
-        DraftBook draftBook = session.findScanById(scanId);
+        DraftBook draftBook = session.findDraftBookById(draftBookId);
         eventPublisher.publishEvent(DraftBookUpdatedEvent.of(session, draftBook));
         bookDetailsFetcher.fetchBookDetails(session, draftBook);
     }
 
     @Transactional
     @Override
-    public List<DraftBook> getScans(UUID sessionId) throws SessionNotFoundException {
+    public List<DraftBook> getDraftBooks(UUID sessionId) throws SessionNotFoundException {
         Session session = sessionRepository.findById(sessionId);
         return session.getDraftBooks();
     }
 
     @Transactional
     @Override
-    public DraftBook createScan(UUID sessionId, String isbn) throws SessionNotFoundException {
+    public DraftBook createDraftBook(UUID sessionId, String isbn) throws SessionNotFoundException {
         Session session = sessionRepository.findById(sessionId);
-        DraftBook newDraftBook = session.createNewScan(new ISBN(isbn));
+        DraftBook newDraftBook = session.createNewDraftBook(new ISBN(isbn));
         Session saved = sessionRepository.save(session);
         eventPublisher.publishEvent(DraftBookCreatedEvent.of(saved, newDraftBook));
         return newDraftBook;
@@ -57,17 +57,17 @@ public class DraftBookService implements DraftBookServicePort {
 
     @Transactional
     @Override
-    public DraftBook updateScan(UUID sessionId, UUID scanId, BookDetails newDetails) throws DraftBookNotFoundException, SessionNotFoundException {
+    public DraftBook updateDraftBook(UUID sessionId, UUID draftBookId, BookDetails newDetails) throws DraftBookNotFoundException, SessionNotFoundException {
         Session session = sessionRepository.findById(sessionId);
-        DraftBook result = session.updateScan(scanId, newDetails);
+        DraftBook result = session.updateDraftBook(draftBookId, newDetails);
         sessionRepository.save(session);
         return result;
     }
 
     @Override
-    public void deleteScans(UUID sessionId, List<UUID> scanIds) throws SessionNotFoundException {
+    public void deleteDraftBooks(UUID sessionId, List<UUID> draftBookIds) throws SessionNotFoundException {
         Session session = sessionRepository.findById(sessionId);
-        List<DraftBook> draftBooks = session.removeScans(scanIds);
+        List<DraftBook> draftBooks = session.removeDraftBooks(draftBookIds);
         if (draftBooks.isEmpty()) return;
         sessionRepository.save(session);
         eventPublisher.publishEvent(DraftBooksDeletedEvent.of(session, draftBooks));

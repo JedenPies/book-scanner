@@ -19,21 +19,21 @@ public class SseEventNotifier {
     private final EventsMapper eventsMapper;
 
     @EventListener
-    public void handleScanRequestedEvent(DraftBookCreatedEvent event) {
-        log.debug("Sending SCAN_CREATED event to all connected clients");
-        sseSessionService.broadcastToSession(event.getSession().getId(), "SCAN_CREATED", eventsMapper.toSseEvent(event));
+    public void handleDraftBookRequestedEvent(DraftBookCreatedEvent event) {
+        log.debug("Sending DRAFT_BOOK_CREATED event to all connected clients");
+        sseSessionService.broadcastToSession(event.getSession().getId(), "DRAFT_BOOK_CREATED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener
-    public void handleScanUpdatedEvent(DraftBookUpdatedEvent event) {
-        log.debug("Sending SCAN_UPDATED event");
-        sseSessionService.broadcastToSession(event.getSession().getId(), "SCAN_UPDATED", eventsMapper.toSseEvent(event));
+    public void handleDraftBookUpdatedEvent(DraftBookUpdatedEvent event) {
+        log.debug("Sending DRAFT_BOOK_UPDATED event");
+        sseSessionService.broadcastToSession(event.getSession().getId(), "DRAFT_BOOK_UPDATED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener
-    public void handleScansDeletedEvent(DraftBooksDeletedEvent event) {
-        log.debug("Sending SCANS_DELETED event");
-        sseSessionService.broadcastToSession(event.getSession().getId(), "SCANS_DELETED", eventsMapper.toSseEvent(event));
+    public void handleDraftBooksDeletedEvent(DraftBooksDeletedEvent event) {
+        log.debug("Sending DRAFT_BOOKS_DELETED event");
+        sseSessionService.broadcastToSession(event.getSession().getId(), "DRAFT_BOOKS_DELETED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener

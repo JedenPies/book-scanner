@@ -10,10 +10,10 @@ import java.util.UUID;
 
 public interface DraftBookServicePort {
 
-    void retryScan(UUID sessionId, UUID scanId) throws DraftBookNotFoundException, SessionNotFoundException;
-    List<DraftBook> getScans(UUID sessionId) throws SessionNotFoundException;
-    DraftBook createScan(UUID sessionId, String isbn) throws SessionNotFoundException;
-    DraftBook updateScan(UUID sessionId, UUID scanId, BookDetails newDetails) throws DraftBookNotFoundException, SessionNotFoundException;
-    void deleteScans(UUID sessionId, List<UUID> scanIds) throws SessionNotFoundException;
+    void retryDraftBookFetch(UUID sessionId, UUID draftBookId) throws DraftBookNotFoundException, SessionNotFoundException;
+    List<DraftBook> getDraftBooks(UUID sessionId) throws SessionNotFoundException;
+    DraftBook createDraftBook(UUID sessionId, String isbn) throws SessionNotFoundException;
+    DraftBook updateDraftBook(UUID sessionId, UUID draftBookId, BookDetails newDetails) throws DraftBookNotFoundException, SessionNotFoundException;
+    void deleteDraftBooks(UUID sessionId, List<UUID> draftBookIds) throws SessionNotFoundException;
 
 }

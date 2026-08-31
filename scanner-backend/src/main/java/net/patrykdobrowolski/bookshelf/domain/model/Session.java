@@ -37,22 +37,22 @@ public class Session extends Aggregate {
                 .build();
     }
 
-    public DraftBook findScanById(UUID scanId) throws DraftBookNotFoundException {
-        return draftBooks.stream().filter(scan -> Objects.equals(scan.getId(), scanId)).findFirst().orElseThrow(DraftBookNotFoundException::new);
+    public DraftBook findDraftBookById(UUID draftBookId) throws DraftBookNotFoundException {
+        return draftBooks.stream().filter(draftBook -> Objects.equals(draftBook.getId(), draftBookId)).findFirst().orElseThrow(DraftBookNotFoundException::new);
     }
 
-    public DraftBook createNewScan(ISBN isbn) {
+    public DraftBook createNewDraftBook(ISBN isbn) {
         touch();
         DraftBook newDraftBook = DraftBook.createNew(isbn, this.id);
-        DraftBook foundDraftBook = findOldestScanByIsbn(isbn);
+        DraftBook foundDraftBook = findOldestDraftBookByIsbn(isbn);
         Optional.ofNullable(foundDraftBook).ifPresent(newDraftBook::copyDetails);
         draftBooks.add(newDraftBook);
         return newDraftBook;
     }
 
-    public List<DraftBook> removeScans(List<UUID> scanIds) {
+    public List<DraftBook> removeDraftBooks(List<UUID> draftBooksIds) {
         touch();
-        List<DraftBook> draftBooks = this.draftBooks.stream().filter(scan -> scanIds.contains(scan.getId())).toList();
+        List<DraftBook> draftBooks = this.draftBooks.stream().filter(draftBook -> draftBooksIds.contains(draftBook.getId())).toList();
         draftBooks.forEach(this.draftBooks::remove);
         return draftBooks;
     }
@@ -84,42 +84,42 @@ public class Session extends Aggregate {
         this.export.failed();
     }
 
-    public DraftBook updateScan(UUID scanId, BookDetails newDetails) throws DraftBookNotFoundException {
+    public DraftBook updateDraftBook(UUID draftBookId, BookDetails newDetails) throws DraftBookNotFoundException {
         touch();
-        DraftBook draftBook = findScanById(scanId);
-        draftBook.setBookDetails(newDetails, Modifier.USER);
+        DraftBook draftBook = findDraftBookById(draftBookId);
+        draftBook.setBookDetails(newDetails.withSources(draftBook.getBookDetails().sources()), Modifier.USER);
         return draftBook;
     }
 
-    public DraftBook markScanFetching(UUID scanId) throws DraftBookNotFoundException {
+    public DraftBook markDraftBookFetching(UUID draftBookId) throws DraftBookNotFoundException {
         touch();
-        DraftBook draftBook = findScanById(scanId);
+        DraftBook draftBook = findDraftBookById(draftBookId);
         draftBook.markFetching();
         return draftBook;
     }
 
-    public void markScanFailed(UUID scanId) throws DraftBookNotFoundException {
+    public void markDraftBookFailed(UUID draftBookId) throws DraftBookNotFoundException {
         touch();
-        findScanById(scanId).markFailed();
+        findDraftBookById(draftBookId).markFailed();
     }
 
-    public void markScanNotFound(UUID scanId) throws DraftBookNotFoundException {
+    public void markDraftBookNotFound(UUID draftBookId) throws DraftBookNotFoundException {
         touch();
-        findScanById(scanId).markNotFound();
+        findDraftBookById(draftBookId).markNotFound();
     }
 
-    public void setScanBookDetails(UUID scanId, BookDetails details, Modifier modifier) throws DraftBookNotFoundException {
+    public void setDraftBookBookDetails(UUID draftBookId, BookDetails details, Modifier modifier) throws DraftBookNotFoundException {
         touch();
-        findScanById(scanId).setBookDetails(details, modifier);
+        findDraftBookById(draftBookId).setBookDetails(details, modifier);
     }
 
     private void ensureExportExists() throws ExportNotRequestedException {
         if (export == null) throw new ExportNotRequestedException();
     }
 
-    private DraftBook findOldestScanByIsbn(ISBN isbn) {
+    private DraftBook findOldestDraftBookByIsbn(ISBN isbn) {
         return draftBooks.stream()
-                .filter(scan -> Objects.equals(scan.getIsbn(), isbn))
+                .filter(draftBook -> Objects.equals(draftBook.getIsbn(), isbn))
                 .min(Comparator.comparing(DraftBook::getCreatedAt)).orElse(null);
     }
 

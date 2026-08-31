@@ -15,10 +15,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaAuditing
 @EnableFeignClients
 @EnableScheduling
-public class ScannerBackendApplication {
+public class BookShelfBackendApplication {
 
     static void main(String[] args) {
-        SpringApplication.run(ScannerBackendApplication.class, args);
+        SpringApplication.run(BookShelfBackendApplication.class, args);
 
     }
 }

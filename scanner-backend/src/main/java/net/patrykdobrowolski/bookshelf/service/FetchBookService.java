@@ -26,14 +26,14 @@ public class FetchBookService implements FetchBookServicePort {
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
-    public DraftBookStatus fetchBookForScan(UUID sessionId, UUID scanId, boolean lastTry) throws DraftBookNotFoundException, SessionNotFoundException {
+    public DraftBookStatus fetchBookForDraft(UUID sessionId, UUID draftBookId, boolean lastTry) throws DraftBookNotFoundException, SessionNotFoundException {
         Session session = sessionService.findById(sessionId);
-        DraftBook draftBook = session.markScanFetching(scanId);
+        DraftBook draftBook = session.markDraftBookFetching(draftBookId);
         saveAndPublish(draftBook, session);
         try {
             tryFetchBook(session, draftBook, lastTry);
         } catch (Exception e) {
-            session.markScanFailed(scanId);
+            session.markDraftBookFailed(draftBookId);
         }
         saveAndPublish(draftBook, session);
         return draftBook.getStatus();
@@ -50,13 +50,13 @@ public class FetchBookService implements FetchBookServicePort {
         switch (fetchResult) {
             case SUCCESS:
                 BookDetails details = new BookDetailsComposer(book.getBookRaws().stream().filter(br -> br.getFetchResult() == FetchResult.SUCCESS).map(mapper::map).toList()).compose();
-                session.setScanBookDetails(draftBook.getId(), details, Modifier.SYSTEM);
+                session.setDraftBookBookDetails(draftBook.getId(), details, Modifier.SYSTEM);
                 break;
             case NOT_FOUND:
-                session.markScanNotFound(draftBook.getId());
+                session.markDraftBookNotFound(draftBook.getId());
                 break;
             case FAILURE:
-                if (lastTry) session.markScanFailed(draftBook.getId());
+                if (lastTry) session.markDraftBookFailed(draftBook.getId());
                 break;
 
         }

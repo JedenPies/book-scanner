@@ -1,10 +1,10 @@
 spring:
   application:
-    name: book-scanner-backend
+    name: bookshelf-backend
   datasource:
-    url: jdbc:postgresql://${POSTGRES_BOOK_SCANNER_HOST}:${POSTGRES_BOOK_SCANNER_PORT}/${POSTGRES_BOOK_SCANNER_DATABASE}
-    username: ${POSTGRES_BOOK_SCANNER_USERNAME}
-    password: ${POSTGRES_BOOK_SCANNER_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_BOOKSHELF_HOST}:${POSTGRES_BOOKSHELF_PORT}/${POSTGRES_BOOKSHELF_DATABASE}
+    username: ${POSTGRES_BOOKSHELF_USERNAME}
+    password: ${POSTGRES_BOOKSHELF_PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false

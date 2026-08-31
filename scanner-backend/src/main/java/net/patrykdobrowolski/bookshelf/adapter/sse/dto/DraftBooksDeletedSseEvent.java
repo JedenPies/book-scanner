@@ -8,6 +8,6 @@ import java.util.List;
 @Builder @Getter
 public class DraftBooksDeletedSseEvent {
 
-    private final List<DraftBookDto> scans;
+    private final List<DraftBookDto> draftBooks;
     private final int count;
 }

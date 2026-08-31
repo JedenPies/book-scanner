@@ -61,6 +61,6 @@ public class RabbitMqConfig {
 
     @Bean
     public JacksonJsonMessageConverter messageConverter() {
-        return new JacksonJsonMessageConverter("net.patrykdobrowolski.bookscanner.adapter.rabbitmq.dto");
+        return new JacksonJsonMessageConverter("net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto");
     }
 }

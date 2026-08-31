@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004.01-rename-table-scans
+      author: patryk
+      changes:
+        - dropColumn:
+            tableName: scans
+            columnName: error_message
+        - dropForeignKeyConstraint:
+            baseTableName: scans
+            constraintName: fk_scans_sessions
+        - dropForeignKeyConstraint:
+            baseTableName: scans
+            constraintName: fk_scans_books_details
+        - renameTable:
+            oldTableName: scans
+            newTableName: draft_books
+        - addForeignKeyConstraint:
+            baseTableName: draft_books
+            baseColumnNames: session_id
+            constraintName: fk_draft_books_sessions
+            referencedTableName: sessions
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: draft_books
+            baseColumnNames: book_details_id
+            constraintName: fk_draft_books_books_details
+            referencedTableName: books_details
+            referencedColumnNames: id

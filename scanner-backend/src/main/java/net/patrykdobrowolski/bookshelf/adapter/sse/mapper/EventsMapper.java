@@ -20,7 +20,7 @@ public interface EventsMapper {
 
     DraftBookUpdatedSseEvent toSseEvent(DraftBookUpdatedEvent event);
     DraftBookCreatedSseEvent toSseEvent(DraftBookCreatedEvent event);
-    @Mapping(target = "count", expression = "java(event.getScans() != null ? event.getScans().size() : 0)")
+    @Mapping(target = "count", expression = "java(event.getDraftBooks() != null ? event.getDraftBooks().size() : 0)")
     DraftBooksDeletedSseEvent toSseEvent(DraftBooksDeletedEvent event);
     ExportCompleteSseEvent toSseEvent(ExportCompleteEvent event);
 

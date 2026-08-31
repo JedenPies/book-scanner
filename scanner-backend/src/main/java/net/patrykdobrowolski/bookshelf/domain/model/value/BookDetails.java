@@ -28,13 +28,12 @@ public record BookDetails(
     public BookDetails withSource(String newSource) {
         HashSet<String> newSources = new HashSet<>(this.sources);
         newSources.add(newSource);
+        return this.withSources(newSources);
+    }
+
+    public BookDetails withSources(Set<String> sources) {
         return new BookDetails(
                 this.title, this.authors, this.publisher, this.publicationPlace,
-                this.publicationYear, this.language, this.genres, newSources);
+                this.publicationYear, this.language, this.genres, sources);
     }
-
-    public static BookDetails empty() {
-        return new BookDetails(null, null, null, null, null, null, null, null);
-    }
-
 }

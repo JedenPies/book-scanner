@@ -26,7 +26,7 @@ public class BookDetailsAsyncFetcherAdapter implements BookDetailsAsyncFetcherPo
     @Override
     public void fetchBookDetails(Session session, DraftBook draftBook) {
 
-        FetchBookDetailsCommandDto command = FetchBookDetailsCommandDto.forScan(session.getId(), draftBook.getId());
+        FetchBookDetailsCommandDto command = FetchBookDetailsCommandDto.forDraftBook(session.getId(), draftBook.getId());
         rabbitTemplate.convertAndSend(
                 commandExchangeName,
                 fetchBookCommandQueueName,

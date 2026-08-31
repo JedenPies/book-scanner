@@ -60,7 +60,7 @@
 }
 
 /* Wizualny "celownik" nakładany na kamerę */
-.scan-overlay {
+.draft-book-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   pointer-events: none;
@@ -69,7 +69,7 @@
   justify-content: center;
   background: rgba(0, 0, 0, 0.3); /* Lekkie przyciemnienie tła */
 
-  .scan-frame {
+  .draft-book-frame {
     width: 70%;
     height: 40%;
     border: 2px solid rgba(255, 255, 255, 0.5);

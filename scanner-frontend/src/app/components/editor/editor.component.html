@@ -4,11 +4,11 @@
   (openManualIsbn)="isManualIsbnModalOpen.set(true)"
 />
 
-<app-scan-table
-  [scans]="scansToShow()"
-  (retry)="retryScan($event)"
-  (delete)="deleteScan($event)"
-  (edit)="editingScan.set($event)"
+<app-draft-books-table
+  [draftBooks]="draftBooksToShow()"
+  (retry)="retryFetch($event)"
+  (delete)="deleteDraftBook($event)"
+  (edit)="editingDraftBook.set($event)"
 />
 
 @if (isExportModalOpen()) {
@@ -25,10 +25,10 @@
   />
 }
 
-@if (editingScan(); as scanToEdit) {
-  <app-edit-scan-form-dialog
-    [scan]="scanToEdit"
-    (saved)="handleUpdateScan($event)"
-    (closed)="editingScan.set(null)"
+@if (editingDraftBook(); as draftBookToEdit) {
+  <app-edit-draft-book-form-dialog
+    [draftBook]="draftBookToEdit"
+    (saved)="handleUpdateDraftBook($event)"
+    (closed)="editingDraftBook.set(null)"
   />
 }

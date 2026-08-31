@@ -17,7 +17,7 @@ public class SessionApplicationEventsListener {
     private final ExportCreatorAsyncPort exportCreator;
 
     @TransactionalEventListener
-    public void onScanCreated(DraftBookCreatedEvent event) {
+    public void onDraftBookCreated(DraftBookCreatedEvent event) {
         if (event.getDraftBook().getStatus() == DraftBookStatus.PENDING)
             bookDetailsFetcher.fetchBookDetails(event.getSession(), event.getDraftBook());
     }

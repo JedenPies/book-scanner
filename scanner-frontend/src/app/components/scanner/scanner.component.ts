@@ -1,7 +1,7 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { BarcodeFormat } from '@zxing/library';
-import { ScannerBackendService } from '../../services/scanner-backend.service';
+import { BackendService } from '../../services/backend.service';
 
 @Component({
   selector: 'app-scanner',
@@ -20,7 +20,7 @@ export class ScannerComponent {
   sessionId = input.required<string>();
   currentShareCode = signal<string | null>(null);
 
-  backendService = inject(ScannerBackendService);
+  backendService = inject(BackendService);
 
   availableDevices: MediaDeviceInfo[] = [];
   currentDevice: MediaDeviceInfo | undefined = undefined;
@@ -77,7 +77,7 @@ export class ScannerComponent {
 
       this.provideFeedback();
 
-      this.backendService.notifyScanResult(this.sessionId(), resultString).subscribe({
+      this.backendService.notifyDraftBookResult(this.sessionId(), resultString).subscribe({
         next: (result) => {
           console.log(result.status);
         },

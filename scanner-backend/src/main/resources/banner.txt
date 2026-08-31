@@ -5,7 +5,7 @@ ${AnsiColor.CYAN}
  | |_) | (_) | (_) |   <   ___) | (_| (_| | | | | | | |  __/ |
  |____/ \___/ \___/|_|\_\ |____/ \___\__,_|_| |_|_| |_|\___|_|
 
-${AnsiColor.BRIGHT_YELLOW}:: Book Scanner API :: ${AnsiColor.DEFAULT}
+${AnsiColor.BRIGHT_YELLOW}:: Bookshelf API :: ${AnsiColor.DEFAULT}
 ${AnsiColor.BRIGHT_BLACK}-------------------------------------------------------------
 Spring Boot Version: ${spring-boot.version}
 Powered by: Spring, RabbitMQ, PostgreSQL & Resilience4j

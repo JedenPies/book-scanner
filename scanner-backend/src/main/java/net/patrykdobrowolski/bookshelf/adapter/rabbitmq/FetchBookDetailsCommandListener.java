@@ -33,10 +33,10 @@ public class FetchBookDetailsCommandListener {
     public void handleFetchBookDetailsCommand(FetchBookDetailsCommandDto command) {
         try {
             command.tried();
-            DraftBookStatus draftBookStatus = fetchBookService.fetchBookForScan(command.getSessionId(), command.getScanId(), command.getTryCount() >= 3);
+            DraftBookStatus draftBookStatus = fetchBookService.fetchBookForDraft(command.getSessionId(), command.getDraftBookId(), command.getTryCount() >= 3);
             if (draftBookStatus == DraftBookStatus.FETCHING) retry(command);
         } catch (DraftBookNotFoundException e) {
-            log.error("Scan not found", e);
+            log.error("Draft book not found", e);
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
         } catch (SessionNotFoundException e) {
             log.error("Session not found", e);
@@ -45,12 +45,12 @@ public class FetchBookDetailsCommandListener {
     }
 
     private void retry(FetchBookDetailsCommandDto command) {
-        log.warn("Nie udało się pobrać danych dla sesji {} scan {}. Próba: {}/3",
-                command.getSessionId(), command.getScanId(), command.getTryCount() + 1);
+        log.warn("Nie udało się pobrać danych dla sesji {} draft book {}. Próba: {}/3",
+                command.getSessionId(), command.getDraftBookId(), command.getTryCount() + 1);
         if (command.getTryCount() < 3) {
             rabbitTemplate.convertAndSend(fetchBookCommandExchangeName, fetchBookCommandRetryQueueName, command);
         } else {
-            log.error("Wyczerpano 3 próby pobrania dla sesji {} scan {}", command.getSessionId(), command.getScanId());
+            log.error("Wyczerpano 3 próby pobrania dla sesji {} draft book {}", command.getSessionId(), command.getDraftBookId());
         }
     }
 }
