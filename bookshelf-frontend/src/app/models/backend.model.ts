@@ -7,6 +7,7 @@ export type ExportStatus = 'REQUESTED' | 'PROCESSING' | 'SUCCEED' | 'FAILED';
 
 export interface SessionDto {
   id: string;
+  exportId: string | null;
 }
 
 export interface BookDetailsDto {

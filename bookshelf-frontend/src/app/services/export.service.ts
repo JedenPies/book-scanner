@@ -61,7 +61,7 @@ export class ExportService {
 
   loadExport(sessionId: string) {
     if (!sessionId) return;
-    this.backendService.loadExport(sessionId).subscribe({
+    this.backendService.loadExportForSession(sessionId).subscribe({
       next: (result) => this.currentExport.set(result),
       error: () => this.currentExport.set(null),
     });
@@ -90,10 +90,11 @@ export class ExportService {
     }
   }
 
-  download(sessionId: string) {
+  download() {
     const exp = this.currentExport();
-    if (exp && exp.status === 'SUCCEED') {
-      window.open(`/api/cataloging-sessions/${sessionId}/export/data`);
+    const id = exp?.id;
+    if (exp && exp.status === 'SUCCEED' && id) {
+      window.open(`/api/exports/${id}/data`);
     }
   }
 }

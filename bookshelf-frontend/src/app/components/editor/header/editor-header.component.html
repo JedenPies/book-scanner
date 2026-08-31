@@ -14,7 +14,7 @@
       class="btn-secondary {{ exportService.exportState()!.cssClass }}"
       [disabled]="!exportService.exportState()!.isClickable"
       [class.clickable]="exportService.exportState()!.isClickable"
-      (click)="exportService.exportState()!.isClickable ? exportService.download(sessionId()) : null"
+      (click)="exportService.exportState()!.isClickable ? exportService.download() : null"
     >
       @if (exportService.exportState()!.showSpinner) {
         <span class="spinner"></span>

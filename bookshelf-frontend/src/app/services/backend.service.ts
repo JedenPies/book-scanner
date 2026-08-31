@@ -16,6 +16,14 @@ export class BackendService {
   private apiShareCodeUrl = '/api/share-codes';
   private http = inject(HttpClient);
 
+  loadSession(sessionId: string) {
+    return this.http.get<SessionDto>(`${this.apiCatalogingSessionUrl}/${sessionId}`);
+  }
+
+  loadExportForSession(sessionId: string) {
+    return this.http.get<ExportDto>(`${this.apiCatalogingSessionUrl}/${sessionId}/export`);
+  }
+
   createSession() {
     return this.http.post<SessionDto>(this.apiCatalogingSessionUrl, {});
   }
@@ -57,10 +65,6 @@ export class BackendService {
     return this.http.post<void>(`${this.apiCatalogingSessionUrl}/${sessionId}/draft-books/delete-requests`, {
       draftBooksIds: draftBooksIds,
     });
-  }
-
-  loadExport(sessionId: string) {
-    return this.http.get<ExportDto>(`${this.apiCatalogingSessionUrl}/${sessionId}/export`);
   }
 
   requestExport(sessionId: string, format: ExportFormat) {
