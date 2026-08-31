@@ -8,6 +8,7 @@ import net.patrykdobrowolski.bookshelf.domain.model.event.DraftBookUpdatedEvent;
 import net.patrykdobrowolski.bookshelf.domain.model.event.ExportCompleteEvent;
 import net.patrykdobrowolski.bookshelf.domain.model.event.DraftBookCreatedEvent;
 import net.patrykdobrowolski.bookshelf.domain.model.event.DraftBooksDeletedEvent;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportType;
 import org.springframework.context.event.EventListener;
 
 @Named
@@ -38,7 +39,9 @@ public class SseEventNotifier {
 
     @EventListener
     public void handleExportCompleteEvent(ExportCompleteEvent event) {
-        log.debug("Sending EXPORT_COMPLETE event");
-        sseCatalogingSessionService.broadcastToSession(event.getCatalogingSession().getId(), "EXPORT_COMPLETE", eventsMapper.toSseEvent(event));
+        if (event.getExport().getType() == ExportType.CATALOGING_SESSION) {
+            log.debug("Sending EXPORT_COMPLETE event");
+            sseCatalogingSessionService.broadcastToSession(event.getExport().getCorrelationKey(), "EXPORT_COMPLETE", eventsMapper.toSseEvent(event));
+        }
     }
 }

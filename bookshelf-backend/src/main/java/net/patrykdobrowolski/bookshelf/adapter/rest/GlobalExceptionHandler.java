@@ -29,4 +29,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public void exportNotRequestedException() {}
 
+    @ExceptionHandler(ExportNotFoundException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public void exportNotFoundException() {}
 }

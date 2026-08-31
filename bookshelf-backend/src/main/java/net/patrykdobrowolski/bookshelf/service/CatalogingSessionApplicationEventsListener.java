@@ -24,7 +24,7 @@ public class CatalogingSessionApplicationEventsListener {
 
     @TransactionalEventListener
     public void onExportRequested(ExportRequestedEvent event) {
-        exportCreator.exportSession(event.getCatalogingSession());
+        exportCreator.export(event.getExport());
     }
 
 }

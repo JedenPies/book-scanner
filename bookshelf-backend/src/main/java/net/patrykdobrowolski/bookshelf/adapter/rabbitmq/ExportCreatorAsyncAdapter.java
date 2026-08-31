@@ -3,9 +3,9 @@ package net.patrykdobrowolski.bookshelf.adapter.rabbitmq;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.export.Export;
 import net.patrykdobrowolski.bookshelf.domain.port.ExportCreatorAsyncPort;
-import net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto.ExportSessionCommandDto;
+import net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto.ExportCommandDto;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -17,20 +17,20 @@ public class ExportCreatorAsyncAdapter implements ExportCreatorAsyncPort {
     @Value("${rabbitmq.command-exchange}")
     private String commandExchangeName;
 
-    @Value("${rabbitmq.export-session-command-queue}")
+    @Value("${rabbitmq.export-command-queue}")
     private String exportSessionCommandRetryQueueName;
 
     private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public void exportSession(CatalogingSession catalogingSession) {
+    public void export(Export export) {
 
-        ExportSessionCommandDto command = ExportSessionCommandDto.forSession(catalogingSession.getId());
+        ExportCommandDto command = ExportCommandDto.of(export.getId());
         rabbitTemplate.convertAndSend(
                 commandExchangeName,
                 exportSessionCommandRetryQueueName,
                 command);
-        log.info("Sent export command for session {}", catalogingSession.getId());
+        log.info("Sent export command for export {}", export.getId());
 
     }
 }

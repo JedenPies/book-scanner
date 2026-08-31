@@ -94,7 +94,7 @@ rabbitmq:
   command-exchange: command-exchange
   fetch-book-command-queue: fetch-book-command-queue
   fetch-book-command-retry-queue: fetch-book-command-retry-queue
-  export-session-command-queue: export-session-command-queue
+  export-command-queue: export-command-queue
 api:
   google-books:
     url: "https://www.googleapis.com/books/v1"

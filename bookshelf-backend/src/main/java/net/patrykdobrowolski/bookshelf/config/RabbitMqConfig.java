@@ -48,14 +48,14 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Queue exportSessionCommandQueue(@Value("${rabbitmq.export-session-command-queue}") String exportSessionCommandQueue) {
+    public Queue exportSessionCommandQueue(@Value("${rabbitmq.export-command-queue}") String exportSessionCommandQueue) {
         return QueueBuilder.durable(exportSessionCommandQueue).build();
     }
 
     @Bean
     public Binding exportSessionCommandQueueBinding(
             Queue exportSessionCommandQueue, TopicExchange commandExchange,
-            @Value("${rabbitmq.export-session-command-queue}") String exportSessionCommandQueueName) {
+            @Value("${rabbitmq.export-command-queue}") String exportSessionCommandQueueName) {
         return BindingBuilder.bind(exportSessionCommandQueue).to(commandExchange).with(exportSessionCommandQueueName);
     }
 

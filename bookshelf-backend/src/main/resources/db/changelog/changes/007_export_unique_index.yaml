@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-export-unique-index
+      author: patryk
+      changes:
+        - delete:
+            tableName: exports
+            where: 1 = 1
+        - createIndex:
+            indexName: ix_export_correlation_key_type_uq
+            tableName: exports
+            unique: true
+            columns:
+              - column:
+                  name: correlation_key
+              - column:
+                  name: type

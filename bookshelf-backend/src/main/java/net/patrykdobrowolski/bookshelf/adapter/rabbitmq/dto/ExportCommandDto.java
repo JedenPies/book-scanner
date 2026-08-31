@@ -2,17 +2,15 @@ package net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.UUID;
 
 @Jacksonized
 @Builder @Getter
-public class ExportSessionCommandDto {
+@RequiredArgsConstructor(staticName = "of")
+public class ExportCommandDto {
 
-    private UUID sessionId;
-
-    public static ExportSessionCommandDto forSession(UUID sessionId) {
-        return new ExportSessionCommandDto(sessionId);
-    }
+    private final UUID exportId;
 }

@@ -4,13 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import net.patrykdobrowolski.bookshelf.domain.Aggregate;
-import net.patrykdobrowolski.bookshelf.domain.exception.ExportAlreadyRequestedException;
-import net.patrykdobrowolski.bookshelf.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookshelf.domain.exception.DraftBookNotFoundException;
+import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
 import net.patrykdobrowolski.bookshelf.domain.model.value.Modifier;
-import net.patrykdobrowolski.bookshelf.domain.model.command.ExportSessionCommand;
-import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,7 +25,7 @@ public class CatalogingSession extends Aggregate {
     private Instant createdAt;
     private Instant lastUse;
     private List<DraftBook> draftBooks;
-    private Export export;
+    private UUID exportId;
 
     public static CatalogingSession createNew() {
         Instant now = Instant.now();
@@ -60,33 +57,6 @@ public class CatalogingSession extends Aggregate {
         return draftBooks;
     }
 
-    public Export requestExport(ExportSessionCommand command) throws ExportAlreadyRequestedException {
-        touch();
-        if (export != null && !export.isComplete()) {
-            throw new ExportAlreadyRequestedException();
-        }
-        this.export = Export.createNew(command.getFormat());
-        return this.export;
-    }
-
-    public void beginExport() throws ExportNotRequestedException {
-        touch();
-        ensureExportExists();
-        this.export.begin();
-    }
-
-    public void exportSucceed(byte[] data) throws ExportNotRequestedException {
-        touch();
-        ensureExportExists();
-        this.export.exported(data);
-    }
-
-    public void exportFailed() throws ExportNotRequestedException {
-        touch();
-        ensureExportExists();
-        this.export.failed();
-    }
-
     public DraftBook updateDraftBook(UUID draftBookId, BookDetails newDetails) throws DraftBookNotFoundException {
         touch();
         DraftBook draftBook = findDraftBookById(draftBookId);
@@ -114,10 +84,6 @@ public class CatalogingSession extends Aggregate {
     public void setDraftBookBookDetails(UUID draftBookId, BookDetails details, Modifier modifier) throws DraftBookNotFoundException {
         touch();
         findDraftBookById(draftBookId).setBookDetails(details, modifier);
-    }
-
-    private void ensureExportExists() throws ExportNotRequestedException {
-        if (export == null) throw new ExportNotRequestedException();
     }
 
     private DraftBook findOldestDraftBookByIsbn(ISBN isbn) {

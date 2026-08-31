@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import net.patrykdobrowolski.bookshelf.domain.model.value.ExportFormat;
 import net.patrykdobrowolski.bookshelf.domain.model.value.ExportStatus;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportType;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -24,6 +25,11 @@ public class ExportEntity {
 
     @Enumerated(EnumType.STRING)
     private ExportStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private ExportType type;
+
+    private UUID correlationKey;
 
     private byte[] data;
 

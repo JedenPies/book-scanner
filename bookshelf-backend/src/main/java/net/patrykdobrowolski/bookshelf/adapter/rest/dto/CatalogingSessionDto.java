@@ -11,4 +11,5 @@ import java.util.UUID;
 public class CatalogingSessionDto {
 
     private final UUID id;
+    private final UUID exportId;
 }
