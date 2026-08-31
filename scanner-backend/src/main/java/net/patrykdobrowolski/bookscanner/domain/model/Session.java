@@ -3,11 +3,11 @@ package net.patrykdobrowolski.bookscanner.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import net.patrykdobrowolski.bookscanner.domain.model.command.ExportSessionCommand;
 import net.patrykdobrowolski.bookscanner.domain.exception.ExportAlreadyRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
-import net.patrykdobrowolski.bookscanner.domain.model.command.UpdateScanCommand;
+import net.patrykdobrowolski.bookscanner.domain.model.command.ExportSessionCommand;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -84,10 +84,10 @@ public class Session {
         this.export.failed();
     }
 
-    public Scan updateScan(UUID scanId, UpdateScanCommand command) throws ScanNotFoundException {
+    public Scan updateScan(UUID scanId, BookDetails newDetails) throws ScanNotFoundException {
         touch();
         Scan scan = findScanById(scanId);
-        scan.update(command);
+        scan.setBookDetails(newDetails, Modifier.USER);
         return scan;
     }
 

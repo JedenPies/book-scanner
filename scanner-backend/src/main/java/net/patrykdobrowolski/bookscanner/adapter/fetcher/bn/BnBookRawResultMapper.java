@@ -4,9 +4,9 @@ import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.bn.dto.BnResponseDto;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.bn.mapper.BnBookDtoMapper;
-import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.model.BookRaw;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.BookRawResultMapper;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collections;

@@ -2,11 +2,11 @@ package net.patrykdobrowolski.bookscanner.adapter.exporter;
 
 import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
-import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.model.ExportFormat;
 import net.patrykdobrowolski.bookscanner.domain.model.Scan;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
 import net.patrykdobrowolski.bookscanner.domain.model.Year;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -44,12 +44,12 @@ public class CsvSessionExporter implements SessionExporter {
                 printer.printRecord(
                         scan.getIsbn().value(),
                         scan.getStatus().name(),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getTitle).orElse(""),
-                        String.join(", ", Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getAuthors).orElseGet(Collections::emptyList)),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublicationYear).map(Year::value).orElse(""),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublisher).orElse(""),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getPublicationPlace).orElse(""),
-                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::getLanguage).orElse(""),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::title).orElse(""),
+                        String.join(", ", Optional.ofNullable(scan.getBookDetails()).map(BookDetails::authors).orElseGet(Collections::emptyList)),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::publicationYear).map(Year::value).orElse(""),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::publisher).orElse(""),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::publicationPlace).orElse(""),
+                        Optional.ofNullable(scan.getBookDetails()).map(BookDetails::language).orElse(""),
                         Optional.ofNullable(scan.getCreatedAt()).map(Object::toString).orElse(""));
             }
             printer.flush();

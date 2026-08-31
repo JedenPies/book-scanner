@@ -2,8 +2,8 @@ package net.patrykdobrowolski.bookscanner.adapter.fetcher.googleapi.mapper;
 
 import jakarta.inject.Named;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.googleapi.dto.VolumeInfoDto;
-import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.model.Year;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 import org.apache.logging.log4j.util.Strings;
 
 @Named

@@ -2,12 +2,12 @@ package net.patrykdobrowolski.bookscanner.adapter.fetcher.googleapi;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.model.BookRaw;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.BookRawResultMapper;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.googleapi.dto.BooksResponseDto;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.googleapi.dto.ItemDto;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.googleapi.mapper.BooksResponseDtoMapper;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 import tools.jackson.databind.ObjectMapper;
 
 @Named

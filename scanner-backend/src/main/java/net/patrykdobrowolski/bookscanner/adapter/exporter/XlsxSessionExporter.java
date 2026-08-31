@@ -48,12 +48,12 @@ public class XlsxSessionExporter implements SessionExporter {
 
                 row.createCell(0).setCellValue(scan.getIsbn().value());
                 row.createCell(1).setCellValue(scan.getStatus().name());
-                row.createCell(2).setCellValue(hasDetails ? scan.getBookDetails().getTitle() : "");
-                row.createCell(3).setCellValue(hasDetails ? String.join(", ", Optional.ofNullable(scan.getBookDetails().getAuthors()).orElseGet(Collections::emptyList)) : "");
-                row.createCell(4).setCellValue(hasDetails ? Optional.ofNullable(scan.getBookDetails().getPublicationYear()).map(Year::value).orElse("") : "");
-                row.createCell(5).setCellValue(hasDetails ? scan.getBookDetails().getPublisher() : "");
-                row.createCell(6).setCellValue(hasDetails ? scan.getBookDetails().getPublicationPlace() : "");
-                row.createCell(7).setCellValue(hasDetails ? scan.getBookDetails().getLanguage() : "");
+                row.createCell(2).setCellValue(hasDetails ? scan.getBookDetails().title() : "");
+                row.createCell(3).setCellValue(hasDetails ? String.join(", ", Optional.ofNullable(scan.getBookDetails().authors()).orElseGet(Collections::emptyList)) : "");
+                row.createCell(4).setCellValue(hasDetails ? Optional.ofNullable(scan.getBookDetails().publicationYear()).map(Year::value).orElse("") : "");
+                row.createCell(5).setCellValue(hasDetails ? scan.getBookDetails().publisher() : "");
+                row.createCell(6).setCellValue(hasDetails ? scan.getBookDetails().publicationPlace() : "");
+                row.createCell(7).setCellValue(hasDetails ? scan.getBookDetails().language() : "");
                 row.createCell(8).setCellValue(scan.getCreatedAt().toString());
             }
 

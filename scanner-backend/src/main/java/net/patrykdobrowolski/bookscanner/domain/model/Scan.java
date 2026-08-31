@@ -3,10 +3,9 @@ package net.patrykdobrowolski.bookscanner.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import net.patrykdobrowolski.bookscanner.domain.model.command.UpdateScanCommand;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 
 import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 
 @Builder @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
@@ -33,7 +32,7 @@ public class Scan {
     }
 
     void copyDetails(Scan scan) {
-        this.bookDetails = BookDetails.copyOf(scan.getBookDetails());
+        this.bookDetails = scan.getBookDetails();
         this.status = ScanStatus.DUPLICATE;
     }
 
@@ -53,13 +52,5 @@ public class Scan {
         this.bookDetails = details;
         this.modifiedBy = modifier;
         this.status = ScanStatus.FOUND;
-    }
-
-    void update(UpdateScanCommand command) {
-        this.status = ScanStatus.MODIFIED;
-        this.modifiedAt = Instant.now();
-        this.modifiedBy = Modifier.USER;
-        this.bookDetails = Optional.ofNullable(this.bookDetails).orElseGet(BookDetails::empty);
-        this.bookDetails.update(command);
     }
 }

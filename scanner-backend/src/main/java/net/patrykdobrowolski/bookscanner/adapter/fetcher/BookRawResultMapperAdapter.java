@@ -1,8 +1,8 @@
 package net.patrykdobrowolski.bookscanner.adapter.fetcher;
 
 import jakarta.inject.Named;
-import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.model.BookRaw;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 
 import java.util.List;
 import java.util.Map;

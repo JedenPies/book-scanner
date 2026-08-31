@@ -2,11 +2,11 @@ package net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.model.BookRaw;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.BookRawResultMapper;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.BookDto;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.mapper.OpenLibraryBookDtoMapper;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 import tools.jackson.databind.ObjectMapper;
 
 @Named

@@ -1,6 +1,6 @@
 package net.patrykdobrowolski.bookscanner.adapter.fetcher;
 
-import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -32,13 +32,13 @@ public class BookDetailsComposer {
         }
         Set<String> contributingSources = new HashSet<>();
         return BookDetails.builder()
-                .title(extractAndRecord(BookDetails::getTitle, contributingSources))
-                .publisher(extractAndRecord(BookDetails::getPublisher, contributingSources))
-                .publicationPlace(extractAndRecord(BookDetails::getPublicationPlace, contributingSources))
-                .publicationYear(extractAndRecord(BookDetails::getPublicationYear, contributingSources))
-                .authors(extractAndRecordCollection(BookDetails::getAuthors, contributingSources))
-                .language(extractAndRecord(BookDetails::getLanguage, contributingSources))
-                .genres(extractAndJoin(BookDetails::getGenres, contributingSources))
+                .title(extractAndRecord(BookDetails::title, contributingSources))
+                .publisher(extractAndRecord(BookDetails::publisher, contributingSources))
+                .publicationPlace(extractAndRecord(BookDetails::publicationPlace, contributingSources))
+                .publicationYear(extractAndRecord(BookDetails::publicationYear, contributingSources))
+                .authors(extractAndRecordCollection(BookDetails::authors, contributingSources))
+                .language(extractAndRecord(BookDetails::language, contributingSources))
+                .genres(extractAndJoin(BookDetails::genres, contributingSources))
                 .sources(contributingSources)
                 .build();
     }
@@ -48,8 +48,8 @@ public class BookDetailsComposer {
                 .filter(bd -> getter.apply(bd) != null)
                 .findFirst()
                 .map(bd -> {
-                    if (bd.getSources() != null) {
-                        sourcesRef.addAll(bd.getSources());
+                    if (bd.sources() != null) {
+                        sourcesRef.addAll(bd.sources());
                     }
                     return getter.apply(bd);
                 })
@@ -60,8 +60,8 @@ public class BookDetailsComposer {
                 .filter(bd -> getter.apply(bd) != null && !getter.apply(bd).isEmpty())
                 .findFirst()
                 .map(bd -> {
-                    if (bd.getSources() != null) {
-                        sourcesRef.addAll(bd.getSources());
+                    if (bd.sources() != null) {
+                        sourcesRef.addAll(bd.sources());
                     }
                     return getter.apply(bd);
                 })
@@ -72,7 +72,7 @@ public class BookDetailsComposer {
         return sortedDetails.stream()
                 .filter(r -> getter.apply(r) != null)
                 .peek(r -> {
-                    if (r.getSources() != null) sourcesRef.addAll(r.getSources());
+                    if (r.sources() != null) sourcesRef.addAll(r.sources());
                 })
                 .map(getter)
                 .filter(Objects::nonNull)
@@ -94,10 +94,10 @@ public class BookDetailsComposer {
         }
 
         private int getHighestPriority(BookDetails bd) {
-            if (bd == null || bd.getSources() == null || bd.getSources().isEmpty()) {
+            if (bd == null || bd.sources() == null || bd.sources().isEmpty()) {
                 return Integer.MAX_VALUE;
             }
-            return bd.getSources().stream()
+            return bd.sources().stream()
                     .map(source -> {
                         int idx = providers.indexOf(source);
                         return idx == -1 ? Integer.MAX_VALUE - 1 : idx;

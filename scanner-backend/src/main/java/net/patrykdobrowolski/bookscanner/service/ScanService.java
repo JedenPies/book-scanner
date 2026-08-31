@@ -8,10 +8,10 @@ import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundExcepti
 import net.patrykdobrowolski.bookscanner.domain.model.ISBN;
 import net.patrykdobrowolski.bookscanner.domain.model.Scan;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
-import net.patrykdobrowolski.bookscanner.domain.model.command.UpdateScanCommand;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanCreatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanUpdatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScansDeletedEvent;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsAsyncFetcherPort;
 import net.patrykdobrowolski.bookscanner.domain.port.ScanServicePort;
 import net.patrykdobrowolski.bookscanner.domain.port.SessionRepositoryPort;
@@ -57,9 +57,9 @@ public class ScanService implements ScanServicePort {
 
     @Transactional
     @Override
-    public Scan updateScan(UUID sessionId, UUID scanId, UpdateScanCommand command) throws ScanNotFoundException, SessionNotFoundException {
+    public Scan updateScan(UUID sessionId, UUID scanId, BookDetails newDetails) throws ScanNotFoundException, SessionNotFoundException {
         Session session = sessionRepository.findById(sessionId);
-        Scan result = session.updateScan(scanId, command);
+        Scan result = session.updateScan(scanId, newDetails);
         sessionRepository.save(session);
         return result;
     }

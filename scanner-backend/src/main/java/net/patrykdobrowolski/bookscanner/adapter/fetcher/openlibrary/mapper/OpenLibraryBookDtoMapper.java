@@ -3,10 +3,10 @@ package net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.mapper;
 import jakarta.inject.Named;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.PublishPlaceDto;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.PublisherDto;
-import net.patrykdobrowolski.bookscanner.domain.model.BookDetails;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.AuthorDto;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.openlibrary.dto.BookDto;
 import net.patrykdobrowolski.bookscanner.domain.model.Year;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 
 import java.util.Collections;
 import java.util.List;

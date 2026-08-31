@@ -7,6 +7,7 @@ import net.patrykdobrowolski.bookscanner.domain.model.event.ScanUpdatedEvent;
 import net.patrykdobrowolski.bookscanner.domain.exception.ScanNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.exception.SessionNotFoundException;
 import net.patrykdobrowolski.bookscanner.domain.model.*;
+import net.patrykdobrowolski.bookscanner.domain.model.value.BookDetails;
 import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsFetcherPort;
 import net.patrykdobrowolski.bookscanner.adapter.fetcher.BookRawResultMapperAdapter;
 import net.patrykdobrowolski.bookscanner.domain.port.FetchBookForScanServicePort;
