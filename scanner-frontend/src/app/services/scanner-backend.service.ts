@@ -47,8 +47,12 @@ export class ScannerBackendService {
     });
   }
 
-  deleteScan(sessionId: string, scanId: string) {
-    return this.http.delete<void>(`${this.apiScannerUrl}/${sessionId}/scans/${scanId}`);
+  deleteScans(sessionId: string, scans: ScanDto[]) {
+    const scanIds = scans.map(scan => scan.id);
+    console.log('Deleting scans:', scanIds);
+    return this.http.post<void>(`${this.apiScannerUrl}/${sessionId}/scans/delete-requests`, {
+      scanIds: scanIds
+    });
   }
 
   loadExport(sessionId: string) {

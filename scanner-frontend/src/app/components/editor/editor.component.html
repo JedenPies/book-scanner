@@ -5,11 +5,9 @@
 />
 
 <app-scan-table
-  [scans]="scans()"
-  [scansToDelete]="scansToDelete()"
+  [scans]="scansToShow()"
   (retry)="retryScan($event)"
   (delete)="deleteScan($event)"
-  (cancelDelete)="cancelDelete($event)"
   (edit)="editingScan.set($event)"
 />
 

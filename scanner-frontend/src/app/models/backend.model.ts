@@ -41,8 +41,9 @@ export interface ScanUpdatedSseEvent {
   scan: ScanDto;
 }
 
-export interface ScanDeletedSseEvent {
-  scan: ScanDto;
+export interface ScansDeletedSseEvent {
+  scans: ScanDto[];
+  count: number;
 }
 
 export interface ExportCompleteSseEvent {

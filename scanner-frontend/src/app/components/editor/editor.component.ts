@@ -3,8 +3,8 @@ import {
   EditScanCommandDto,
   ExportCompleteSseEvent,
   ScanCreatedSseEvent,
-  ScanDeletedSseEvent,
   ScanDto,
+  ScansDeletedSseEvent,
   ScanUpdatedSseEvent,
 } from '../../models/backend.model';
 import { ScannerBackendService } from '../../services/scanner-backend.service';
@@ -32,14 +32,22 @@ export interface ScanToDelete {
   ],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.scss',
+  standalone: true,
 })
 export class EditorComponent {
+
+  private readonly DELETE_TOAST_ID = 'batch-delete-toast';
+
   exportService = inject(ExportService);
   backendService = inject(ScannerBackendService);
   toastService = inject(ToastService);
 
   isModalOpen = computed<boolean>(() => {
     return this.isManualIsbnModalOpen() || this.isExportModalOpen() || this.editingScan() !== null;
+  });
+  scansToShow = computed<ScanDto[]>(() => {
+    const deleIds = new Set(this.pendingDeletionScans().map((item) => item));
+    return this.scans().filter((scan) => !deleIds.has(scan));
   });
 
   sessionId = input.required<string>();
@@ -48,7 +56,10 @@ export class EditorComponent {
 
   scans = signal<ScanDto[]>([]);
   scansToDelete = signal<ScanToDelete[]>([]);
+  pendingDeletionScans = signal<ScanDto[]>([]);
   editingScan = signal<ScanDto | null>(null);
+
+  private deleteTimeoutId?: any;
 
   private eventSource?: EventSource;
 
@@ -97,48 +108,12 @@ export class EditorComponent {
     });
   }
 
-  deleteScan(scanId: string) {
-    if (this.isIntendedToDelete(scanId)) return;
-    const timeoutHandler = window.setTimeout(() => this.confirmDelete(scanId), 5000);
-    const scanToDelete: ScanToDelete = { scanId, timeoutHandler };
-    this.scansToDelete.update((current) => [...current, scanToDelete]);
-  }
-
-  isIntendedToDelete(scanId: string): boolean {
-    return this.scansToDelete().some((scanToDelete) => scanToDelete.scanId === scanId);
-  }
-
-  cancelDelete(scanId: string) {
-    if (!this.isIntendedToDelete(scanId)) return;
-    this.clearTimeoutAndRemoveFromDeleteList(scanId);
-  }
-
   retryScan(scanId: string) {
     const sessionId = this.sessionId();
     if (!sessionId) return;
     this.backendService.retryScan(sessionId, scanId).subscribe({
       error: (err) => console.error('Błąd podczas ponawiania skanowania:', err),
     });
-  }
-
-  private confirmDelete(scanId: string) {
-    this.clearTimeoutAndRemoveFromDeleteList(scanId);
-    this.backendService.deleteScan(this.sessionId(), scanId).subscribe({
-      error: (err) => {
-        this.toastService.show('Cannot delete scan.', 'error', 10000);
-        console.error('Cannot delete scan. ', err);
-      },
-    });
-  }
-
-  private clearTimeoutAndRemoveFromDeleteList(scanId: string) {
-    const foundScanToDelete = this.scansToDelete().find((element) => element.scanId === scanId);
-    if (foundScanToDelete?.timeoutHandler) {
-      clearTimeout(foundScanToDelete.timeoutHandler);
-    }
-    this.scansToDelete.update((current) =>
-      current.filter((scanToDelete) => scanToDelete.scanId !== scanId),
-    );
   }
 
   private loadScans() {
@@ -171,16 +146,10 @@ export class EditorComponent {
       );
       this.exportService.invalidateExport();
     });
-    this.eventSource.addEventListener('SCAN_DELETED', (event: MessageEvent) => {
-      const eventDto: ScanDeletedSseEvent = JSON.parse(event.data);
-      this.scans.update((currentScans) =>
-        currentScans.filter((scan) => scan.id !== eventDto.scan.id),
-      );
+    this.eventSource.addEventListener('SCANS_DELETED', (event: MessageEvent) => {
+      const eventDto: ScansDeletedSseEvent = JSON.parse(event.data);
       this.exportService.invalidateExport();
-      this.toastService.show(
-        `Deleted ${eventDto.scan.bookDetails?.title || 'ISBN: ' + eventDto.scan.isbn}`,
-        'info',
-      );
+      this.toastService.show(`${eventDto.count} scans permanently deleted`, 'info');
     });
     this.eventSource.addEventListener('EXPORT_COMPLETE', (event: MessageEvent) => {
       const eventDto: ExportCompleteSseEvent = JSON.parse(event.data);
@@ -190,5 +159,47 @@ export class EditorComponent {
       console.error('EventSource failed:', error);
     };
   }
-}
 
+  deleteScan(scan: ScanDto) {
+    this.pendingDeletionScans.update((list) => [...list, scan]);
+    if (this.deleteTimeoutId) {
+      clearTimeout(this.deleteTimeoutId);
+    }
+
+    const count = this.pendingDeletionScans().length;
+    const message = count === 1 ? '1 scan deleted' : `${count} elements deleted`;
+    this.toastService.show(
+      message,
+      'warning',
+      {
+        label: 'Cancel',
+        run: () => this.cancelBatchDelete(),
+      },
+      this.DELETE_TOAST_ID,
+      10000
+    );
+
+    this.deleteTimeoutId = setTimeout(() => {
+      this.commitBatchDelete();
+    }, 5000);
+  }
+
+  cancelBatchDelete() {
+    if (this.deleteTimeoutId) {
+      clearTimeout(this.deleteTimeoutId);
+      this.deleteTimeoutId = undefined;
+    }
+    this.pendingDeletionScans.set([]);
+    this.toastService.remove(this.DELETE_TOAST_ID);
+  }
+
+  private commitBatchDelete() {
+    const scansToDelete = this.pendingDeletionScans();
+    if (scansToDelete.length === 0) return;
+    this.toastService.remove(this.DELETE_TOAST_ID);
+    this.pendingDeletionScans.set([]);
+    const ids = scansToDelete.map((s) => s.id);
+    this.scans.update((current) => current.filter((s) => !ids.includes(s.id)));
+    this.backendService.deleteScans(this.sessionId(), scansToDelete).subscribe({});
+  }
+}

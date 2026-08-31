@@ -21,8 +21,8 @@
   border-radius: 12px; /* Bardziej zaokrąglone, nowoczesne rogi */
   color: white;
   font-family: system-ui, -apple-system, sans-serif;
-  font-size: 1.15rem; /* Powiększona czcionka */
-  font-weight: 300;
+  font-size: 1.05rem;
+  font-weight: 600;
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Kolory dla różnych typów */
@@ -57,5 +57,18 @@
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+.toast-action-btn {
+  color: white;
+  cursor: pointer;
+  text-transform: lowercase;
+  padding: 0 3px;
+  font-weight: 600;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #a32828;
   }
 }

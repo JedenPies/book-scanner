@@ -2,7 +2,6 @@ import { Component, ElementRef, inject, input, output, signal, ViewChild } from 
 import { LowerCasePipe, NgOptimizedImage } from '@angular/common';
 import { ClipboardService } from '../../../services/clipboard.service';
 import { ScanDto } from '../../../models/backend.model';
-import { ScanToDelete } from '../editor.component';
 
 @Component({
   selector: 'app-scan-table',
@@ -16,15 +15,12 @@ export class ScanTableComponent {
 
   clipboardService = inject(ClipboardService);
 
-  // Wejścia z rodzica
   scans = input.required<ScanDto[]>();
-  scansToDelete = input.required<ScanToDelete[]>();
 
   // Wyjścia (zdarzenia)
   retry = output<string>();
-  delete = output<string>();
+  delete = output<ScanDto>();
   edit = output<ScanDto>();
-  cancelDelete = output<string>();
 
   // Wewnętrzny stan tabeli
   expandedScanId = signal<string | null>(null);
@@ -35,16 +31,13 @@ export class ScanTableComponent {
     this.expandedScanId.update((current) => (current === scanId ? null : scanId));
   }
 
-  isIntendedToDelete(scanId: string): boolean {
-    return this.scansToDelete().some((item) => item.scanId === scanId);
-  }
-
   isExpandable(scan: ScanDto): boolean {
-    return !this.isIntendedToDelete(scan.id) &&
+    return (
       scan.status !== 'NOT_FOUND' &&
       scan.status !== 'FAILED' &&
       scan.status !== 'PENDING' &&
-      scan.status !== 'FETCHING';
+      scan.status !== 'FETCHING'
+    );
   }
 
   onScroll() {
