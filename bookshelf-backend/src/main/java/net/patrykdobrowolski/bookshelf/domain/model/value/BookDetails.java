@@ -1,7 +1,6 @@
 package net.patrykdobrowolski.bookshelf.domain.model.value;
 
 import lombok.Builder;
-import net.patrykdobrowolski.bookshelf.domain.model.Year;
 
 import java.util.Collections;
 import java.util.HashSet;

@@ -5,7 +5,7 @@ import net.patrykdobrowolski.bookshelf.adapter.rest.dto.CatalogingSessionDto;
 import net.patrykdobrowolski.bookshelf.adapter.rest.mapper.CatalogingSessionDtoMapper;
 import net.patrykdobrowolski.bookshelf.adapter.sse.SseCatalogingSessionService;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.service.CatalogingSessionService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

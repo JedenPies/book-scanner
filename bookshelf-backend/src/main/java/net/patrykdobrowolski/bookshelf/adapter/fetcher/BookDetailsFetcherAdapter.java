@@ -4,7 +4,7 @@ import jakarta.inject.Named;
 import net.patrykdobrowolski.bookshelf.domain.model.Book;
 import net.patrykdobrowolski.bookshelf.domain.model.BookFetchResult;
 import net.patrykdobrowolski.bookshelf.domain.model.BookRaw;
-import net.patrykdobrowolski.bookshelf.domain.model.ISBN;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
 import net.patrykdobrowolski.bookshelf.domain.port.BookDetailsFetcherPort;
 import net.patrykdobrowolski.bookshelf.domain.port.BookRepositoryPort;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -4,7 +4,7 @@ import net.patrykdobrowolski.bookshelf.adapter.sse.dto.DraftBooksDeletedSseEvent
 import net.patrykdobrowolski.bookshelf.adapter.sse.dto.ExportCompleteSseEvent;
 import net.patrykdobrowolski.bookshelf.adapter.sse.dto.DraftBookCreatedSseEvent;
 import net.patrykdobrowolski.bookshelf.adapter.sse.dto.DraftBookUpdatedSseEvent;
-import net.patrykdobrowolski.bookshelf.domain.model.ISBN;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
 import net.patrykdobrowolski.bookshelf.domain.model.event.DraftBookCreatedEvent;
 import net.patrykdobrowolski.bookshelf.domain.model.event.DraftBooksDeletedEvent;
 import net.patrykdobrowolski.bookshelf.domain.model.event.ExportCompleteEvent;

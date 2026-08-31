@@ -1,7 +1,7 @@
 package net.patrykdobrowolski.bookshelf.adapter.exporter;
 
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
-import net.patrykdobrowolski.bookshelf.domain.model.ExportFormat;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportFormat;
 
 public interface CatalogingSessionExporter {
 

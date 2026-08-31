@@ -1,6 +1,6 @@
 package net.patrykdobrowolski.bookshelf.util;
 
-import net.patrykdobrowolski.bookshelf.domain.model.ISBN;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

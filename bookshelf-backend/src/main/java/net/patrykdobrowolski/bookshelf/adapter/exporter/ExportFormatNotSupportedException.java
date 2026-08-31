@@ -1,6 +1,6 @@
 package net.patrykdobrowolski.bookshelf.adapter.exporter;
 
-import net.patrykdobrowolski.bookshelf.domain.model.ExportFormat;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportFormat;
 
 public class ExportFormatNotSupportedException extends Exception {
 

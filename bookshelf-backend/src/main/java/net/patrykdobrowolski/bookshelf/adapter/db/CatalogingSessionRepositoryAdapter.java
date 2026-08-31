@@ -6,7 +6,7 @@ import net.patrykdobrowolski.bookshelf.adapter.db.entity.CatalogingSessionEntity
 import net.patrykdobrowolski.bookshelf.adapter.db.mapper.CatalogingSessionEntityMapper;
 import net.patrykdobrowolski.bookshelf.adapter.db.repository.SpringDataSessionRepository;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.port.CatalogingSessionRepositoryPort;
 
 import java.util.UUID;

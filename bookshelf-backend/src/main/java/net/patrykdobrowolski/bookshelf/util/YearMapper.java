@@ -1,7 +1,7 @@
 package net.patrykdobrowolski.bookshelf.util;
 
 
-import net.patrykdobrowolski.bookshelf.domain.model.Year;
+import net.patrykdobrowolski.bookshelf.domain.model.value.Year;
 import org.mapstruct.Mapper;
 
 import java.util.Optional;

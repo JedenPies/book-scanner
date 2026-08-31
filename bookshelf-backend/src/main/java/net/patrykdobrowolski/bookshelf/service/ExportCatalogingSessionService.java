@@ -10,8 +10,8 @@ import net.patrykdobrowolski.bookshelf.adapter.exporter.CatalogingSessionExporte
 import net.patrykdobrowolski.bookshelf.domain.model.event.ExportCompleteEvent;
 import net.patrykdobrowolski.bookshelf.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.ExportFormat;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportFormat;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.port.ExportServicePort;
 import net.patrykdobrowolski.bookshelf.domain.port.ExportSessionServicePort;
 import net.patrykdobrowolski.bookshelf.domain.port.CatalogingSessionServicePort;

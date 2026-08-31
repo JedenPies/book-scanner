@@ -5,7 +5,7 @@ import net.patrykdobrowolski.bookshelf.adapter.fetcher.openlibrary.dto.PublishPl
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.openlibrary.dto.PublisherDto;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.openlibrary.dto.AuthorDto;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.openlibrary.dto.BookDto;
-import net.patrykdobrowolski.bookshelf.domain.model.Year;
+import net.patrykdobrowolski.bookshelf.domain.model.value.Year;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 
 import java.util.Collections;

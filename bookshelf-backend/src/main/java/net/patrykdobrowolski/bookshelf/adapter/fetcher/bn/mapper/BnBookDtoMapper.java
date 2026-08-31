@@ -2,7 +2,7 @@ package net.patrykdobrowolski.bookshelf.adapter.fetcher.bn.mapper;
 
 import jakarta.inject.Named;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.bn.dto.BookDto;
-import net.patrykdobrowolski.bookshelf.domain.model.Year;
+import net.patrykdobrowolski.bookshelf.domain.model.value.Year;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 
 import java.util.Collections;

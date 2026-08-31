@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.With;
+import net.patrykdobrowolski.bookshelf.domain.model.value.FetchResult;
 
 import java.time.Instant;
 

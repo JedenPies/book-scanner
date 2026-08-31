@@ -1,10 +1,10 @@
 package net.patrykdobrowolski.bookshelf.adapter.exporter;
 
 import jakarta.inject.Named;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
-import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
-import net.patrykdobrowolski.bookshelf.domain.model.ExportFormat;
-import net.patrykdobrowolski.bookshelf.domain.model.Year;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.DraftBook;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportFormat;
+import net.patrykdobrowolski.bookshelf.domain.model.value.Year;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 

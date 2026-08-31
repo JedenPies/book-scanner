@@ -2,10 +2,10 @@ package net.patrykdobrowolski.bookshelf.adapter.exporter;
 
 import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
-import net.patrykdobrowolski.bookshelf.domain.model.ExportFormat;
-import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
-import net.patrykdobrowolski.bookshelf.domain.model.Year;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportFormat;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.DraftBook;
+import net.patrykdobrowolski.bookshelf.domain.model.value.Year;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;

@@ -6,7 +6,7 @@ import net.patrykdobrowolski.bookshelf.adapter.db.entity.BookEntity;
 import net.patrykdobrowolski.bookshelf.adapter.db.mapper.BookEntityMapper;
 import net.patrykdobrowolski.bookshelf.adapter.db.repository.SpringDataBookRepository;
 import net.patrykdobrowolski.bookshelf.domain.model.Book;
-import net.patrykdobrowolski.bookshelf.domain.model.ISBN;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
 import net.patrykdobrowolski.bookshelf.domain.port.BookRepositoryPort;
 
 import java.util.Optional;

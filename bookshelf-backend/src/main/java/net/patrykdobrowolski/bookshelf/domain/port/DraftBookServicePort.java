@@ -2,7 +2,7 @@ package net.patrykdobrowolski.bookshelf.domain.port;
 
 import net.patrykdobrowolski.bookshelf.domain.exception.DraftBookNotFoundException;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.DraftBook;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 
 import java.util.List;

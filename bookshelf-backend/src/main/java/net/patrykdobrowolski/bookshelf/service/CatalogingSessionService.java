@@ -4,7 +4,7 @@ import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.port.CatalogingSessionRepositoryPort;
 import net.patrykdobrowolski.bookshelf.domain.port.CatalogingSessionServicePort;
 

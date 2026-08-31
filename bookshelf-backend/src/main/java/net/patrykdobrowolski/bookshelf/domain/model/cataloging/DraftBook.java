@@ -1,8 +1,11 @@
-package net.patrykdobrowolski.bookshelf.domain.model;
+package net.patrykdobrowolski.bookshelf.domain.model.cataloging;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import net.patrykdobrowolski.bookshelf.domain.model.value.DraftBookStatus;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
+import net.patrykdobrowolski.bookshelf.domain.model.value.Modifier;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 
 import java.time.Instant;

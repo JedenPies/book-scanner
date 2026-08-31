@@ -1,8 +1,10 @@
-package net.patrykdobrowolski.bookshelf.domain.model;
+package net.patrykdobrowolski.bookshelf.domain.model.cataloging;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportFormat;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportStatus;
 
 import java.time.Instant;
 import java.util.UUID;

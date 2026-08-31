@@ -1,7 +1,7 @@
 package net.patrykdobrowolski.bookshelf.domain.port;
 
 import net.patrykdobrowolski.bookshelf.domain.model.Book;
-import net.patrykdobrowolski.bookshelf.domain.model.ISBN;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
 
 import java.util.Optional;
 

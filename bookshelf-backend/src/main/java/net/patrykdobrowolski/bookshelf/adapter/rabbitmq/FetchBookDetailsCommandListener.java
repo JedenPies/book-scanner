@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.patrykdobrowolski.bookshelf.domain.exception.DraftBookNotFoundException;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.DraftBookStatus;
+import net.patrykdobrowolski.bookshelf.domain.model.value.DraftBookStatus;
 import net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto.FetchBookDetailsCommandDto;
 import net.patrykdobrowolski.bookshelf.service.FetchBookService;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;

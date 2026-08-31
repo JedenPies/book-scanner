@@ -6,7 +6,7 @@ import net.patrykdobrowolski.bookshelf.adapter.rest.dto.DraftBookDto;
 import net.patrykdobrowolski.bookshelf.adapter.rest.mapper.EditDraftBookCommandDtoMapper;
 import net.patrykdobrowolski.bookshelf.domain.exception.DraftBookNotFoundException;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.DraftBook;
 import net.patrykdobrowolski.bookshelf.adapter.rest.dto.CreateDraftBookRequestDto;
 import net.patrykdobrowolski.bookshelf.adapter.rest.dto.EditDraftBookCommandDto;
 import net.patrykdobrowolski.bookshelf.adapter.rest.mapper.DraftBookDtoMapper;

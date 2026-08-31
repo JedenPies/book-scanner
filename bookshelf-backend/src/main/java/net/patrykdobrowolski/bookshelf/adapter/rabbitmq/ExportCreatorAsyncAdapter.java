@@ -3,7 +3,7 @@ package net.patrykdobrowolski.bookshelf.adapter.rabbitmq;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.domain.port.ExportCreatorAsyncPort;
 import net.patrykdobrowolski.bookshelf.adapter.rabbitmq.dto.ExportSessionCommandDto;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

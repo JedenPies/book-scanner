@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookshelf.domain.exception.ExportAlreadyRequestedException;
 import net.patrykdobrowolski.bookshelf.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.Export;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.Export;
 import net.patrykdobrowolski.bookshelf.adapter.rest.dto.ExportDto;
 import net.patrykdobrowolski.bookshelf.adapter.rest.dto.ExportRequestDto;
 import net.patrykdobrowolski.bookshelf.adapter.rest.mapper.ExportDtoMapper;

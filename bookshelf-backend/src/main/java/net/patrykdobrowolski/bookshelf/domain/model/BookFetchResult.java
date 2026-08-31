@@ -2,6 +2,7 @@ package net.patrykdobrowolski.bookshelf.domain.model;
 
 import lombok.Builder;
 import lombok.Getter;
+import net.patrykdobrowolski.bookshelf.domain.model.value.FetchResult;
 
 @Builder
 @Getter

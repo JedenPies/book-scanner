@@ -1,7 +1,7 @@
 package net.patrykdobrowolski.bookshelf.domain.port;
 
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
 
 import java.util.UUID;
 

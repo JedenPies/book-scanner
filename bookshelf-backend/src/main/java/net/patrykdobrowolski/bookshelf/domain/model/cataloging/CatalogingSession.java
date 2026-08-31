@@ -1,11 +1,14 @@
-package net.patrykdobrowolski.bookshelf.domain.model;
+package net.patrykdobrowolski.bookshelf.domain.model.cataloging;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import net.patrykdobrowolski.bookshelf.domain.Aggregate;
 import net.patrykdobrowolski.bookshelf.domain.exception.ExportAlreadyRequestedException;
 import net.patrykdobrowolski.bookshelf.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookshelf.domain.exception.DraftBookNotFoundException;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
+import net.patrykdobrowolski.bookshelf.domain.model.value.Modifier;
 import net.patrykdobrowolski.bookshelf.domain.model.command.ExportSessionCommand;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 

@@ -2,7 +2,7 @@ package net.patrykdobrowolski.bookshelf.adapter.fetcher.googleapi.mapper;
 
 import jakarta.inject.Named;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.googleapi.dto.VolumeInfoDto;
-import net.patrykdobrowolski.bookshelf.domain.model.Year;
+import net.patrykdobrowolski.bookshelf.domain.model.value.Year;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 import org.apache.logging.log4j.util.Strings;
 

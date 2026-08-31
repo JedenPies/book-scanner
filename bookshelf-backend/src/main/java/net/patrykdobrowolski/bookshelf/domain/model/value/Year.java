@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.bookshelf.domain.model;
+package net.patrykdobrowolski.bookshelf.domain.model.value;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

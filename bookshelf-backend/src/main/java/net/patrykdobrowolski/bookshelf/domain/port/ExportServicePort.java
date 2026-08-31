@@ -4,8 +4,8 @@ import jakarta.transaction.Transactional;
 import net.patrykdobrowolski.bookshelf.domain.exception.ExportAlreadyRequestedException;
 import net.patrykdobrowolski.bookshelf.domain.exception.ExportNotRequestedException;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
-import net.patrykdobrowolski.bookshelf.domain.model.Export;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.Export;
 import net.patrykdobrowolski.bookshelf.domain.model.command.ExportSessionCommand;
 
 import java.util.UUID;

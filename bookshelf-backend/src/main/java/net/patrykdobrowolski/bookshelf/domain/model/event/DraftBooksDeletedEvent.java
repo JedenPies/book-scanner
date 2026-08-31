@@ -2,8 +2,8 @@ package net.patrykdobrowolski.bookshelf.domain.model.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
-import net.patrykdobrowolski.bookshelf.domain.model.DraftBook;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.DraftBook;
 
 import java.util.List;
 

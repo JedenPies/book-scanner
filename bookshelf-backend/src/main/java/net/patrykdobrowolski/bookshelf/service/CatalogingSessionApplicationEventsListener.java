@@ -2,7 +2,7 @@ package net.patrykdobrowolski.bookshelf.service;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookshelf.domain.model.DraftBookStatus;
+import net.patrykdobrowolski.bookshelf.domain.model.value.DraftBookStatus;
 import net.patrykdobrowolski.bookshelf.domain.model.event.DraftBookCreatedEvent;
 import net.patrykdobrowolski.bookshelf.domain.model.event.ExportRequestedEvent;
 import net.patrykdobrowolski.bookshelf.domain.port.BookDetailsAsyncFetcherPort;

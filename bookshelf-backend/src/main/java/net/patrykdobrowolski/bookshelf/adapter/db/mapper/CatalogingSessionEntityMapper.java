@@ -1,7 +1,7 @@
 package net.patrykdobrowolski.bookshelf.adapter.db.mapper;
 
 import net.patrykdobrowolski.bookshelf.adapter.db.entity.CatalogingSessionEntity;
-import net.patrykdobrowolski.bookshelf.domain.model.CatalogingSession;
+import net.patrykdobrowolski.bookshelf.domain.model.cataloging.CatalogingSession;
 import net.patrykdobrowolski.bookshelf.util.ISBNMapper;
 import net.patrykdobrowolski.bookshelf.util.YearMapper;
 import org.mapstruct.Mapper;

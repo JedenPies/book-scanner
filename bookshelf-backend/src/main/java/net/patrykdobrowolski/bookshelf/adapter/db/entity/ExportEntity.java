@@ -2,8 +2,8 @@ package net.patrykdobrowolski.bookshelf.adapter.db.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import net.patrykdobrowolski.bookshelf.domain.model.ExportFormat;
-import net.patrykdobrowolski.bookshelf.domain.model.ExportStatus;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportFormat;
+import net.patrykdobrowolski.bookshelf.domain.model.value.ExportStatus;
 
 import java.time.Instant;
 import java.util.UUID;

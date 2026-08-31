@@ -3,7 +3,7 @@ package net.patrykdobrowolski.bookshelf.adapter.rest.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
-import net.patrykdobrowolski.bookshelf.domain.model.DraftBookStatus;
+import net.patrykdobrowolski.bookshelf.domain.model.value.DraftBookStatus;
 
 import java.time.Instant;
 import java.util.UUID;
