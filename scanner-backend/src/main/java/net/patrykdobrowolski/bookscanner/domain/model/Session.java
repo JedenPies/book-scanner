@@ -28,17 +28,13 @@ public class Session {
     private Export export;
 
     public static Session createNew() {
+        Instant now = Instant.now();
         return Session.builder()
                 .scans(new ArrayList<>())
                 .id(UUID.randomUUID())
-                .createdAt(Instant.now())
+                .createdAt(now)
+                .lastUse(now)
                 .build();
-    }
-
-    private Scan findOldestScanByIsbn(ISBN isbn) {
-        return scans.stream()
-                .filter(scan -> Objects.equals(scan.getIsbn(), isbn))
-                .min(Comparator.comparing(Scan::getCreatedAt)).orElse(null);
     }
 
     public Scan findScanById(UUID scanId) throws ScanNotFoundException {
@@ -46,6 +42,7 @@ public class Session {
     }
 
     public Scan createNewScan(ISBN isbn) {
+        touch();
         Scan newScan = Scan.createNew(isbn, this.id);
         Scan foundScan = findOldestScanByIsbn(isbn);
         Optional.ofNullable(foundScan).ifPresent(newScan::copyDetails);
@@ -54,12 +51,14 @@ public class Session {
     }
 
     public List<Scan> removeScans(List<UUID> scanIds) {
+        touch();
         List<Scan> scans = this.scans.stream().filter(scan -> scanIds.contains(scan.getId())).toList();
         scans.forEach(this.scans::remove);
         return scans;
     }
 
     public Export requestExport(ExportSessionCommand command) throws ExportAlreadyRequestedException {
+        touch();
         if (export != null && !export.isComplete()) {
             throw new ExportAlreadyRequestedException();
         }
@@ -68,41 +67,49 @@ public class Session {
     }
 
     public void beginExport() throws ExportNotRequestedException {
+        touch();
         ensureExportExists();
         this.export.begin();
     }
 
     public void exportSucceed(byte[] data) throws ExportNotRequestedException {
+        touch();
         ensureExportExists();
         this.export.exported(data);
     }
 
     public void exportFailed() throws ExportNotRequestedException {
+        touch();
         ensureExportExists();
         this.export.failed();
     }
 
     public Scan updateScan(UUID scanId, UpdateScanCommand command) throws ScanNotFoundException {
+        touch();
         Scan scan = findScanById(scanId);
         scan.update(command);
         return scan;
     }
 
     public Scan markScanFetching(UUID scanId) throws ScanNotFoundException {
+        touch();
         Scan scan = findScanById(scanId);
         scan.markFetching();
         return scan;
     }
 
     public void markScanFailed(UUID scanId) throws ScanNotFoundException {
+        touch();
         findScanById(scanId).markFailed();
     }
 
     public void markScanNotFound(UUID scanId) throws ScanNotFoundException {
+        touch();
         findScanById(scanId).markNotFound();
     }
 
     public void setScanBookDetails(UUID scanId, BookDetails details, Modifier modifier) throws ScanNotFoundException {
+        touch();
         findScanById(scanId).setBookDetails(details, modifier);
     }
 
@@ -110,4 +117,13 @@ public class Session {
         if (export == null) throw new ExportNotRequestedException();
     }
 
+    private Scan findOldestScanByIsbn(ISBN isbn) {
+        return scans.stream()
+                .filter(scan -> Objects.equals(scan.getIsbn(), isbn))
+                .min(Comparator.comparing(Scan::getCreatedAt)).orElse(null);
+    }
+
+    private void touch() {
+        this.lastUse = Instant.now();
+    }
 }

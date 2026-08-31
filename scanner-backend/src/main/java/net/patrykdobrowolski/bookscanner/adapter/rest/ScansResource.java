@@ -55,8 +55,7 @@ public class ScansResource {
     }
 
     @PostMapping("delete-requests")
-    public void deleteScans(
-            @PathVariable UUID sessionId, @RequestBody DeleteScansCommandDto deleteScansCommandDto) throws SessionNotFoundException {
+    public void deleteScans(@PathVariable UUID sessionId, @RequestBody DeleteScansCommandDto deleteScansCommandDto) throws SessionNotFoundException {
 
         scanService.deleteScans(sessionId, deleteScansCommandDto.getScanIds());
     }

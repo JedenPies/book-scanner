@@ -3,11 +3,11 @@ package net.patrykdobrowolski.bookscanner.adapter.sse;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.patrykdobrowolski.bookscanner.adapter.sse.mapper.EventsMapper;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ExportCompleteEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanCreatedEvent;
-import net.patrykdobrowolski.bookscanner.domain.model.event.ScanDeletedEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanUpdatedEvent;
-import net.patrykdobrowolski.bookscanner.adapter.sse.mapper.EventsMapper;
+import net.patrykdobrowolski.bookscanner.domain.model.event.ScansDeletedEvent;
 import org.springframework.context.event.EventListener;
 
 @Named
@@ -31,9 +31,9 @@ public class SseEventNotifier {
     }
 
     @EventListener
-    public void handleScanDeletedEvent(ScanDeletedEvent event) {
-        log.debug("Sending SCAN_DELETED event");
-        sseSessionService.broadcastToSession(event.getSession().getId(), "SCAN_DELETED", eventsMapper.toSseEvent(event));
+    public void handleScansDeletedEvent(ScansDeletedEvent event) {
+        log.debug("Sending SCANS_DELETED event");
+        sseSessionService.broadcastToSession(event.getSession().getId(), "SCANS_DELETED", eventsMapper.toSseEvent(event));
     }
 
     @EventListener

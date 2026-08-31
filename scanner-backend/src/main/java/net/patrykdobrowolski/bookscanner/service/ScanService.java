@@ -10,8 +10,8 @@ import net.patrykdobrowolski.bookscanner.domain.model.Scan;
 import net.patrykdobrowolski.bookscanner.domain.model.Session;
 import net.patrykdobrowolski.bookscanner.domain.model.command.UpdateScanCommand;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanCreatedEvent;
-import net.patrykdobrowolski.bookscanner.domain.model.event.ScanDeletedEvent;
 import net.patrykdobrowolski.bookscanner.domain.model.event.ScanUpdatedEvent;
+import net.patrykdobrowolski.bookscanner.domain.model.event.ScansDeletedEvent;
 import net.patrykdobrowolski.bookscanner.domain.port.BookDetailsAsyncFetcherPort;
 import net.patrykdobrowolski.bookscanner.domain.port.ScanServicePort;
 import net.patrykdobrowolski.bookscanner.domain.port.SessionRepositoryPort;
@@ -70,6 +70,6 @@ public class ScanService implements ScanServicePort {
         List<Scan> scans = session.removeScans(scanIds);
         if (scans.isEmpty()) return;
         sessionRepository.save(session);
-        scans.forEach(scan -> eventPublisher.publishEvent(ScanDeletedEvent.of(session, scan)));
+        eventPublisher.publishEvent(ScansDeletedEvent.of(session, scans));
     }
 }
