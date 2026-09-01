@@ -1,7 +1,10 @@
+
 <app-editor-header
   [sessionId]="sessionId()"
+  [shareCode]="currentShareCode()"
   (openExport)="isExportModalOpen.set(true)"
   (openManualIsbn)="isManualIsbnModalOpen.set(true)"
+  (openAttachScanner)="isAttachScannerModalOpen.set(true)"
 />
 
 <app-draft-books-table
@@ -30,5 +33,13 @@
     [draftBook]="draftBookToEdit"
     (saved)="handleUpdateDraftBook($event)"
     (closed)="editingDraftBook.set(null)"
+  />
+}
+@if (isAttachScannerModalOpen()) {
+  <app-qr-code-modal
+    [title]="'Attach Mobile Scanner'"
+    [description]="'Scan following QR code to start scanning books with your phone camera'"
+    [value]="scannerUrl()"
+    (closed)="closeAttachScannerModal()"
   />
 }

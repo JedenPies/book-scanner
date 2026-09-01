@@ -15,6 +15,7 @@ import { ManualIsbnModalComponent } from './manual-isbn-modal/manual-isbn-modal.
 import { ExportModalComponent } from './export-modal/export-modal.component';
 import { DraftBooksTableComponent } from './draft-books-table/draft-books-table.component';
 import { EditDraftBookFormDialogComponent } from './edit-draft-book-modal/edit-draft-book-form-dialog.component';
+import { QrCodeModalComponent } from '../qr-code-modal/qr-code-modal.component';
 
 @Component({
   selector: 'app-scanner',
@@ -24,13 +25,13 @@ import { EditDraftBookFormDialogComponent } from './edit-draft-book-modal/edit-d
     ManualIsbnModalComponent,
     ExportModalComponent,
     EditDraftBookFormDialogComponent,
+    QrCodeModalComponent,
   ],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.scss',
   standalone: true,
 })
 export class EditorComponent {
-
   private readonly DELETE_TOAST_ID = 'batch-delete-toast';
 
   exportService = inject(ExportService);
@@ -38,7 +39,9 @@ export class EditorComponent {
   toastService = inject(ToastService);
 
   isModalOpen = computed<boolean>(() => {
-    return this.isManualIsbnModalOpen() || this.isExportModalOpen() || this.editingDraftBook() !== null;
+    return (
+      this.isManualIsbnModalOpen() || this.isExportModalOpen() || this.editingDraftBook() !== null
+    );
   });
   draftBooksToShow = computed<DraftBookDto[]>(() => {
     const deleIds = new Set(this.pendingDeletionDraftBooks().map((item) => item));
@@ -46,12 +49,18 @@ export class EditorComponent {
   });
 
   sessionId = input.required<string>();
+
+  currentShareCode = signal<string>('');
+
   isExportModalOpen = signal<boolean>(false);
   isManualIsbnModalOpen = signal<boolean>(false);
 
   draftBooks = signal<DraftBookDto[]>([]);
   pendingDeletionDraftBooks = signal<DraftBookDto[]>([]);
   editingDraftBook = signal<DraftBookDto | null>(null);
+
+  scannerUrl = signal<string>('');
+  isAttachScannerModalOpen = signal<boolean>(false);
 
   private deleteTimeoutId?: any;
 
@@ -61,6 +70,10 @@ export class EditorComponent {
     this.loadDraftBooks();
     this.exportService.loadExport(this.sessionId());
     this.initSseStream();
+    this.scannerUrl.set(
+      window.location.protocol + '//' + window.location.host + '/scanner/' + this.sessionId(),
+    );
+    this.generateShareCode();
   }
 
   ngOnDestroy() {
@@ -96,6 +109,14 @@ export class EditorComponent {
     this.isManualIsbnModalOpen.set(true);
   }
 
+  openAttachScanerModal() {
+    this.isAttachScannerModalOpen.set(true);
+  }
+
+  closeAttachScannerModal() {
+    this.isAttachScannerModalOpen.set(false);
+  }
+
   addManualIsbn(isbn: string) {
     this.backendService.addDraftBook(this.sessionId(), isbn).subscribe({
       error: () => this.toastService.show('Błąd dodawania ISBN', 'error'),
@@ -119,6 +140,9 @@ export class EditorComponent {
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
           );
           this.draftBooks.set(sortedDraftBooks);
+          if (this.draftBooks().length === 0) {
+            this.openAttachScanerModal();
+          }
         },
       });
     }
@@ -136,7 +160,9 @@ export class EditorComponent {
     this.eventSource.addEventListener('DRAFT_BOOK_UPDATED', (event: MessageEvent) => {
       const eventDto: DraftBookUpdatedSseEvent = JSON.parse(event.data);
       this.draftBooks.update((currentDraftBooks) =>
-        currentDraftBooks.map((draftBook) => (draftBook.id === eventDto.draftBook.id ? eventDto.draftBook : draftBook)),
+        currentDraftBooks.map((draftBook) =>
+          draftBook.id === eventDto.draftBook.id ? eventDto.draftBook : draftBook,
+        ),
       );
       this.exportService.invalidateExport();
     });
@@ -170,7 +196,7 @@ export class EditorComponent {
         run: () => this.cancelBatchDelete(),
       },
       this.DELETE_TOAST_ID,
-      10000
+      10000,
     );
 
     this.deleteTimeoutId = setTimeout(() => {
@@ -185,6 +211,15 @@ export class EditorComponent {
     }
     this.pendingDeletionDraftBooks.set([]);
     this.toastService.remove(this.DELETE_TOAST_ID);
+  }
+
+  generateShareCode() {
+    this.backendService.generateShareCode(this.sessionId()).subscribe({
+      next: (result) => {
+        this.currentShareCode.set(result.code);
+        setTimeout(() => this.generateShareCode(), 300000);
+      },
+    });
   }
 
   private commitBatchDelete() {

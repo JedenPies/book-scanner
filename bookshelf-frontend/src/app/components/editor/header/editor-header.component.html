@@ -2,12 +2,24 @@
   <h2>Cataloging Session</h2>
 
   <div class="session-badge-container">
-    <span class="badge clickable" (click)="copyUrlToClipboard()">
-      {{ sessionId() }}
+    <span class="badge clickable" (click)="copyShareCodeToClipboard()">
+      {{ shareCodeFormatted() }}
     </span>
   </div>
 
   <span class="filler"></span>
+  <button class="btn-primary" (click)="openAttachScanner.emit()">Scan barcodes</button>
+  <button class="btn-primary" (click)="openManualIsbn.emit()">
+    Enter ISBN manually (<span class="keyboard-shortcut">Ctrl</span><span style="font-weight: 400;">+</span><span class="keyboard-shortcut">Space</span>)
+  </button>
+
+  <button
+    class="btn-primary"
+    [disabled]="exportService.isProcessing()"
+    (click)="openExport.emit()"
+  >
+    <span>📥</span> Export
+  </button>
 
   @if (exportService.exportState()) {
     <button
@@ -26,15 +38,5 @@
     </button>
   }
 
-  <button
-    class="btn-primary"
-    [disabled]="exportService.isProcessing()"
-    (click)="openExport.emit()"
-  >
-    <span>📥</span> Export
-  </button>
 
-  <button class="btn-primary" (click)="openManualIsbn.emit()">
-    <span>➕</span> Enter ISBN manually <span class="keyboard-shortcut">Ctrl</span><span style="font-weight: 400;">+</span><span class="keyboard-shortcut">Space</span>
-  </button>
 </div>

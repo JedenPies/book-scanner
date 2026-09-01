@@ -11,6 +11,7 @@ import { ToastService } from '../../services/toast.service';
   styleUrl: './entry.component.scss',
 })
 export class EntryComponent {
+
   @ViewChildren('codeInput') inputs!: QueryList<ElementRef<HTMLInputElement>>;
 
   private scannerService = inject(BackendService);
@@ -83,7 +84,7 @@ export class EntryComponent {
   startSession() {
     this.scannerService.createSession().subscribe({
       next: (response) => {
-        this.router.navigate(['/scanner', response.id]);
+        this.router.navigate(['/editor', response.id]);
       },
       error: (err) => {
         this.toasts.show('Nie udało się utworzyć sesji skanowania: ' + err);

@@ -1,0 +1,32 @@
+<div class="backdrop" (click)="close()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h3>{{ title() }}</h3>
+      </div>
+      <button type="button" class="btn-close" (click)="close()" title="Close">✕</button>
+    </div>
+    <div class="qr-modal-description">{{ description() }}</div>
+
+    <!-- SEKCJA GENEROWANIA KODU QR I TEKSTU -->
+    <div class="qr-modal-body">
+
+      <div class="qr-code-wrapper">
+        <div #qrContainer class="qr-svg-container"></div>
+      </div>
+
+      <div class="qr-value-container">
+        <span class="qr-label">Encoded value:</span>
+        <div class="badge qr-value-badge">{{ value() }}</div>
+      </div>
+
+    </div>
+
+    <!-- AKCJE DIALOGU -->
+    <div class="modal-actions">
+      <button type="button" class="btn-neutral" (click)="close()">Close</button>
+    </div>
+
+  </div>
+</div>

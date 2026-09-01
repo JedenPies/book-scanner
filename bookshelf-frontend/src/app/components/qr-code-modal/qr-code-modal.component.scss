@@ -1,0 +1,80 @@
+$radius: 6px;
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+
+  .modal-title-group {
+    h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #0f172a;
+      font-weight: 700;
+    }
+  }
+}
+
+.qr-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.qr-code-wrapper {
+  background: #ffffff;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .qr-svg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // Zapewnia właściwe dopasowanie SVG wyplutego przez ZXing
+    svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.qr-value-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+
+  .qr-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.05em;
+  }
+
+  .qr-value-badge {
+    max-width: 100%;
+    word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    padding: 8px 12px;
+  }
+}
+
+.qr-modal-description {
+  font-size: 1.2rem;
+  text-align: justify;
+  padding: 20px 0;
+}
