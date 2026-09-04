@@ -1,23 +1,24 @@
 import { Component, ElementRef, inject, QueryList, signal, ViewChildren } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BackendService } from '../../services/backend.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
+import { RecentSessionsService } from '../../services/recent-session.service';
 
 @Component({
   selector: 'app-scanner',
-  imports: [ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './entry.component.html',
   styleUrl: './entry.component.scss',
 })
 export class EntryComponent {
-
   @ViewChildren('codeInput') inputs!: QueryList<ElementRef<HTMLInputElement>>;
 
   private scannerService = inject(BackendService);
 
   router = inject(Router);
   toasts = inject(ToastService);
+  recentSessionsService = inject(RecentSessionsService);
 
   shareCodeDigits = signal<string[]>(['', '', '', '', '', '']);
 
@@ -84,7 +85,7 @@ export class EntryComponent {
   startSession() {
     this.scannerService.createSession().subscribe({
       next: (response) => {
-        this.router.navigate(['/editor', response.id]);
+        this.router.navigate(['/cataloging-session', response.id]);
       },
       error: (err) => {
         this.toasts.show('Nie udało się utworzyć sesji skanowania: ' + err);
@@ -97,7 +98,7 @@ export class EntryComponent {
     if (shareCode) {
       this.scannerService.retrieveSessionIdByShareCode(shareCode).subscribe({
         next: (response) => {
-          this.router.navigate(['/editor', response.sessionId]);
+          this.router.navigate(['/cataloging-session', response.sessionId]);
         },
         error: () => {
           this.toasts.show('Nie udało się pobrać numeru sesji', 'error');

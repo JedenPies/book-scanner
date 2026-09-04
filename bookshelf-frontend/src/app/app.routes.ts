@@ -10,7 +10,7 @@ export const routes: Routes = [
     loadComponent: () => import('./components/scanner/scanner.component').then((m) => m.ScannerComponent),
   },
   {
-    path: 'editor/:sessionId',
-    loadComponent: () => import('./components/editor/editor.component').then((m) => m.EditorComponent),
+    path: 'cataloging-session/:sessionId',
+    loadComponent: () => import('./components/cataloging-session/cataloging-session.component').then((m) => m.CatalogingSessionComponent),
   }
 ];

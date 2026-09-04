@@ -1,0 +1,114 @@
+.cataloging-session-header {
+  max-width: 1900px;
+  margin: 1.5rem auto 0 auto;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.header-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    padding: 6px;
+    border-radius: 6px;
+    transition: color 0.15s, background-color 0.15s;
+
+    .icon-svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      color: #0f172a;
+      background-color: #f1f5f9;
+    }
+  }
+
+  .breadcrumb-separator {
+    color: #94a3b8;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    user-select: none;
+  }
+
+  .session-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .btn-copy-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 6px;
+    height: auto;
+    color: #64748b;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color 0.15s, background-color 0.15s;
+
+    .icon-svg {
+      width: 17px;
+      height: 17px;
+      display: block;
+    }
+
+    &:hover {
+      color: #0f172a;
+      background-color: #f1f5f9;
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+.filler {
+  flex: 1;
+}
+
+.btn-primary {
+  &.status-pending,
+  &.status-fetching {
+    background-color: #5a7d9a;
+    color: #ffffff;
+
+    &:hover:not(:disabled) {
+      background-color: #4b6b85;
+    }
+  }
+
+  &.status-found {
+    background-color: #5b8e72;
+    color: #ffffff;
+
+    &:hover:not(:disabled) {
+      background-color: #4c7760;
+    }
+  }
+
+  &.status-failed {
+    background-color: #a85d5d;
+    color: #ffffff;
+
+    &:hover:not(:disabled) {
+      background-color: #914e4e;
+    }
+  }
+}

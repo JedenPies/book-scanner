@@ -1,14 +1,16 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { ClipboardService } from '../../../services/clipboard.service';
 import { ExportService } from '../../../services/export.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-editor-header',
+  selector: 'app-cataloging-session-header',
   standalone: true,
-  templateUrl: './editor-header.component.html',
-  styleUrl: './editor-header.component.scss',
+  templateUrl: './cataloging-session-header.component.html',
+  styleUrl: './cataloging-session-header.component.scss',
+  imports: [RouterLink],
 })
-export class EditorHeaderComponent {
+export class CatalogingSessionHeaderComponent {
   exportService = inject(ExportService);
   clipboardService = inject(ClipboardService);
 

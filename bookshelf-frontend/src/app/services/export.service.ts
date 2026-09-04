@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { BackendService } from './backend.service';
 import { ToastService } from './toast.service';
 import { ExportDto, ExportFormat } from '../models/backend.model';
-import { ExportState } from '../components/editor/editor.model';
+import { ExportState } from '../components/cataloging-session/cataloging-session.model';
 
 @Injectable({
   providedIn: 'root',

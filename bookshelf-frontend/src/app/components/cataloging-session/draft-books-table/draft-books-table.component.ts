@@ -1,12 +1,12 @@
 import { Component, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
-import { LowerCasePipe, NgOptimizedImage } from '@angular/common';
+import { LowerCasePipe } from '@angular/common';
 import { ClipboardService } from '../../../services/clipboard.service';
 import { DraftBookDto } from '../../../models/backend.model';
 
 @Component({
   selector: 'app-draft-books-table',
   standalone: true,
-  imports: [LowerCasePipe, NgOptimizedImage],
+  imports: [LowerCasePipe],
   templateUrl: './draft-books-table.component.html',
   styleUrl: './draft-books-table.component.scss',
 })

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditorComponent } from './editor.component';
+import { CatalogingSessionComponent } from './cataloging-session.component';
 
 describe('Editor', () => {
-  let component: EditorComponent;
-  let fixture: ComponentFixture<EditorComponent>;
+  let component: CatalogingSessionComponent;
+  let fixture: ComponentFixture<CatalogingSessionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditorComponent],
+      imports: [CatalogingSessionComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EditorComponent);
+    fixture = TestBed.createComponent(CatalogingSessionComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

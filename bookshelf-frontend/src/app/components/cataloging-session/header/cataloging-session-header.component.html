@@ -1,0 +1,54 @@
+<div class="cataloging-session-header">
+  <div class="header-breadcrumbs">
+    <a routerLink="/" class="home-link" title="Wróć do strony głównej">
+      <svg class="icon-svg"><use href="/icons/icons.svg#home"></use></svg>
+    </a>
+    <span class="breadcrumb-separator">››</span>
+    <h2 class="session-title">Cataloging session</h2>
+    <button
+      type="button"
+      class="btn-copy-link"
+      (click)="copyUrlToClipboard()"
+      title="Kopiuj link do sesji"
+    >
+      <svg class="icon-svg"><use href="/icons/icons.svg#copy"></use></svg>
+    </button>
+  </div>
+
+  <span class="filler"></span>
+
+  <button class="btn-primary" (click)="openAttachScanner.emit()">
+    <svg class="icon-svg"><use href="/icons/icons.svg#barcode"></use></svg>
+    <span>Scan barcodes</span>
+  </button>
+
+  <button class="btn-primary" (click)="openManualIsbn.emit()">
+    Enter ISBN manually (<span class="keyboard-shortcut">Ctrl</span><span style="font-weight: 400;">+</span><span class="keyboard-shortcut">Space</span>)
+  </button>
+
+  <button
+    class="btn-primary"
+    [disabled]="exportService.isProcessing()"
+    (click)="openExport.emit()"
+  >
+    <svg class="icon-svg"><use href="/icons/icons.svg#export"></use></svg>
+    <span>Export</span>
+  </button>
+
+  @if (exportService.exportState()) {
+    <button
+      class="btn-primary {{ exportService.exportState()!.cssClass }}"
+      [disabled]="!exportService.exportState()!.isClickable"
+      [class.clickable]="exportService.exportState()!.isClickable"
+      (click)="exportService.exportState()!.isClickable ? exportService.download() : null"
+    >
+      @if (exportService.exportState()!.showSpinner) {
+        <svg class="icon-svg is-spinning"><use href="/icons/icons.svg#refresh"></use></svg>
+      } @else {
+        <svg class="icon-svg"><use href="/icons/icons.svg#download"></use></svg>
+      }
+      <span class="text">{{ exportService.exportState()!.text }}</span>
+      @if (exportService.exportInvalidated()) { <span>(outdated)</span> }
+    </button>
+  }
+</div>

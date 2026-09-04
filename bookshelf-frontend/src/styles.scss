@@ -31,12 +31,96 @@ button {
   }
 }
 
-.btn-primary {
+.icon-svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
 
-  background-color: #3b82f6;
+  &.is-spinning {
+    animation: spin 1s linear infinite;
+  }
+}
+
+/* --- 2. STYLE KONTENERA I KOLORÓW STATUSU W TABELI --- */
+[class^="status-"], [class*=" status-"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+
+  /* Dopasowane zgaszone kolory */
+  &.status-pending,
+  &.status-fetching {
+    color: #5a7d9a;
+  }
+
+  &.status-found {
+    color: #15803d; /* Zielony dla ptaszka (check) */
+  }
+
+  &.status-not_found {
+    color: #d97706; /* Bursztynowy dla znaku zapytania (help-circle) */
+  }
+
+  &.status-failed {
+    color: #dc2626; /* Czerwony dla błędu (x-circle) */
+  }
+
+  &.status-duplicate {
+    color: #0284c7; /* Błękit dla duplikatu (refresh) */
+  }
+
+  &.status-modified {
+    color: #7c3aed; /* Fiolet dla modyfikacji (edit) */
+  }
+}
+
+.btn-primary, .btn-secondary, .btn-edit, .btn-refresh, .btn-cancel, .btn-delete, .btn-neutral {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  .icon-svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    flex-shrink: 0; // Zapobiega spłaszczeniu ikony przy dłuższym tekście
+
+    &.is-spinning {
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.95);
+    }
+  }
+}
+
+/* Animacja dla obracającej się ikony refresh */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+
+}
+
+.btn-primary {
+  background-color: #648ba8;
+  color: #ffffff;
 
   &:hover:not(:disabled) {
-    background-color: #2563eb;
+    background-color: #557791;
   }
 }
 
@@ -48,6 +132,25 @@ button {
     background-color: #9cc69c;
   }
 }
+
+.btn-edit {
+  background-color: #dbeafe; /* Bardzo jasny błękit */
+  color: #1e40af;            /* Ciemnoniebieski akcent */
+
+  &:hover {
+    background-color: #bfdbfe;
+  }
+}
+
+.btn-refresh {
+  background-color: #e2ece9; /* Zgaszony, chłodny szałwiowy */
+  color: #2d5a4c;            /* Ciemna, butelkowa zieleń */
+
+  &:hover {
+    background-color: #d1e2dc;
+  }
+}
+
 
 .btn-cancel {
 
@@ -77,17 +180,24 @@ button {
 }
 
 button.small {
-  padding: 11px 15px;
   height: 38px;
   font-size: 0.9rem;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   &.icon {
     padding: 8px;
   }
 
-  img {
-    margin: 2px;
+  /* Styl dla zagnieżdżonego SVG z pliku sprite */
+  .icon-svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    display: block;
+    pointer-events: none; /* Zapobiega przejmowaniu kliknięć przez wektor */
   }
 }
 
@@ -101,6 +211,7 @@ button.tiny {
 
 button.square {
   aspect-ratio: 1 / 1;
+  padding: 0;
 }
 
 .filler {
@@ -290,3 +401,5 @@ input {
     color: #0f172a;
   }
 }
+
+

@@ -9,34 +9,36 @@ import {
 } from '../../models/backend.model';
 import { BackendService } from '../../services/backend.service';
 import { ToastService } from '../../services/toast.service';
-import { EditorHeaderComponent } from './header/editor-header.component';
+import { CatalogingSessionHeaderComponent } from './header/cataloging-session-header.component';
 import { ExportService } from '../../services/export.service';
 import { ManualIsbnModalComponent } from './manual-isbn-modal/manual-isbn-modal.component';
 import { ExportModalComponent } from './export-modal/export-modal.component';
 import { DraftBooksTableComponent } from './draft-books-table/draft-books-table.component';
 import { EditDraftBookFormDialogComponent } from './edit-draft-book-modal/edit-draft-book-form-dialog.component';
 import { QrCodeModalComponent } from '../qr-code-modal/qr-code-modal.component';
+import { RecentSessionsService } from '../../services/recent-session.service';
 
 @Component({
   selector: 'app-scanner',
   imports: [
-    EditorHeaderComponent,
+    CatalogingSessionHeaderComponent,
     DraftBooksTableComponent,
     ManualIsbnModalComponent,
     ExportModalComponent,
     EditDraftBookFormDialogComponent,
     QrCodeModalComponent,
   ],
-  templateUrl: './editor.component.html',
-  styleUrl: './editor.component.scss',
+  templateUrl: './cataloging-session.component.html',
+  styleUrl: './cataloging-session.component.scss',
   standalone: true,
 })
-export class EditorComponent {
+export class CatalogingSessionComponent {
   private readonly DELETE_TOAST_ID = 'batch-delete-toast';
 
   exportService = inject(ExportService);
   backendService = inject(BackendService);
   toastService = inject(ToastService);
+  recentSessionsService = inject(RecentSessionsService);
 
   isModalOpen = computed<boolean>(() => {
     return (
@@ -74,6 +76,7 @@ export class EditorComponent {
       window.location.protocol + '//' + window.location.host + '/scanner/' + this.sessionId(),
     );
     this.generateShareCode();
+    this.recentSessionsService.addSession(this.sessionId(), this.draftBooks().length);
   }
 
   ngOnDestroy() {
@@ -140,9 +143,11 @@ export class EditorComponent {
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
           );
           this.draftBooks.set(sortedDraftBooks);
-          if (this.draftBooks().length === 0) {
+          const draftBooksLength = this.draftBooks().length;
+          if (draftBooksLength === 0) {
             this.openAttachScanerModal();
           }
+          this.recentSessionsService.updateSession(sessionId, draftBooksLength);
         },
       });
     }
@@ -156,6 +161,7 @@ export class EditorComponent {
       const eventDto: DraftBookCreatedSseEvent = JSON.parse(event.data);
       this.draftBooks.update((currentDraftBooks) => [eventDto.draftBook, ...currentDraftBooks]);
       this.exportService.invalidateExport();
+      this.recentSessionsService.updateSession(this.sessionId(), this.draftBooks().length);
     });
     this.eventSource.addEventListener('DRAFT_BOOK_UPDATED', (event: MessageEvent) => {
       const eventDto: DraftBookUpdatedSseEvent = JSON.parse(event.data);
@@ -170,6 +176,7 @@ export class EditorComponent {
       const eventDto: DraftBookDeletedSseEvent = JSON.parse(event.data);
       this.exportService.invalidateExport();
       this.toastService.show(`${eventDto.count} draft books permanently deleted`, 'info');
+      this.recentSessionsService.updateSession(this.sessionId(), this.draftBooks().length);
     });
     this.eventSource.addEventListener('EXPORT_COMPLETE', (event: MessageEvent) => {
       const eventDto: ExportCompleteSseEvent = JSON.parse(event.data);
