@@ -1,11 +1,11 @@
 .cataloging-session-header {
   max-width: 1900px;
-  margin: 1.5rem auto 0 auto;
+  margin: .5rem auto 0 auto;
   display: flex;
   gap: 8px;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1rem;
+  padding: 0;
 }
 
 .header-breadcrumbs {
@@ -18,14 +18,17 @@
     align-items: center;
     justify-content: center;
     color: #64748b;
-    padding: 6px;
+    padding: 4px 6px;
     border-radius: 6px;
     transition: color 0.15s, background-color 0.15s;
 
     h2 {
       text-decoration: none;
       color: #5b8e72;
-      margin: 0;
+      font-family: "Courier Prime", "Special Elite", "SFMono-Regular", Consolas, monospace;
+      font-size: 1.7em;
+      margin: 8px 0 0 0;
+      letter-spacing: -0.05em;
     }
 
     .icon-svg {
@@ -52,6 +55,7 @@
     font-size: 1.5rem;
     font-weight: 700;
     color: #0f172a;
+    white-space: nowrap;
   }
 
   .btn-copy-link {
@@ -115,6 +119,34 @@
 
     &:hover:not(:disabled) {
       background-color: #914e4e;
+    }
+  }
+}
+
+/* Obsługa chowania tekstu na wąskich widokach */
+.btn-responsive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+
+  .btn-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  // Przy szerokości poniżej 1100px (gdy guziki przestają mieścić się obok tytułu)
+  @media (max-width: 1400px) {
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    justify-content: center;
+
+    .btn-label {
+      display: none; // Ukrywa cały tekst i skrót klawiszowy
     }
   }
 }

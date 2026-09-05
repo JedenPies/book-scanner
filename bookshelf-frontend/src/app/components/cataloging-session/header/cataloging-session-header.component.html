@@ -4,7 +4,7 @@
       <h2>SpruceShelf</h2>
     </a>
     <span class="breadcrumb-separator">››</span>
-    <h2 class="session-title">Cataloging session</h2>
+    <h2 class="session-title">Cataloging Session</h2>
     <button
       type="button"
       class="btn-copy-link"
@@ -20,38 +20,45 @@
 
   <span class="filler"></span>
 
-  <button class="btn-primary" (click)="openAttachScanner.emit()">
+  <button class="btn-primary btn-responsive" (click)="openAttachScanner.emit()" title="Scan barcodes">
     <svg class="icon-svg"><use href="/icons/icons.svg#barcode"></use></svg>
-    <span>Scan barcodes</span>
+    <span class="btn-label">Scan barcodes</span>
   </button>
 
-  <button class="btn-primary" (click)="openManualIsbn.emit()">
-    Enter ISBN manually (<span class="keyboard-shortcut">Ctrl</span><span style="font-weight: 400;">+</span><span class="keyboard-shortcut">Space</span>)
+  <button class="btn-primary btn-responsive" (click)="openManualIsbn.emit()" title="Enter ISBN manually (Ctrl+Space)">
+    <svg class="icon-svg"><use href="/icons/icons.svg#edit"></use></svg>
+    <span class="btn-label">
+      Enter ISBN manually (<span class="keyboard-shortcut">Ctrl</span><span style="font-weight: 400;">+</span><span class="keyboard-shortcut">Space</span>)
+    </span>
   </button>
 
   <button
-    class="btn-primary"
+    class="btn-primary btn-responsive"
     [disabled]="exportService.isProcessing()"
     (click)="openExport.emit()"
+    title="Export"
   >
     <svg class="icon-svg"><use href="/icons/icons.svg#export"></use></svg>
-    <span>Export</span>
+    <span class="btn-label">Export</span>
   </button>
 
   @if (exportService.exportState()) {
     <button
-      class="btn-primary {{ exportService.exportState()!.cssClass }}"
+      class="btn-primary btn-responsive {{ exportService.exportState()!.cssClass }}"
       [disabled]="!exportService.exportState()!.isClickable"
       [class.clickable]="exportService.exportState()!.isClickable"
       (click)="exportService.exportState()!.isClickable ? exportService.download() : null"
+      [title]="exportService.exportState()!.text"
     >
       @if (exportService.exportState()!.showSpinner) {
         <svg class="icon-svg is-spinning"><use href="/icons/icons.svg#refresh"></use></svg>
       } @else {
         <svg class="icon-svg"><use href="/icons/icons.svg#download"></use></svg>
       }
-      <span class="text">{{ exportService.exportState()!.text }}</span>
-      @if (exportService.exportInvalidated()) { <span>(outdated)</span> }
+      <span class="btn-label">
+        <span class="text">{{ exportService.exportState()!.text }}</span>
+        @if (exportService.exportInvalidated()) { <span>(outdated)</span> }
+      </span>
     </button>
   }
 </div>

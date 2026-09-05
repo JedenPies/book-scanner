@@ -9,7 +9,7 @@ $card-radius: 12px;
   justify-content: center;
   align-items: flex-start; /* Przestaje centrować pionowo */
   min-height: 100vh;
-  padding: 3.5rem 1.5rem 3rem 1.5rem; /* Zgrabny odstęp od góry strony */
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -32,24 +32,29 @@ $card-radius: 12px;
    NAGŁÓWEK GŁÓWNY
    ========================================= */
 .main-header {
-  text-align: center;
+  text-align: right;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  container-type: inline-size;
 
   .main-title {
     margin: 0;
-    font-size: 6.4rem;
     color: #0f172a;
     font-family: "Courier Prime", "Special Elite", "SFMono-Regular", Consolas, monospace;
     font-weight: 700;
+    text-align: right;
     letter-spacing: -0.01em;
+    white-space: nowrap;
+    font-size: clamp(1rem, 11cqw, 7rem);
   }
 
   .main-subtitle {
-    margin: 0;
-    font-size: 1.05rem;
     color: #64748b;
+    white-space: nowrap;
+    font-size: clamp(0.1rem, 2cqw, 1.05rem);
+    margin-top: -2.3em;
   }
 }
 
