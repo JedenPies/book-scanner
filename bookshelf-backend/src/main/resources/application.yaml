@@ -34,6 +34,14 @@ spring:
           initial-interval: 2s
           multiplier: 2
           max-interval: 10s
+  cloud:
+    openfeign:
+      client:
+        config:
+          google-books-api:
+            connectTimeout: 2000
+            readTimeout: 3000
+            loggerLevel: basic
 
 resilience4j:
   circuitbreaker:
@@ -98,7 +106,7 @@ rabbitmq:
 api:
   google-books:
     url: "https://www.googleapis.com/books/v1"
-    api-key: ${GOOGLE_BOOKS_API_KEY:AIzaSyD2l4UXLWcj5PtwZxqWZW4zre9udIabs6Q}
+    api-key: ${GOOGLE_BOOKS_API_KEY}
   open-library:
     url: "https://openlibrary.org"
   bn:

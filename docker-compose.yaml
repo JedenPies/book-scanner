@@ -74,6 +74,8 @@ services:
       - POSTGRES_BOOKSHELF_DATABASE=${POSTGRES_BOOKSHELF_DATABASE}
       - POSTGRES_BOOKSHELF_USERNAME=${POSTGRES_BOOKSHELF_USER}
       - POSTGRES_BOOKSHELF_PASSWORD=${POSTGRES_BOOKSHELF_PASSWORD}
+      - REDIS_HOST=bookshelf-redis
+      - REDIS_PORT=6379
       - RABBITMQ_HOST=bookshelf-rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=${RABBITMQ_DEFAULT_USER}
@@ -90,6 +92,15 @@ services:
     depends_on:
       bookshelf-pg:
         condition: service_started
+
+  bookshelf-frontend:
+    build:
+      context: bookshelf-frontend
+      dockerfile: Dockerfile
+    image: bookshelf-frontend
+    container_name: bookshelf-frontend
+    networks:
+      - bookshelf-network
 
 volumes:
   bookshelf-pg-data:

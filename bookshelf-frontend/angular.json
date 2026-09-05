@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "scanner-frontend": {
+    "bookshelf-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -64,10 +64,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "scanner-frontend:build:production"
+              "buildTarget": "bookshelf-frontend:build:production"
             },
             "development": {
-              "buildTarget": "scanner-frontend:build:development"
+              "buildTarget": "bookshelf-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
