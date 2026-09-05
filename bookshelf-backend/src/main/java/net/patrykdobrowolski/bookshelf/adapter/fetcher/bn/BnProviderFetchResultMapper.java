@@ -4,8 +4,8 @@ import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.bn.dto.BnResponseDto;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.bn.mapper.BnBookDtoMapper;
-import net.patrykdobrowolski.bookshelf.domain.model.BookRaw;
-import net.patrykdobrowolski.bookshelf.adapter.fetcher.BookRawResultMapper;
+import net.patrykdobrowolski.bookshelf.domain.model.fetch.ProviderFetchResult;
+import net.patrykdobrowolski.bookshelf.adapter.fetcher.ProviderFetchResultMapper;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 import tools.jackson.databind.ObjectMapper;
 
@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Named
 @RequiredArgsConstructor
-public class BnBookRawResultMapper implements BookRawResultMapper {
+public class BnProviderFetchResultMapper implements ProviderFetchResultMapper {
 
     private final BnBookDtoMapper mapper;
     private final ObjectMapper objectMapper;
@@ -25,8 +25,8 @@ public class BnBookRawResultMapper implements BookRawResultMapper {
     }
 
     @Override
-    public BookDetails map(BookRaw bookRaw) {
-        BnResponseDto response = objectMapper.readValue(bookRaw.getValue(), BnResponseDto.class);
+    public BookDetails map(ProviderFetchResult providerFetchResult) {
+        BnResponseDto response = objectMapper.readValue(providerFetchResult.getValue(), BnResponseDto.class);
         return Optional.ofNullable(response.getBibs())
                 .orElseGet(Collections::emptyList).stream()
                 .findFirst().map(mapper::fromDto).orElse(null);

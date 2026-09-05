@@ -16,10 +16,10 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "books_raw")
+@Table(name = "provider_fetch_results")
 @EntityListeners(AuditingEntityListener.class)
 @Getter @Builder @NoArgsConstructor @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public class BookRawEntity {
+public class ProviderFetchResultEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

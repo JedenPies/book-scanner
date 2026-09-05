@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.bookshelf.domain.model;
+package net.patrykdobrowolski.bookshelf.domain.model.fetch;
 
 import lombok.Builder;
 import lombok.Getter;

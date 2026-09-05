@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "books")
+@Table(name = "book_fetch_jobs")
 @Builder @NoArgsConstructor @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @Getter
-public class BookEntity {
+public class BookFetchJobEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,6 +23,6 @@ public class BookEntity {
     private String isbn;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "book_id")
-    private List<BookRawEntity> bookRaws;
+    @JoinColumn(name = "book_fetch_job_id")
+    private List<ProviderFetchResultEntity> providerFetchResults;
 }

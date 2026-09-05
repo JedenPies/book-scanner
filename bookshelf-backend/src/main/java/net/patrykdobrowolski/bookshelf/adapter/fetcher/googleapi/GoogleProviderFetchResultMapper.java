@@ -2,8 +2,8 @@ package net.patrykdobrowolski.bookshelf.adapter.fetcher.googleapi;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookshelf.domain.model.BookRaw;
-import net.patrykdobrowolski.bookshelf.adapter.fetcher.BookRawResultMapper;
+import net.patrykdobrowolski.bookshelf.domain.model.fetch.ProviderFetchResult;
+import net.patrykdobrowolski.bookshelf.adapter.fetcher.ProviderFetchResultMapper;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.googleapi.dto.BooksResponseDto;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.googleapi.dto.ItemDto;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.googleapi.mapper.BooksResponseDtoMapper;
@@ -12,7 +12,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Named
 @RequiredArgsConstructor
-public class GoogleBookRawResultMapper implements BookRawResultMapper {
+public class GoogleProviderFetchResultMapper implements ProviderFetchResultMapper {
 
     private final BooksResponseDtoMapper mapper;
     private final ObjectMapper objectMapper;
@@ -23,8 +23,8 @@ public class GoogleBookRawResultMapper implements BookRawResultMapper {
     }
 
     @Override
-    public BookDetails map(BookRaw bookRaw) {
-        BooksResponseDto responseDto = objectMapper.readValue(bookRaw.getValue(), BooksResponseDto.class);
+    public BookDetails map(ProviderFetchResult providerFetchResult) {
+        BooksResponseDto responseDto = objectMapper.readValue(providerFetchResult.getValue(), BooksResponseDto.class);
         return responseDto.getItems().stream()
                 .findFirst()
                 .map(ItemDto::getVolumeInfo)

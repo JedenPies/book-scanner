@@ -4,7 +4,7 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookshelf.domain.port.BookRepositoryPort;
+import net.patrykdobrowolski.bookshelf.domain.port.BookFetchJobRepositoryPort;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -12,11 +12,11 @@ import org.springframework.context.annotation.Configuration;
 public class MetricsConfig {
 
     private final MeterRegistry meterRegistry;
-    private final BookRepositoryPort bookRepository;
+    private final BookFetchJobRepositoryPort bookRepository;
 
     @PostConstruct
     public void registerMetrics() {
-        Gauge.builder("books.total.count", bookRepository, BookRepositoryPort::count)
+        Gauge.builder("books.total.count", bookRepository, BookFetchJobRepositoryPort::count)
                 .description("Total number of books in the database")
                 .register(meterRegistry);
     }

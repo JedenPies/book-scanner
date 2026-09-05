@@ -4,7 +4,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.patrykdobrowolski.bookshelf.domain.model.BookFetchResult;
+import net.patrykdobrowolski.bookshelf.domain.model.fetch.BookFetchResult;
 import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.BookFetchProvider;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.googleapi.dto.BooksResponseDto;

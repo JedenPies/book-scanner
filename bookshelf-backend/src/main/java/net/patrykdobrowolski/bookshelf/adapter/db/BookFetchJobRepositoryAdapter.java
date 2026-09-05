@@ -2,30 +2,30 @@ package net.patrykdobrowolski.bookshelf.adapter.db;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookshelf.adapter.db.entity.BookEntity;
+import net.patrykdobrowolski.bookshelf.adapter.db.entity.BookFetchJobEntity;
 import net.patrykdobrowolski.bookshelf.adapter.db.mapper.BookEntityMapper;
 import net.patrykdobrowolski.bookshelf.adapter.db.repository.SpringDataBookRepository;
-import net.patrykdobrowolski.bookshelf.domain.model.Book;
+import net.patrykdobrowolski.bookshelf.domain.model.fetch.BookFetchJob;
 import net.patrykdobrowolski.bookshelf.domain.model.value.ISBN;
-import net.patrykdobrowolski.bookshelf.domain.port.BookRepositoryPort;
+import net.patrykdobrowolski.bookshelf.domain.port.BookFetchJobRepositoryPort;
 
 import java.util.Optional;
 
 @Named
 @RequiredArgsConstructor
-public class BookRepositoryAdapter implements BookRepositoryPort {
+public class BookFetchJobRepositoryAdapter implements BookFetchJobRepositoryPort {
 
     private final SpringDataBookRepository bookRepository;
     private final BookEntityMapper bookEntityMapper;
 
     @Override
-    public Optional<Book> findByISBN(ISBN isbn) {
+    public Optional<BookFetchJob> findByISBN(ISBN isbn) {
         return bookRepository.findByIsbn(isbn.value()).map(bookEntityMapper::fromEntity);
     }
 
     @Override
-    public Book save(Book book) {
-        BookEntity saved = bookRepository.save(bookEntityMapper.toEntity(book));
+    public BookFetchJob save(BookFetchJob bookFetchJob) {
+        BookFetchJobEntity saved = bookRepository.save(bookEntityMapper.toEntity(bookFetchJob));
         return bookEntityMapper.fromEntity(saved);
     }
 

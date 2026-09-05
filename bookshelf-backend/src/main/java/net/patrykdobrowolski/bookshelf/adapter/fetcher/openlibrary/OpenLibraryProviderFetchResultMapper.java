@@ -2,8 +2,8 @@ package net.patrykdobrowolski.bookshelf.adapter.fetcher.openlibrary;
 
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
-import net.patrykdobrowolski.bookshelf.domain.model.BookRaw;
-import net.patrykdobrowolski.bookshelf.adapter.fetcher.BookRawResultMapper;
+import net.patrykdobrowolski.bookshelf.domain.model.fetch.ProviderFetchResult;
+import net.patrykdobrowolski.bookshelf.adapter.fetcher.ProviderFetchResultMapper;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.openlibrary.dto.BookDto;
 import net.patrykdobrowolski.bookshelf.adapter.fetcher.openlibrary.mapper.OpenLibraryBookDtoMapper;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
@@ -11,7 +11,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Named
 @RequiredArgsConstructor
-public class OpenLibraryBookRawResultMapper implements BookRawResultMapper {
+public class OpenLibraryProviderFetchResultMapper implements ProviderFetchResultMapper {
 
     private final OpenLibraryBookDtoMapper mapper;
     private final ObjectMapper objectMapper;
@@ -22,8 +22,8 @@ public class OpenLibraryBookRawResultMapper implements BookRawResultMapper {
     }
 
     @Override
-    public BookDetails map(BookRaw bookRaw) {
-        BookDto bookDto = objectMapper.readValue(bookRaw.getValue(), BookDto.class);
+    public BookDetails map(ProviderFetchResult providerFetchResult) {
+        BookDto bookDto = objectMapper.readValue(providerFetchResult.getValue(), BookDto.class);
         return mapper.fromDto(bookDto);
     }
 }

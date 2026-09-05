@@ -8,7 +8,7 @@ import net.patrykdobrowolski.bookshelf.domain.model.cataloging.DraftBook;
 import net.patrykdobrowolski.bookshelf.domain.model.event.DraftBookUpdatedEvent;
 import net.patrykdobrowolski.bookshelf.domain.exception.DraftBookNotFoundException;
 import net.patrykdobrowolski.bookshelf.domain.exception.CatalogingSessionNotFoundException;
-import net.patrykdobrowolski.bookshelf.domain.model.*;
+import net.patrykdobrowolski.bookshelf.domain.model.fetch.BookFetchJob;
 import net.patrykdobrowolski.bookshelf.domain.model.value.BookDetails;
 import net.patrykdobrowolski.bookshelf.domain.model.value.DraftBookStatus;
 import net.patrykdobrowolski.bookshelf.domain.model.value.FetchResult;
@@ -50,11 +50,11 @@ public class FetchBookService implements FetchBookServicePort {
     }
 
     private void tryFetchBook(CatalogingSession catalogingSession, DraftBook draftBook, boolean lastTry) throws DraftBookNotFoundException {
-        Book book = bookDetailsFetcher.fetchBookDetails(draftBook.getIsbn());
-        FetchResult fetchResult = book.getFetchResult();
+        BookFetchJob bookFetchJob = bookDetailsFetcher.fetchBookDetails(draftBook.getIsbn());
+        FetchResult fetchResult = bookFetchJob.getFetchResult();
         switch (fetchResult) {
             case SUCCESS:
-                BookDetails details = new BookDetailsComposer(book.getBookRaws().stream().filter(br -> br.getFetchResult() == FetchResult.SUCCESS).map(mapper::map).toList()).compose();
+                BookDetails details = new BookDetailsComposer(bookFetchJob.getProviderFetchResults().stream().filter(br -> br.getFetchResult() == FetchResult.SUCCESS).map(mapper::map).toList()).compose();
                 catalogingSession.setDraftBookBookDetails(draftBook.getId(), details, Modifier.SYSTEM);
                 break;
             case NOT_FOUND:

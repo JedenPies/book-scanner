@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-rename-tables
+      author: patryk
+      changes:
+        - renameTable:
+            oldTableName: books
+            newTableName: book_fetch_jobs
+        - renameTable:
+            oldTableName: books_raw
+            newTableName: provider_fetch_results
+        - renameColumn:
+            tableName: provider_fetch_results
+            oldColumnName: book_id
+            newColumnName: book_fetch_job_id

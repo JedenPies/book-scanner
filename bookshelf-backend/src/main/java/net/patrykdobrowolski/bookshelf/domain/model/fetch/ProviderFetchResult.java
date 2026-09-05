@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.bookshelf.domain.model;
+package net.patrykdobrowolski.bookshelf.domain.model.fetch;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import java.time.Instant;
 
 @Getter
 @Builder @AllArgsConstructor
-public class BookRaw {
+public class ProviderFetchResult {
 
     @With
     private String source;
@@ -19,7 +19,7 @@ public class BookRaw {
     private Instant createdAt;
     private Instant modifiedAt;
 
-    private BookRaw(String value, FetchResult fetchResult) {
+    private ProviderFetchResult(String value, FetchResult fetchResult) {
         this.value = value;
         this.fetchResult = fetchResult;
     }
@@ -30,7 +30,7 @@ public class BookRaw {
         this.modifiedAt = Instant.now();
     }
 
-    public static BookRaw from(String rawResult) {
-        return new BookRaw(rawResult, FetchResult.SUCCESS);
+    public static ProviderFetchResult from(String rawResult) {
+        return new ProviderFetchResult(rawResult, FetchResult.SUCCESS);
     }
 }
