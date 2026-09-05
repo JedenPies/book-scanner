@@ -1,6 +1,5 @@
 package net.patrykdobrowolski.bookshelf.adapter.rest.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import java.util.UUID;
 @Builder @Getter
 public class CreateShareCodeRequestDto {
 
-    @NotBlank(message = "Session ID cannot be empty")
-    @NotNull
+    @NotNull(message = "Session ID cannot be empty")
     private final UUID sessionId;
 }

@@ -16,6 +16,7 @@ export class DraftBooksTableComponent {
   clipboardService = inject(ClipboardService);
 
   draftBooks = input.required<DraftBookDto[]>();
+  isLoading = input<boolean>(false);
 
   // Wyjścia (zdarzenia)
   retry = output<string>();

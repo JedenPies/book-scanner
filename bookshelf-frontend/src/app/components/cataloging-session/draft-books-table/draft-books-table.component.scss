@@ -319,3 +319,25 @@ td.actions {
   justify-content: right;
   gap: 4px;
 }
+
+.empty-state {
+  text-align: center;
+  padding: 48px 16px !important;
+  color: #64748b;
+  font-style: italic;
+
+  .loading-spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 12px;
+    border-width: 3px;
+  }
+
+  .empty-icon {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 12px;
+    font-style: normal;
+  }
+}

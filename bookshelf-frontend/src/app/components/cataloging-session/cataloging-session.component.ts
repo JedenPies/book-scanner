@@ -58,6 +58,7 @@ export class CatalogingSessionComponent {
   isManualIsbnModalOpen = signal<boolean>(false);
 
   draftBooks = signal<DraftBookDto[]>([]);
+  isLoadingDraftBooks = signal<boolean>(true);
   pendingDeletionDraftBooks = signal<DraftBookDto[]>([]);
   editingDraftBook = signal<DraftBookDto | null>(null);
 
@@ -137,6 +138,7 @@ export class CatalogingSessionComponent {
   private loadDraftBooks() {
     const sessionId = this.sessionId();
     if (sessionId) {
+      this.isLoadingDraftBooks.set(true);
       this.backendService.retrieveAllDraftBooks(sessionId).subscribe({
         next: (result) => {
           const sortedDraftBooks = result.sort(
@@ -148,7 +150,11 @@ export class CatalogingSessionComponent {
             this.openAttachScanerModal();
           }
           this.recentSessionsService.updateSession(sessionId, draftBooksLength);
+          this.isLoadingDraftBooks.set(false);
         },
+        error: () => {
+          this.isLoadingDraftBooks.set(false);
+        }
       });
     }
   }

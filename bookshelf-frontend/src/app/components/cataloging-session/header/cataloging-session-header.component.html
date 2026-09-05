@@ -1,6 +1,6 @@
 <div class="cataloging-session-header">
   <div class="header-breadcrumbs">
-    <a routerLink="/" class="home-link" title="Wróć do strony głównej">
+    <a routerLink="/" class="home-link" title="Home page">
       <svg class="icon-svg"><use href="/icons/icons.svg#home"></use></svg>
     </a>
     <span class="breadcrumb-separator">››</span>
@@ -9,10 +9,13 @@
       type="button"
       class="btn-copy-link"
       (click)="copyUrlToClipboard()"
-      title="Kopiuj link do sesji"
+      title="Copy link to session"
     >
       <svg class="icon-svg"><use href="/icons/icons.svg#copy"></use></svg>
     </button>
+  </div>
+  <div class="badge" (click)="copyShareCodeToClipboard()" style="cursor: pointer;" title="Copy share code">
+    {{ shareCodeFormatted() }}
   </div>
 
   <span class="filler"></span>

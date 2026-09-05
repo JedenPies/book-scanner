@@ -28,24 +28,21 @@ export class ExportService {
       case 'REQUESTED':
       case 'PROCESSING':
         return {
-          icon: '',
-          text: `Przygotowuję plik ${exp.format}...`,
+          text: `Preparing ${exp.format}...`,
           cssClass: 'status-pending',
           showSpinner: true,
           isClickable: false,
         };
       case 'SUCCEED':
         return {
-          icon: '📥',
-          text: `Pobierz gotowy plik ${exp.format}`,
+          text: `Download your ${exp.format}`,
           cssClass: 'status-found',
           showSpinner: false,
           isClickable: true,
         };
       case 'FAILED':
         return {
-          icon: '❌',
-          text: `Błąd eksportu ${exp.format}. Spróbuj ponownie.`,
+          text: `Error exporting ${exp.format}. Please try again.`,
           cssClass: 'status-failed',
           showSpinner: false,
           isClickable: false,
@@ -73,10 +70,10 @@ export class ExportService {
     this.backendService.requestExport(sessionId, format).subscribe({
       next: (result) => {
         this.currentExport.set(result);
-        this.toastService.show('Zlecenie eksportu wysłane. Proszę czekać.');
+        this.toastService.show('Export requested. Please wait.');
       },
       error: () => {
-        this.toastService.show('Błąd podczas zlecenia eksportu', 'error');
+        this.toastService.show('Error during export request.', 'error');
       },
     });
   }
@@ -84,9 +81,9 @@ export class ExportService {
   handleSseComplete(exportDto: ExportDto) {
     this.currentExport.set(exportDto);
     if (this.exportInvalidated()) {
-      this.toastService.show('Eksport gotowy, ale nieaktualny. Wygeneruj ponownie.', 'warning');
+      this.toastService.show('Your export is ready, but already outdated. Generate again.', 'warning');
     } else {
-      this.toastService.show('Eksport gotowy!', 'success');
+      this.toastService.show('Your export is ready!', 'success');
     }
   }
 

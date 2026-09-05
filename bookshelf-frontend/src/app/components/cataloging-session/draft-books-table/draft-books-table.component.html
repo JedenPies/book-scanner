@@ -39,7 +39,7 @@
                 } @else if (draftBook.status === 'FAILED') {
                   <svg class="icon-svg"><use href="/icons/icons.svg#x-circle"></use></svg>
                 } @else if (draftBook.status === 'DUPLICATE') {
-                  <svg class="icon-svg"><use href="/icons/icons.svg#refresh"></use></svg>
+                  <svg class="icon-svg"><use href="/icons/icons.svg#duplicate"></use></svg>
                 } @else if (draftBook.status === 'MODIFIED') {
                   <svg class="icon-svg"><use href="/icons/icons.svg#edit"></use></svg>
                 }
@@ -128,8 +128,11 @@
         } @empty {
           <tr>
             <td colspan="4" class="empty-state">
-              <span class="empty-icon">📭</span>
-              No scanned books. Use your mobile phone to skan your first ISBN code!
+              @if (isLoading()) {
+                Loading cataloging session...
+              } @else {
+                No scanned books. Use your mobile phone to skan your first ISBN code!
+              }
             </td>
           </tr>
         }
@@ -138,10 +141,10 @@
   </div>
 
   @if (showScrollUp()) {
-    <div class="scroll-indicator indicator-up" (click)="scrollToTop()" title="Przewiń na samą górę"></div>
+    <div class="scroll-indicator indicator-up" (click)="scrollToTop()" title="Scroll to top"></div>
   }
 
   @if (showScrollDown()) {
-    <div class="scroll-indicator indicator-down" (click)="scrollToBottom()" title="Przewiń w dół"></div>
+    <div class="scroll-indicator indicator-down" (click)="scrollToBottom()" title="Scroll to bottom"></div>
   }
 </div>

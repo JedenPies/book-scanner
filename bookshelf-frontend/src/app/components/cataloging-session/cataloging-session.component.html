@@ -9,6 +9,7 @@
 
 <app-draft-books-table
   [draftBooks]="draftBooksToShow()"
+  [isLoading]="isLoadingDraftBooks()"
   (retry)="retryFetch($event)"
   (delete)="deleteDraftBook($event)"
   (edit)="editingDraftBook.set($event)"
