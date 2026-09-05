@@ -10,6 +10,7 @@ services:
     volumes:
       - ./.config/bookshelf-api-gateway/nginx:/etc/nginx/conf.d:ro
       - ./.config/bookshelf-api-gateway/letsencrypt:/etc/letsencrypt:ro # <-- Podmontowanie certyfikatów
+      - ./.config/bookshelf-api-gateway/certbot-webroot:/var/www/certbot:ro
     ports:
       - "80:80"
       - "443:443"
@@ -38,8 +39,6 @@ services:
     restart: unless-stopped
     networks:
       - bookshelf-network
-    volumes:
-      - redis-data:/data
 
   bookshelf-rabbitmq:
     image: rabbitmq:3-management
@@ -94,10 +93,6 @@ services:
     depends_on:
       bookshelf-pg:
         condition: service_started
-      bookshelf-redis:
-        condition: service_started
-      bookshelf-rabbitmq:
-        condition: service_healthy
 
   bookshelf-frontend:
     build:
@@ -111,7 +106,6 @@ services:
 volumes:
   bookshelf-pg-data:
   rabbitmq-data:
-  redis-data:
 
 networks:
   bookshelf-network:
