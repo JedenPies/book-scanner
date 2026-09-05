@@ -32,17 +32,17 @@ public class CatalogingSessionDataExtractor implements ExportDataExtractor {
             CatalogingSession session = sessionService.findById(correlationKey);
             ExportData.ExportDataBuilder builder = ExportData.builder()
                     .title("Cataloging session")
-                    .headers(Stream.of("ISBN", "Status", "Title", "Authors", "Publication year", "Publisher", "Publication place", "Language", "Added date").map(ExportData.Header::new).toList());
+                    .headers(Stream.of("ISBN", "Title", "Authors", "Publication year", "Publisher", "Publication place", "Language", "Genres", "Added date").map(ExportData.Header::new).toList());
             for (DraftBook draftBook : session.getDraftBooks()) {
                 builder.row(new ExportData.Row(
                         draftBook.getIsbn().value(),
-                        draftBook.getStatus().name(),
                         Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::title).orElse(""),
                         String.join(", ", Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::authors).orElseGet(Collections::emptyList)),
                         Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::publicationYear).map(Year::value).orElse(""),
                         Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::publisher).orElse(""),
                         Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::publicationPlace).orElse(""),
                         Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::language).orElse(""),
+                        String.join(", ", Optional.ofNullable(draftBook.getBookDetails()).map(BookDetails::genres).orElseGet(Collections::emptyList)),
                         Optional.ofNullable(draftBook.getCreatedAt()).map(Object::toString).orElse("")));
             }
             return builder.build();
