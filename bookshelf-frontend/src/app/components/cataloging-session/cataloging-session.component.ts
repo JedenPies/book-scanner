@@ -159,9 +159,12 @@ export class CatalogingSessionComponent {
     this.eventSource = new EventSource(`/api/cataloging-sessions/${sessionId}/events-stream`);
     this.eventSource.addEventListener('DRAFT_BOOK_CREATED', (event: MessageEvent) => {
       const eventDto: DraftBookCreatedSseEvent = JSON.parse(event.data);
-      this.draftBooks.update((currentDraftBooks) => [eventDto.draftBook, ...currentDraftBooks]);
+      this.draftBooks.update((currentDraftBooks) => {
+        const updated = [eventDto.draftBook, ...currentDraftBooks];
+        this.recentSessionsService.updateSession(this.sessionId(), updated.length);
+        return updated;
+      });
       this.exportService.invalidateExport();
-      this.recentSessionsService.updateSession(this.sessionId(), this.draftBooks().length);
     });
     this.eventSource.addEventListener('DRAFT_BOOK_UPDATED', (event: MessageEvent) => {
       const eventDto: DraftBookUpdatedSseEvent = JSON.parse(event.data);

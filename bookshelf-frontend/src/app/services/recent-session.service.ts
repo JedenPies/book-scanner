@@ -18,17 +18,17 @@ export class RecentSessionsService {
   recentSessions = signal<RecentSession[]>(this.loadFromStorage());
 
   updateSession(sessionId: string, draftCount?: number, sessionName?: string): void {
-    console.log("update session count", draftCount);
     const updated = this.recentSessions().map((s) => {
       if (s.id === sessionId) {
         return {
           ...s,
-          draftCount: draftCount || s.draftCount,
-          name: sessionName || s.name,
+          draftCount: draftCount ?? s.draftCount,
+          name: sessionName ?? s.name,
         };
       }
       return s;
     });
+    this.recentSessions.set(updated);
     this.saveToStorage(updated);
   }
 
@@ -38,7 +38,7 @@ export class RecentSessionsService {
     const newEntry: RecentSession = {
       id: sessionId,
       name: sessionName || `Sesja ${sessionId.substring(0, 8)}`,
-      draftCount: draftCount || 0,
+      draftCount: draftCount ?? 0,
       createdAt: this.formatCurrentDateTime(),
     };
 
