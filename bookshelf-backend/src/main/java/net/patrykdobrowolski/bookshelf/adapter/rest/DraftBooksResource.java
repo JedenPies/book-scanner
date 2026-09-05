@@ -1,5 +1,6 @@
 package net.patrykdobrowolski.bookshelf.adapter.rest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookshelf.adapter.rest.dto.DeleteDraftBookCommandDto;
 import net.patrykdobrowolski.bookshelf.adapter.rest.dto.DraftBookDto;
@@ -12,7 +13,6 @@ import net.patrykdobrowolski.bookshelf.adapter.rest.dto.EditDraftBookCommandDto;
 import net.patrykdobrowolski.bookshelf.adapter.rest.mapper.DraftBookDtoMapper;
 import net.patrykdobrowolski.bookshelf.domain.port.DraftBookServicePort;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class DraftBooksResource {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DraftBookDto createNewDraftBookRequest(@PathVariable UUID sessionId, @Validated @RequestBody CreateDraftBookRequestDto draftBookRequestDto) throws CatalogingSessionNotFoundException {
+    public DraftBookDto createNewDraftBookRequest(@PathVariable UUID sessionId, @Valid @RequestBody CreateDraftBookRequestDto draftBookRequestDto) throws CatalogingSessionNotFoundException {
         DraftBook draftBook = draftBookService.createDraftBook(sessionId, draftBookRequestDto.getIsbn());
         return draftBookDtoMapper.toDto(draftBook);
     }
@@ -49,13 +49,13 @@ public class DraftBooksResource {
     @PatchMapping("{draftBookId}")
     public DraftBookDto modifyDraftBook(
             @PathVariable UUID sessionId, @PathVariable UUID draftBookId,
-            @Validated @RequestBody EditDraftBookCommandDto editDraftBookCommandDto) throws DraftBookNotFoundException, CatalogingSessionNotFoundException {
+            @Valid @RequestBody EditDraftBookCommandDto editDraftBookCommandDto) throws DraftBookNotFoundException, CatalogingSessionNotFoundException {
         DraftBook updated = draftBookService.updateDraftBook(sessionId, draftBookId, editDraftBookCommandDtoMapper.map(editDraftBookCommandDto));
         return draftBookDtoMapper.toDto(updated);
     }
 
     @PostMapping("delete-requests")
-    public void deleteDraftBooks(@PathVariable UUID sessionId, @RequestBody DeleteDraftBookCommandDto deleteDraftBookCommandDto) throws CatalogingSessionNotFoundException {
+    public void deleteDraftBooks(@PathVariable UUID sessionId, @Valid @RequestBody DeleteDraftBookCommandDto deleteDraftBookCommandDto) throws CatalogingSessionNotFoundException {
         draftBookService.deleteDraftBooks(sessionId, deleteDraftBookCommandDto.getDraftBooksIds());
     }
 }

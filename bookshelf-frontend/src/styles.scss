@@ -402,4 +402,30 @@ input {
   }
 }
 
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+
+  .modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #0f172a;
+      font-weight: 700;
+    }
+  }
+}
+
+input.invalid {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2;
+}
 

@@ -1,5 +1,6 @@
 package net.patrykdobrowolski.bookshelf.adapter.rest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.patrykdobrowolski.bookshelf.domain.exception.ShareCodeGenerationException;
 import net.patrykdobrowolski.bookshelf.domain.exception.ShareCodeNotFoundException;
@@ -18,7 +19,7 @@ public class ShareCodesResource {
     private final ShareCodeService shareCodeService;
 
     @PostMapping
-    public ShareCodeDto createShareCode(@RequestBody CreateShareCodeRequestDto createShareCodeRequestDto) throws ShareCodeGenerationException {
+    public ShareCodeDto createShareCode(@RequestBody @Valid CreateShareCodeRequestDto createShareCodeRequestDto) throws ShareCodeGenerationException {
         String shareCode = shareCodeService.generateShareCode(createShareCodeRequestDto.getSessionId());
         return ShareCodeDto.builder().sessionId(createShareCodeRequestDto.getSessionId()).code(shareCode).build();
     }
