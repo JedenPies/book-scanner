@@ -88,7 +88,7 @@ export class EntryComponent {
         this.router.navigate(['/cataloging-session', response.id]);
       },
       error: (err) => {
-        this.toasts.show('Nie udało się utworzyć sesji skanowania: ' + err);
+        this.toasts.show('Error creating cataloging session');
       },
     });
   }
@@ -101,7 +101,7 @@ export class EntryComponent {
           this.router.navigate(['/cataloging-session', response.sessionId]);
         },
         error: () => {
-          this.toasts.show('Nie udało się pobrać numeru sesji', 'error');
+          this.toasts.show('Session number could not be retrieved', 'error');
         },
       });
     }

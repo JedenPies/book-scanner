@@ -37,7 +37,7 @@ export class RecentSessionsService {
 
     const newEntry: RecentSession = {
       id: sessionId,
-      name: sessionName || `Sesja ${sessionId.substring(0, 8)}`,
+      name: sessionName || `Session ${sessionId.substring(0, 8)}`,
       draftCount: draftCount ?? 0,
       createdAt: this.formatCurrentDateTime(),
     };
@@ -68,7 +68,7 @@ export class RecentSessionsService {
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(sessions));
     } catch (e) {
-      console.error('Nie udało się zapisać historii sesji w localStorage', e);
+      console.error('Session could nat be saved in localStorage', e);
     }
   }
 

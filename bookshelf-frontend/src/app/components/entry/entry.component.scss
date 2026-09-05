@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Special+Elite&display=swap');
+
+
 $radius: 6px;
 $card-radius: 12px;
 
@@ -36,10 +39,11 @@ $card-radius: 12px;
 
   .main-title {
     margin: 0;
-    font-size: 4.4rem;
-    font-weight: 800;
+    font-size: 6.4rem;
     color: #0f172a;
-    letter-spacing: 0.1em;
+    font-family: "Courier Prime", "Special Elite", "SFMono-Regular", Consolas, monospace;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   .main-subtitle {

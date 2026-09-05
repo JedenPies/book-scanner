@@ -19,10 +19,14 @@
     justify-content: center;
     color: #64748b;
     padding: 6px;
-    margin-top: 4px;
-    margin-right: -5px;
     border-radius: 6px;
     transition: color 0.15s, background-color 0.15s;
+
+    h2 {
+      text-decoration: none;
+      color: #5b8e72;
+      margin: 0;
+    }
 
     .icon-svg {
       width: 20px;
@@ -31,7 +35,7 @@
 
     &:hover {
       color: #0f172a;
-      background-color: #f1f5f9;
+      background-color: #d2ead2;
     }
   }
 

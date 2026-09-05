@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --shelf: #648ba8;
+      --book-1: #94a3b8;
+      --book-2: #38bdf8;
+      --book-3: #cbd5e1;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1e293b;
+        --shelf: #94a3b8;
+        --book-1: #64748b;
+        --book-2: #38bdf8;
+        --book-3: #e2e8f0;
+      }
+    }
+  </style>
+
+  <!-- Zaokrąglony kontener aplikacji (squircle 6px radius) -->
+  <rect width="32" height="32" rx="6" fill="var(--bg)" />
+
+  <!-- Książka 1 (pionowa, klasyczna) -->
+  <rect x="6" y="8" width="4.5" height="14" rx="1" fill="var(--book-1)" />
+
+  <!-- Książka 2 (wyższa, akcentowa niebieska) -->
+  <rect x="12" y="6" width="4.5" height="16" rx="1" fill="var(--book-2)" />
+
+  <!-- Książka 3 (pochylona oparta o sąsiednie tomy) -->
+  <rect x="18" y="7" width="4.5" height="15" rx="1" fill="var(--book-3)" transform="rotate(13 18 22)" />
+
+  <!-- Deska półki (shelf) -->
+  <rect x="4" y="23" width="24" height="2.5" rx="1" fill="var(--shelf)" />
+</svg>
